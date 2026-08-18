@@ -1,0 +1,22 @@
+<svg width="212" height="52" viewBox="0 0 212 52" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title description">
+  <title id="title">Nova</title>
+  <desc id="description">Nova industrial commerce logo for light backgrounds</desc>
+  <defs>
+    <linearGradient id="novaLightGradient" x1="5" y1="5" x2="45" y2="47" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#35A7FF"/>
+      <stop offset="1" stop-color="#075FE4"/>
+    </linearGradient>
+    <filter id="novaLightShadow" x="0" y="0" width="54" height="54" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0B62D6" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <g filter="url(#novaLightShadow)">
+    <rect x="5" y="5" width="42" height="42" rx="13" fill="url(#novaLightGradient)"/>
+    <path d="M15 36V16.8C15 15.69 16.35 15.15 17.12 15.95L34.35 33.85C35.1 34.63 34.55 35.92 33.47 35.92H29.77C29.42 35.92 29.08 35.77 28.84 35.52L20.7 27.03V36H15Z" fill="white"/>
+    <path d="M37 16V35.2C37 36.31 35.65 36.85 34.88 36.05L17.65 18.15C16.9 17.37 17.45 16.08 18.53 16.08H22.23C22.58 16.08 22.92 16.23 23.16 16.48L31.3 24.97V16H37Z" fill="white" fill-opacity="0.72"/>
+    <path d="M39.4 10.5L40.35 13.15L43 14.1L40.35 15.05L39.4 17.7L38.45 15.05L35.8 14.1L38.45 13.15L39.4 10.5Z" fill="#BDE6FF"/>
+  </g>
+  <text x="59" y="31" fill="#102A4C" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="800" letter-spacing="2.4">NOVA</text>
+  <rect x="60" y="36" width="113" height="2" rx="1" fill="#1680F5"/>
+  <text x="60" y="47" fill="#66809F" font-family="Arial, Helvetica, sans-serif" font-size="7.4" font-weight="700" letter-spacing="1.5">INDUSTRIAL COMMERCE</text>
+</svg>

@@ -1,0 +1,37 @@
+.chip-main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.chip-content-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 20px;
+  flex-wrap: wrap; /* Allow tables to wrap */
+}
+
+.chip-table-container {
+  flex: 1;
+  min-width: 220px;
+  box-sizing: border-box;
+}
+
+.chip-button-container {
+  width: 100%;
+  display: flex;
+  padding: 1rem 0;
+  justify-content: space-between;
+}
+
+@media (max-width: 900px) {
+  .chip-content-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .chip-table-container {
+    width: 100%;
+  }
+}

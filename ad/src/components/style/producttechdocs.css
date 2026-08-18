@@ -1,0 +1,94 @@
+.product-tech-docs {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 10px;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 12px;
+  overflow: hidden;
+  border: 1px solid #dbe4ee;
+  border-radius: 9px;
+  background: #f8fafc;
+}
+
+.product-tech-docs__title {
+  color: #172b4d;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+}
+
+.product-tech-docs__controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.product-tech-docs__controls .MuiButton-root {
+  min-height: 40px;
+  white-space: nowrap;
+}
+
+.product-tech-docs__list {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.product-tech-docs__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  padding: 7px 8px 7px 10px;
+  border-radius: 7px;
+  background: #ffffff;
+}
+
+.product-tech-docs__identity {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.product-tech-docs__identity > svg {
+  flex: 0 0 auto;
+  color: #1473e6;
+  font-size: 1.1rem;
+}
+
+.product-tech-docs__identity a {
+  overflow: hidden;
+  color: #244a73;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-tech-docs__identity a:hover {
+  text-decoration: underline;
+}
+
+.product-tech-docs__empty {
+  padding: 8px 2px;
+  color: #64748b;
+  font-size: 0.8rem !important;
+}
+
+@media (max-width: 700px) {
+  .product-tech-docs__controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .product-tech-docs__controls .MuiFormControl-root {
+    grid-column: 1 / -1;
+  }
+}

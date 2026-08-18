@@ -1,0 +1,51 @@
+# Node.js
+**/node_modules/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Environment variables
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# Build outputs
+**/dist/
+**/build/
+**/.cache/
+
+# Editor/OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary directories
+/temp_git/
+/temp_original/
+
+# Claude / Codex backups
+.claude/
+.codex-backups/
+
+# Backend uploads
+be/upload/
+
+# Backups and data archives
+backups/
+wdata/
+
+# Deployment exclusions
+/AGENT.md
+/BUG_TRACKING.md
+/CHANGELOG.md
+/CLAUDE.md
+/PROJECT_STATE.md
+/ClaudeDocs/
+/copy/
+/docs/
+/skills/
+CRA_TO_VITE_MIGRATION_PROMPT.md
+CRA_TO_VITE_MIGRATION_PROMPT.md

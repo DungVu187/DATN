@@ -1,0 +1,198 @@
+.swiper-button-next,
+.swiper-button-prev {
+  z-index: 1 !important;
+}
+
+.home-category-manager {
+  width: min(100%, 1180px);
+  margin-bottom: 32px;
+  padding: 24px;
+  border-color: #dbe4ee;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.home-category-manager__heading,
+.home-category-manager__item-heading,
+.home-category-manager__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.home-category-manager__settings {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto auto;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.home-category-manager__item {
+  padding: 18px;
+  border-color: #e3eaf2;
+  border-radius: 10px;
+  background: #fbfcfe;
+}
+
+.home-category-manager__item-heading {
+  margin-bottom: 14px;
+}
+
+.home-category-manager__item-grid {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 18px;
+}
+
+.home-category-manager__image-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-category-manager__image-preview {
+  display: flex;
+  min-height: 112px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px dashed #cbd5e1;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+.home-category-manager__image-preview img {
+  width: 100%;
+  height: 112px;
+  object-fit: contain;
+}
+
+.home-category-manager__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.home-category-manager__visibility {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 40px;
+}
+
+.home-category-manager .MuiSwitch-root {
+  width: 44px;
+  height: 24px;
+  padding: 0;
+  margin: 0 8px 0 0;
+  overflow: visible;
+}
+
+.home-category-manager .MuiSwitch-switchBase {
+  padding: 2px;
+  color: #ffffff;
+  transition: transform 180ms ease;
+}
+
+.home-category-manager .MuiSwitch-switchBase:hover {
+  background-color: transparent;
+}
+
+.home-category-manager .MuiSwitch-switchBase.Mui-checked {
+  color: #ffffff;
+  transform: translateX(20px);
+}
+
+.home-category-manager .MuiSwitch-switchBase.Mui-checked:hover {
+  background-color: transparent;
+}
+
+.home-category-manager .MuiSwitch-thumb {
+  width: 20px;
+  height: 20px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.28);
+}
+
+.home-category-manager .MuiSwitch-track {
+  border-radius: 999px;
+  background-color: #cbd5e1;
+  opacity: 1;
+  transition: background-color 180ms ease;
+}
+
+.home-category-manager .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
+  background-color: #00c853;
+  opacity: 1;
+}
+
+.home-category-manager .MuiSwitch-switchBase.Mui-focusVisible + .MuiSwitch-track {
+  box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.2);
+}
+
+.home-category-manager .MuiSwitch-switchBase.Mui-disabled + .MuiSwitch-track {
+  opacity: 0.45;
+}
+
+.home-category-manager__icon-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.home-category-manager__icon-option .home-category-icon {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  color: #2878d4;
+  font-size: 20px;
+}
+
+.home-category-manager__icon-option .home-category-icon svg {
+  width: 1em;
+  height: 1em;
+}
+
+.home-category-manager__actions {
+  justify-content: flex-end;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .home-category-manager {
+    padding: 18px;
+  }
+
+  .home-category-manager__heading,
+  .home-category-manager__settings {
+    align-items: flex-start;
+  }
+
+  .home-category-manager__heading {
+    flex-direction: column;
+  }
+
+  .home-category-manager__settings,
+  .home-category-manager__fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .home-category-manager__item-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-category-manager__image-preview,
+  .home-category-manager__image-preview img {
+    height: 150px;
+  }
+
+  .home-category-manager__actions > button {
+    width: 100%;
+  }
+}

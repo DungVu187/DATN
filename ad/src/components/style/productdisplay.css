@@ -1,0 +1,311 @@
+.product-detail-page {
+  display: grid;
+  grid-template-columns: minmax(560px, 1.15fr) minmax(380px, 0.85fr);
+  grid-template-areas:
+    "actions actions"
+    "metrics description"
+    "info description";
+  gap: 12px;
+  width: 100%;
+  min-height: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+.product-detail-actions {
+  grid-area: actions;
+  min-height: 46px;
+  margin: 0;
+  background: #ffffff;
+}
+
+.product-detail-top-grid {
+  display: contents;
+}
+
+.product-metrics-card {
+  grid-area: metrics;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 8px;
+}
+
+.product-description-card {
+  grid-area: description;
+}
+
+.product-info-card {
+  grid-area: info;
+}
+
+.product-metrics-card,
+.product-description-card,
+.product-info-card {
+  min-width: 0;
+  padding: 15px 16px;
+  border: 1px solid #e5eaf0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(16, 42, 67, 0.045);
+}
+
+.product-metrics-card > .MuiTypography-h6,
+.product-description-card > .MuiTypography-h6,
+.product-info-card > .MuiTypography-h6 {
+  margin: 0 0 10px;
+  color: #172b4d;
+}
+
+.product-metrics-card > .MuiTypography-h6 {
+  margin-bottom: 0;
+}
+
+.product-metrics-card > .MuiTypography-body1 {
+  margin: 0;
+  color: #d86713;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.product-metrics-workspace {
+  display: grid;
+  grid-template-columns: clamp(180px, 29%, 240px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.product-detail-image {
+  width: 100%;
+  height: 248px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #e5eaf0;
+  border-radius: 9px;
+  background: #f8fafc;
+  box-shadow: none;
+}
+
+.product-detail-image .MuiCardMedia-root,
+.product-detail-image-placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #f8fafc;
+}
+
+.product-metric-rows {
+  display: grid;
+  grid-template-columns: minmax(145px, 1fr) 176px;
+  grid-auto-rows: 40px;
+  gap: 12px 10px;
+  min-width: 0;
+}
+
+.product-metric-row {
+  display: contents !important;
+}
+
+.product-metric-row > .MuiFormControl-root,
+.product-metric-row > .MuiButton-root {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  margin: 0 !important;
+}
+
+.product-metric-row .MuiInputBase-root {
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+}
+
+.product-metric-row .MuiInputBase-root.MuiInputBase-multiline {
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.product-metric-row .MuiInputBase-inputMultiline {
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  overflow-y: auto !important;
+  white-space: nowrap;
+}
+
+.product-metric-row > .MuiButton-root {
+  padding-inline: 10px;
+  font-size: 0.75rem;
+}
+
+.product-stock-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.product-stock-grid > .MuiFormControl-root {
+  margin: 0 !important;
+}
+
+.product-description-card {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 14px;
+  align-content: stretch;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 1081px) {
+  .product-description-card {
+    contain: size;
+  }
+}
+
+.product-description-card > .MuiTypography-h6 {
+  margin-bottom: 0;
+}
+
+.product-description-content {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  min-height: 0;
+  overflow: visible;
+}
+
+.product-description-content > .MuiFormControl-root {
+  margin: 0 !important;
+  min-height: 0;
+  overflow: visible;
+}
+
+.product-description-content > .product-description-field,
+.product-description-content > .product-specifications-field,
+.product-description-content > .product-tech-docs,
+.product-description-content > .product-description-field .MuiInputBase-root,
+.product-description-content > .product-specifications-field .MuiInputBase-root {
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+}
+
+.product-description-card .MuiInputBase-root {
+  min-height: 40px;
+}
+
+.product-description-card .MuiInputBase-multiline {
+  height: 100%;
+  min-height: 56px;
+  padding-top: 4px !important;
+  padding-bottom: 6px !important;
+}
+
+.product-description-card .MuiInputBase-inputMultiline {
+  height: auto !important;
+  align-self: stretch !important;
+  max-height: 100%;
+  overflow-y: auto !important;
+}
+
+.product-info-card {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
+  row-gap: 12px;
+  align-content: space-between;
+  padding: 15px 16px 24px;
+}
+
+.product-info-card > .MuiTypography-h6,
+.product-info-select-grid,
+.product-info-card > .MuiFormControl-root,
+.product-info-card > .MuiAutocomplete-root {
+  grid-column: 1 / -1;
+}
+
+.product-info-select-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+.product-info-card .MuiFormControl-root {
+  width: 100%;
+  margin: 0 !important;
+}
+
+.product-info-card > .MuiAutocomplete-root {
+  width: 100%;
+}
+
+@media (max-width: 1180px) and (min-width: 1081px) {
+  .product-detail-page {
+    grid-template-columns: minmax(520px, 1.12fr) minmax(340px, 0.88fr);
+  }
+
+  .product-metrics-workspace {
+    grid-template-columns: 170px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .product-metric-rows {
+    grid-template-columns: minmax(120px, 1fr) 154px;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 1080px) {
+  .product-detail-page {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "actions"
+      "metrics"
+      "description"
+      "info";
+  }
+
+  .product-detail-actions {
+    position: relative !important;
+  }
+
+}
+
+@media (max-width: 700px) {
+  .product-metrics-card,
+  .product-description-card,
+  .product-info-card {
+    padding: 12px;
+  }
+
+  .product-metrics-workspace,
+  .product-stock-grid,
+  .product-info-card,
+  .product-info-select-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-detail-image {
+    height: 200px;
+  }
+
+  .product-metric-rows {
+    grid-template-columns: minmax(0, 1fr) 150px;
+  }
+
+  .product-info-card > .MuiTypography-h6,
+  .product-info-select-grid,
+  .product-info-card > .MuiFormControl-root,
+  .product-info-card > .MuiAutocomplete-root {
+    grid-column: 1;
+  }
+}

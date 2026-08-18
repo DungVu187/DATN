@@ -1,0 +1,380 @@
+/* ---- Account Permission Page ---- */
+
+.acc-dialog-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.acc-dialog-section {
+  min-width: 0;
+}
+
+/* Dialog section heading */
+.acc-section-heading {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #666;
+  margin: 0 0 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Role option cards */
+.acc-role-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.acc-role-option {
+  flex: 1;
+  min-width: 180px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 11px 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+  position: relative;
+}
+
+.acc-role-option:hover {
+  border-color: #90caf9;
+  background-color: #fafafa;
+}
+
+.acc-role-option:focus-within {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+.acc-role-option.acc-role-selected {
+  border-color: #1976d2;
+  background-color: #e3f2fd;
+}
+
+.acc-role-option .acc-role-title {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.acc-role-option .acc-role-desc {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Info fields grid */
+.acc-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+  row-gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .acc-fields-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Permission tree grid */
+.acc-perm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .acc-perm-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Module card */
+.acc-module-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.acc-module-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background-color: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.acc-module-header .acc-module-icon {
+  color: #555;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.acc-module-header .acc-module-label {
+  flex: 1;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Action chips container */
+.acc-actions-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+/* Action chip base */
+.acc-action-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid #ccc;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, transform 0.1s;
+  user-select: none;
+  line-height: 1.4;
+}
+
+.acc-action-chip:hover {
+  background-color: #f5f5f5;
+  border-color: #999;
+}
+
+.acc-action-chip:focus-visible {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+.acc-action-chip:active {
+  transform: scale(0.98);
+}
+
+/* Selected state */
+.acc-action-chip.acc-chip-selected {
+  background-color: #e3f2fd;
+  border-color: #1976d2;
+  color: #1565c0;
+}
+
+.acc-action-chip.acc-chip-selected:hover {
+  background-color: #bbdefb;
+}
+
+/* Disabled state */
+.acc-action-chip.acc-chip-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Fixed/locked chip */
+.acc-action-chip.acc-chip-locked {
+  background-color: #f5f5f5;
+  border-color: #e0e0e0;
+  color: #999;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Admin fixed block */
+.acc-fixed-block {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 13px 14px;
+  margin-bottom: 12px;
+  background-color: #fafafa;
+}
+
+.acc-fixed-block .acc-fixed-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.acc-fixed-block .acc-fixed-desc {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.acc-fixed-block .acc-fixed-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Superadmin info block */
+.acc-superadmin-block {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  background-color: #fafafa;
+}
+
+.acc-superadmin-block .acc-sa-title {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.acc-superadmin-block .acc-sa-desc {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Summary chip in DataGrid tooltip */
+.acc-perm-summary {
+  cursor: default;
+}
+
+/* Account list surface */
+.account-list-table {
+  overflow: hidden !important;
+  background: #ffffff !important;
+}
+
+.account-list-table .MuiDataGrid-root,
+.account-list-table .MuiDataGrid-main,
+.account-list-table .MuiDataGrid-columnHeaders,
+.account-list-table .MuiDataGrid-virtualScroller,
+.account-list-table .MuiDataGrid-virtualScrollerContent,
+.account-list-table .MuiDataGrid-footerContainer,
+.account-list-table .MuiDataGrid-row {
+  background-color: #ffffff !important;
+}
+
+/* Permission matrix */
+.acc-permission-table-wrap {
+  width: 100%;
+  max-height: 430px;
+  overflow: auto;
+  border: 1px solid #c8d6e5;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.acc-permission-table {
+  width: 100%;
+  min-width: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: 12.5px;
+}
+
+.acc-permission-table .acc-col-index-size {
+  width: 44px;
+}
+
+.acc-permission-table .acc-col-module-size {
+  width: 34%;
+}
+
+.acc-permission-table .acc-col-action-size {
+  width: calc(7.333333% - 4.888889px);
+}
+
+.acc-permission-table th,
+.acc-permission-table td {
+  border-right: 1px solid #d7e0ea;
+  border-bottom: 1px solid #d7e0ea;
+  padding: 5px 6px;
+  text-align: center;
+  vertical-align: middle;
+  background: #fff;
+}
+
+.acc-permission-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #d9e9fb;
+  color: #154f86;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.acc-permission-table .acc-col-index {
+  min-width: 44px;
+  font-weight: 700;
+}
+
+.acc-permission-table .acc-col-module {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 220px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.acc-permission-table th.acc-col-module {
+  z-index: 3;
+}
+
+.acc-matrix-module {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.35;
+}
+
+.acc-matrix-icon {
+  display: inline-flex;
+  color: #52616f;
+}
+
+.acc-empty-cell {
+  color: #b0b8c0;
+  background: #f8fafc !important;
+}
+
+.acc-checkbox-tooltip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.account-list-table .MuiDataGrid-columnHeaders {
+  border-bottom: 1px solid #000;
+}
+
+.account-list-table .MuiDataGrid-cell {
+  border-bottom: 1px solid #000;
+}
+
+@media (max-width: 700px) {
+  .acc-permission-table-wrap {
+    max-height: 360px;
+  }
+
+  .acc-permission-table {
+    min-width: 900px;
+    table-layout: fixed;
+  }
+
+  .acc-permission-table .acc-col-module {
+    min-width: 220px;
+  }
+}
