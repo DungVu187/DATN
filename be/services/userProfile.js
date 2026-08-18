@@ -25,14 +25,29 @@ const updateUserProfile = async (userId, profile) => {
 };
 
 const addUserAddress = async (userId, addressInput) => {
-  const { label, receiverName, receiverPhone, addressDetail } = addressInput;
+  const {
+    label,
+    receiverName,
+    receiverPhone,
+    provinceCode,
+    provinceName,
+    wardCode,
+    wardName,
+    addressLine,
+    addressDetail,
+  } = addressInput;
   const user = await User.findById(userId);
   if (!user) return { status: "user_not_found" };
 
   user.addresses.push({
-    label: label || "Công trình",
+    label: label || "Địa chỉ",
     receiverName,
     receiverPhone,
+    provinceCode,
+    provinceName,
+    wardCode,
+    wardName,
+    addressLine,
     addressDetail,
     isDefault: user.addresses.length === 0,
   });
@@ -42,7 +57,17 @@ const addUserAddress = async (userId, addressInput) => {
 };
 
 const updateUserAddress = async (userId, addressId, addressInput) => {
-  const { label, receiverName, receiverPhone, addressDetail } = addressInput;
+  const {
+    label,
+    receiverName,
+    receiverPhone,
+    provinceCode,
+    provinceName,
+    wardCode,
+    wardName,
+    addressLine,
+    addressDetail,
+  } = addressInput;
   const user = await User.findById(userId);
   if (!user) return { status: "user_not_found" };
 
@@ -52,6 +77,11 @@ const updateUserAddress = async (userId, addressId, addressInput) => {
   if (label !== undefined) address.label = label;
   if (receiverName !== undefined) address.receiverName = receiverName;
   if (receiverPhone !== undefined) address.receiverPhone = receiverPhone;
+  if (provinceCode !== undefined) address.provinceCode = provinceCode;
+  if (provinceName !== undefined) address.provinceName = provinceName;
+  if (wardCode !== undefined) address.wardCode = wardCode;
+  if (wardName !== undefined) address.wardName = wardName;
+  if (addressLine !== undefined) address.addressLine = addressLine;
   if (addressDetail !== undefined) address.addressDetail = addressDetail;
 
   await user.save();

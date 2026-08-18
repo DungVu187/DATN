@@ -164,8 +164,8 @@ describe("manage content extraction", () => {
         logo: "https://storefront.test/images/logo.png",
         description: "Mô tả footer",
         address: "Hà Nội",
-        phone: "08.1315.8383",
-        email: "contact@ttsmart.vn",
+        phone: "09.0151.3825",
+        email: "dungvutb1807@gmail.com",
       },
     });
     Manage.findOneAndUpdate.mockResolvedValue(updatedManage);
@@ -178,8 +178,8 @@ describe("manage content extraction", () => {
             logo: "  https://storefront.test/images/logo.png  ",
             description: "  Mô tả footer  ",
             address: "  Hà Nội  ",
-            phone: "  08.1315.8383  ",
-            email: "  contact@ttsmart.vn  ",
+            phone: "  09.0151.3825  ",
+            email: "  dungvutb1807@gmail.com  ",
           },
         },
       },
@@ -193,8 +193,8 @@ describe("manage content extraction", () => {
           "footerContent.logo": "https://storefront.test/images/logo.png",
           "footerContent.description": "Mô tả footer",
           "footerContent.address": "Hà Nội",
-          "footerContent.phone": "08.1315.8383",
-          "footerContent.email": "contact@ttsmart.vn",
+          "footerContent.phone": "09.0151.3825",
+          "footerContent.email": "dungvutb1807@gmail.com",
         },
       },
       { new: true, upsert: true, setDefaultsOnInsert: true }

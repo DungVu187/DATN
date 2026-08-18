@@ -9,7 +9,7 @@ async function check() {
       const conn = await mongoose.createConnection(dbUri).asPromise();
       const userSchema = new mongoose.Schema({ phone: String, role: String, name: String });
       const UserModel = conn.model('User', userSchema);
-      const user = await UserModel.findOne({ phone: '0813158383' });
+      const user = await UserModel.findOne({ phone: '0901513825' });
       if (user) {
         console.log(`  -> Found in ${dbName}: Phone: ${user.phone}, Role: ${user.role}`);
       } else {

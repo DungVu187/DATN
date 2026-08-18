@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Sidebar from './layout/sidebar';
+import Dashboard from './components/dashboard';
 import Products from './components/products';
 import Chips from './components/chips';
 import ProductDisplay from './components/productdisplay';
@@ -40,7 +41,8 @@ const App = () => {
                   <Sidebar />
                   <Box component="main" className="admin-content-wrapper" sx={{ flex: 1, height: "100%", overflowY: "auto", p: { xs: 1.5, sm: 2 }, pt: { xs: '68px', md: 2 }, minWidth: 0 }}>
                     <Routes>
-                      <Route index element={<Navigate to="/product" replace />} />
+                      <Route index element={<Navigate to="/dashboard" replace />} />
+                      <Route path="/dashboard" element={<RoleGuard><Dashboard /></RoleGuard>} />
                       <Route path="/account" element={<RoleGuard adminOnly><Account /></RoleGuard>} />
                       <Route path="/product" element={<RoleGuard requiredPermission="product.view"><Products /></RoleGuard>} />
                       <Route path="/chip" element={<RoleGuard requiredPermission="product.view"><Chips /></RoleGuard>} />
@@ -64,7 +66,7 @@ const App = () => {
                       <Route path="/history/import" element={<RoleGuard requiredPermission="history_import.view"><HistoryImport /></RoleGuard>} />
                       <Route path="/history/export" element={<RoleGuard requiredPermission="history_export.view"><HistoryExport /></RoleGuard>} />
                       <Route path="/activity-log" element={<RoleGuard requiredPermission="activitylog.view"><ActivityLog /></RoleGuard>} />
-                      <Route path="*" element={<Navigate to="/product" replace />} />
+                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
                     </Routes>
                   </Box>
                 </Box>

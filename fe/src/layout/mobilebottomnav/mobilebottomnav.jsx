@@ -27,7 +27,7 @@ function MobileBottomNav() {
         <i className="fa-regular fa-user" />
         <span>{t("account")}</span>
       </NavLink>
-      <a className="mobile-bottom-nav-item" href="tel:0813158383">
+      <a className="mobile-bottom-nav-item" href="tel:0901513825">
         <i className="fa-solid fa-headset" />
         <span>{t("support")}</span>
       </a>

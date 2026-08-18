@@ -157,7 +157,7 @@ const ValueList = () => {
                               variant="contained"
                               color="success"
                               size="small"
-                              href="tel:0813158383"
+                              href="tel:0901513825"
                               sx={{
                                 minWidth: "40px",
                                 padding: "6px 12px",
@@ -171,7 +171,7 @@ const ValueList = () => {
                                {isSmallScreen ? <PhoneIcon /> : (
                                 <>
                                   <PhoneIcon sx={{ fontSize: 16 }} />
-                                  {t("contact_phone", "Liên hệ: 0813 158 383")}
+                                  {t("contact_phone", "Liên hệ: 0901 513 825")}
                                 </>
                               )}
                             </Button>

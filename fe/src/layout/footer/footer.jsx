@@ -13,7 +13,7 @@ const DEFAULT_CONTACT = {
   description: "",
   address: "Số 25 ngõ 77, Bùi Xương Trạch, Thanh Xuân, Hà Nội",
   phone: "0901513825",
-  email: "Nova.ltd@gmail.com",
+  email: "dungvutb1807@gmail.com",
 };
 
 function Footer() {

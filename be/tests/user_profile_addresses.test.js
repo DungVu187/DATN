@@ -254,6 +254,11 @@ describe('user profile and addresses extraction contract', () => {
       label: '',
       receiverName: 'Nguyễn Văn A',
       receiverPhone: '0900000000',
+      provinceCode: undefined,
+      provinceName: undefined,
+      wardCode: undefined,
+      wardName: undefined,
+      addressLine: undefined,
       addressDetail: 'Số 1',
       isDefault: false,
     });
@@ -261,7 +266,7 @@ describe('user profile and addresses extraction contract', () => {
     expect(result).toEqual({ status: 'ok', user });
     expect(user.addresses).toEqual([
       {
-        label: 'Công trình',
+        label: 'Địa chỉ',
         receiverName: 'Nguyễn Văn A',
         receiverPhone: '0900000000',
         addressDetail: 'Số 1',

@@ -427,8 +427,8 @@ function ProductDisplay() {
             </div>
 
             {isContactOnly ? (
-              <Button className="product-contact-stock-button" variant="contained" href="tel:0813158383" startIcon={<SmartphoneIcon />}>
-                0813 158 383
+              <Button className="product-contact-stock-button" variant="contained" href="tel:0901513825" startIcon={<SmartphoneIcon />}>
+                0901 513 825
               </Button>
             ) : (
               <div className="product-primary-actions">
@@ -438,16 +438,16 @@ function ProductDisplay() {
             )}
 
             <div className="product-contact-actions">
-              <a href="tel:0813158383"><i className="fa-solid fa-phone" /> {t("call_now")}</a>
-              <a href="mailto:NOVA.ltd@gmail.com"><i className="fa-regular fa-envelope" /> {t("send_email")}</a>
+              <a href="tel:0901513825"><i className="fa-solid fa-phone" /> {t("call_now")}</a>
+              <a href="mailto:dungvutb1807@gmail.com"><i className="fa-regular fa-envelope" /> {t("send_email")}</a>
             </div>
           </div>
 
           <aside className="product-service-column">
             <div className="product-service-card">
               <h2>{t("customer_support")}</h2>
-              <a href="tel:0813158383"><SmartphoneIcon /> {t("hotline_number")}</a>
-              <a href="mailto:NOVA.ltd@gmail.com"><MailOutlineIcon /> {t("send_email")}</a>
+              <a href="tel:0901513825"><SmartphoneIcon /> {t("hotline_number")}</a>
+              <a href="mailto:dungvutb1807@gmail.com"><MailOutlineIcon /> {t("send_email")}</a>
               <Link to="/policy"><HelpOutlineIcon /> {t("faqs")}</Link>
             </div>
           </aside>
@@ -546,12 +546,12 @@ function ProductDisplay() {
       </div>
 
       <div className="product-mobile-action-bar">
-        <a className="product-mobile-action-link" href="tel:0813158383">
+        <a className="product-mobile-action-link" href="tel:0901513825">
           <i className="fa-solid fa-phone" />
           <span>{t("call")}</span>
         </a>
         {isContactOnly ? (
-          <a className="product-mobile-contact-button" href="tel:0813158383">
+          <a className="product-mobile-contact-button" href="tel:0901513825">
             {t("contact_for_quote")}
           </a>
         ) : (

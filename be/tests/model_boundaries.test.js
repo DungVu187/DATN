@@ -559,7 +559,7 @@ describe("backend model boundaries", () => {
     const routeDeclarations = [
       'router.get("/", [authenticateAdmin, checkPermission(\'order.view\')], listOrders);',
       'router.get("/customer-suggestions", [authenticateAdmin, checkPermission(\'order.view\')], getCustomerSuggestions);',
-      'router.get("/userOrders", [authenticateUser, requireCustomer], listUserOrders);',
+      'router.get("/userOrders", authenticateUser, listUserOrders);',
       'router.get("/processing-count", getProcessingOrderCount);',
     ];
 
@@ -605,7 +605,7 @@ describe("backend model boundaries", () => {
     const accessSource = readBackendFile("services/orderAccess.js");
     const presentationSource = readBackendFile("services/orderPresentation.js");
     const adminRoute = 'router.get("/admin-detail/:id", [authenticateAdmin, checkPermission(\'order.view\')], getAdminOrderDetail);';
-    const customerRoute = "router.get('/:_id', [authenticateUser, requireCustomer], getOrderDetail);";
+    const customerRoute = "router.get('/:_id', authenticateUser, getOrderDetail);";
 
     expect(orderRouteSource).toMatch(/require\(["']\.\.\/controllers\/orderDetailReads["']\)/);
     expect(orderRouteSource).not.toMatch(/require\(["']\.\.\/services\/orderAccess["']\)/);
@@ -759,7 +759,7 @@ describe("backend model boundaries", () => {
   it("keeps Order customer-create orchestration outside the route facade", () => {
     const orderRouteSource = readBackendFile("components/order.js");
     const controllerSource = readBackendFile("controllers/orderCreation.js");
-    const customerCreateRouteDeclaration = 'router.post("/create-order", [authenticateUser, requireCustomer], createCustomerOrder);';
+    const customerCreateRouteDeclaration = 'router.post("/create-order", authenticateUser, createCustomerOrder);';
     const customerCreateRouteIndex = orderRouteSource.indexOf('router.post("/create-order"');
     const nextRouteIndex = orderRouteSource.indexOf('router.get("/userOrders"');
 
@@ -878,8 +878,8 @@ describe("backend model boundaries", () => {
     const controllerSource = readBackendFile("controllers/orderLifecycle.js");
     const serviceSource = readBackendFile("services/orderLifecycle.js");
     const updateRoute = "router.put('/update-order/:_id', [authenticateAdmin, checkPermission('order.edit')], updateOrder);";
-    const deleteRoute = 'router.delete("/:id", [authenticateUser, requireCustomer], deleteOrder);';
-    const cancelRoute = 'router.put("/:id", [authenticateUser, requireCustomer], cancelOrder);';
+    const deleteRoute = 'router.delete("/:id", authenticateUser, deleteOrder);';
+    const cancelRoute = 'router.put("/:id", authenticateUser, cancelOrder);';
 
     expect(orderRouteSource).toContain("require('../controllers/orderLifecycle')");
     expect(orderRouteSource).toContain(updateRoute);

@@ -117,16 +117,6 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-const requireCustomer = (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Access denied, authentication required" });
-  }
-  if (req.user.role !== "customer") {
-    return res.status(403).json({ message: "Access denied, customer account required" });
-  }
-  next();
-};
-
 // Middleware kiểm tra quyền (đọc token từ cookie)
 const checkPermission = (requiredPermission) => async (req, res, next) => {
   const token = req.cookies.authToken;
@@ -191,7 +181,6 @@ module.exports = {
   authenticateAdmin,
   authenticateAdminOnly,
   authenticateUser,
-  requireCustomer,
   checkPermission,
   checkAnyPermission,
   hasPermission,

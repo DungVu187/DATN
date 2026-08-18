@@ -106,9 +106,14 @@ const userSchema = new mongoose.Schema({
   ],
   addresses: [
     {
-      label: { type: String, default: "Công trình" },
+      label: { type: String, default: "Địa chỉ" },
       receiverName: { type: String },
       receiverPhone: { type: String },
+      provinceCode: { type: String },
+      provinceName: { type: String },
+      wardCode: { type: String },
+      wardName: { type: String },
+      addressLine: { type: String },
       addressDetail: { type: String },
       isDefault: { type: Boolean, default: false },
     },

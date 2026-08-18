@@ -3,12 +3,14 @@ import { Link, useLocation } from "react-router-dom";
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
+  MenuItem,
   TextField,
 } from "@mui/material";
 import {
@@ -32,6 +34,7 @@ import {
   updateCustomerProfile,
 } from "../api/customerAccountApi";
 import { useLanguage } from "../context/languagecontext.jsx";
+import { vietnamAdministrativeUnits } from "../data/vietnamAdministrativeUnits.js";
 import AccountLayout from "../layout/accountlayout/accountlayout.jsx";
 import "./styles/profile.css";
 
@@ -48,10 +51,16 @@ const Profile = () => {
   const [openAddressDialog, setOpenAddressDialog] = useState(false);
   const [savingAddress, setSavingAddress] = useState(false);
   const [addressId, setAddressId] = useState(null);
-  const [label, setLabel] = useState(() => t("construction"));
+  const [label, setLabel] = useState(() => t("address", "Địa chỉ"));
   const [receiverName, setReceiverName] = useState("");
   const [receiverPhone, setReceiverPhone] = useState("");
-  const [addressDetail, setAddressDetail] = useState("");
+  const [provinceCode, setProvinceCode] = useState("");
+  const [wardCode, setWardCode] = useState("");
+  const [addressLine, setAddressLine] = useState("");
+  const [isDefaultAddress, setIsDefaultAddress] = useState(false);
+  const selectedProvince = vietnamAdministrativeUnits.find((province) => province.code === provinceCode);
+  const availableWards = selectedProvince?.wards || [];
+  const selectedWard = availableWards.find((ward) => ward.code === wardCode);
 
   useEffect(() => {
     let active = true;
@@ -124,43 +133,70 @@ const Profile = () => {
 
   const handleOpenAddAddress = () => {
     setAddressId(null);
-    setLabel(t("construction"));
+    setLabel(t("home_address", "Nhà riêng"));
     setReceiverName(user?.name || "");
     setReceiverPhone(user?.phone || "");
-    setAddressDetail("");
+    setProvinceCode("");
+    setWardCode("");
+    setAddressLine("");
+    setIsDefaultAddress(!user?.addresses?.length);
     setOpenAddressDialog(true);
   };
 
   const handleOpenEditAddress = (address) => {
     setAddressId(address._id);
-    setLabel(address.label || t("construction"));
+    setLabel(address.label || t("address", "Địa chỉ"));
     setReceiverName(address.receiverName || "");
     setReceiverPhone(address.receiverPhone || "");
-    setAddressDetail(address.addressDetail || "");
+    setProvinceCode(address.provinceCode || "");
+    setWardCode(address.wardCode || "");
+    setAddressLine(address.addressLine || address.addressDetail || "");
+    setIsDefaultAddress(Boolean(address.isDefault));
     setOpenAddressDialog(true);
   };
 
   const handleSaveAddress = async () => {
-    if (!receiverName.trim() || !receiverPhone.trim() || !addressDetail.trim()) {
+    if (!receiverName.trim() || !receiverPhone.trim() || !provinceCode || !wardCode || !addressLine.trim()) {
       toast.error(t("fill_all_address_fields", "Vui lòng điền đầy đủ các thông tin địa chỉ!"));
       return;
     }
+
+    const fullAddress = [addressLine.trim(), selectedWard?.name, selectedProvince?.name]
+      .filter(Boolean)
+      .join(", ");
 
     setSavingAddress(true);
     try {
       const response = await saveCustomerAddress(
         addressId,
         {
-          label: label.trim() || t("construction"),
+          label: label.trim() || t("address", "Địa chỉ"),
           receiverName: receiverName.trim(),
           receiverPhone: receiverPhone.trim(),
-          addressDetail: addressDetail.trim(),
+          provinceCode,
+          provinceName: selectedProvince?.name || "",
+          wardCode,
+          wardName: selectedWard?.name || "",
+          addressLine: addressLine.trim(),
+          addressDetail: fullAddress,
         },
       );
       const data = await response.json();
       if (!response.ok) throw new Error(t("failed_to_save_address", "Không thể lưu địa chỉ"));
 
-      setUser((currentUser) => ({ ...currentUser, addresses: data.addresses }));
+      let savedAddresses = data.addresses || [];
+      const savedAddressId = addressId || savedAddresses[savedAddresses.length - 1]?._id;
+
+      if (isDefaultAddress && savedAddressId) {
+        const defaultResponse = await setDefaultCustomerAddress(savedAddressId);
+        const defaultData = await defaultResponse.json();
+        if (!defaultResponse.ok) {
+          throw new Error(t("failed_to_set_default_address", "Không thể thiết lập địa chỉ mặc định"));
+        }
+        savedAddresses = defaultData.addresses || savedAddresses;
+      }
+
+      setUser((currentUser) => ({ ...currentUser, addresses: savedAddresses }));
       setOpenAddressDialog(false);
       toast.success(addressId ? t("update_address_success", "Cập nhật địa chỉ thành công!") : t("add_address_success", "Thêm địa chỉ thành công!"));
     } catch {
@@ -265,7 +301,7 @@ const Profile = () => {
               <div className="profile-panel-title">
                 <span className="profile-panel-icon"><LocationOnOutlined /></span>
                 <div>
-                  <h2>{t("address_book", "Sổ địa chỉ công trình / nhận hàng")}</h2>
+                  <h2>{t("address_book", "Địa chỉ của tôi")}</h2>
                   <p>{t("address_book_hint", "Lưu địa chỉ để đặt hàng nhanh hơn")}</p>
                 </div>
               </div>
@@ -283,7 +319,7 @@ const Profile = () => {
                   <LocationOnOutlined />
                 </div>
                 <h3>{t("no_saved_address_title", "Chưa có địa chỉ nhận hàng nào")}</h3>
-                <p>{t("no_addresses_saved", "Địa chỉ nhận hàng đầu tiên sẽ được tự động lưu vào đây.")}</p>
+                <p>{t("no_addresses_saved", "Bạn chưa lưu địa chỉ giao hàng nào. Địa chỉ được thêm hoặc sử dụng khi đặt hàng sẽ hiển thị tại đây.")}</p>
                 <button type="button" className="profile-primary-button" onClick={handleOpenAddAddress}>
                   <AddRounded />
                   {t("add_new_address", "Thêm địa chỉ mới")}
@@ -298,7 +334,7 @@ const Profile = () => {
                     </button>
                     <div className="profile-address-body">
                       <div className="profile-address-heading">
-                        <h3>{address.label || t("construction", "Công trình")}</h3>
+                        <h3>{address.label || t("address", "Địa chỉ")}</h3>
                         {address.isDefault && <span>{t("default", "Mặc định")}</span>}
                       </div>
                       <p className="profile-address-receiver">{address.receiverName} · {address.receiverPhone}</p>
@@ -317,18 +353,50 @@ const Profile = () => {
       )}
 
       <Dialog open={openAddressDialog} onClose={() => !savingAddress && setOpenAddressDialog(false)} fullWidth maxWidth="sm" className="profile-address-dialog">
-        <DialogTitle>{addressId ? t("edit_construction_address", "Chỉnh sửa địa chỉ công trình") : t("add_construction_address", "Thêm địa chỉ công trình mới")}</DialogTitle>
+        <DialogTitle>
+          <span>{addressId ? t("edit_construction_address", "Chỉnh sửa địa chỉ giao hàng") : t("add_construction_address", "Thêm địa chỉ giao hàng mới")}</span>
+          <small>{t("address_form_hint", "Nhập thông tin người nhận và địa chỉ giao hàng.")}</small>
+        </DialogTitle>
         <DialogContent>
           <Box className="profile-dialog-fields">
-            <TextField label={t("address_label_placeholder", "Tên gợi nhớ")} value={label} onChange={(event) => setLabel(event.target.value)} fullWidth />
-            <TextField label={t("receiver_name", "Tên người nhận thiết bị")} value={receiverName} onChange={(event) => setReceiverName(event.target.value)} fullWidth required />
-            <TextField label={t("receiver_phone", "Số điện thoại người nhận")} value={receiverPhone} onChange={(event) => setReceiverPhone(event.target.value)} fullWidth required />
-            <TextField label={t("address_detail_label", "Địa chỉ chi tiết công trình nhận hàng")} value={addressDetail} onChange={(event) => setAddressDetail(event.target.value)} fullWidth multiline rows={3} required />
+            <div className="profile-address-contact-grid">
+              <TextField label={t("receiver_name", "Tên người nhận")} value={receiverName} onChange={(event) => setReceiverName(event.target.value)} fullWidth required />
+              <TextField label={t("receiver_phone", "Số điện thoại người nhận")} value={receiverPhone} onChange={(event) => setReceiverPhone(event.target.value)} fullWidth required />
+            </div>
+            <div className="profile-address-administrative-grid">
+              <TextField select label={t("province_city", "Tỉnh/Thành phố")} value={provinceCode} onChange={(event) => { setProvinceCode(event.target.value); setWardCode(""); }} fullWidth required>
+                <MenuItem value="" disabled>{t("select_province_city", "Chọn Tỉnh/Thành phố")}</MenuItem>
+                {vietnamAdministrativeUnits.map((province) => (
+                  <MenuItem key={province.code} value={province.code}>{province.name}</MenuItem>
+                ))}
+              </TextField>
+              <TextField select label={t("ward_commune", "Xã/Phường/Đặc khu")} value={wardCode} onChange={(event) => setWardCode(event.target.value)} fullWidth required disabled={!provinceCode}>
+                <MenuItem value="" disabled>{provinceCode ? t("select_ward_commune", "Chọn Xã/Phường/Đặc khu") : t("select_province_first", "Chọn Tỉnh/Thành phố trước")}</MenuItem>
+                {availableWards.map((ward) => (
+                  <MenuItem key={ward.code} value={ward.code}>{ward.name}</MenuItem>
+                ))}
+              </TextField>
+            </div>
+            <TextField className="profile-address-detail-field" label={t("address_line", "Địa chỉ cụ thể")} placeholder={t("address_line_placeholder", "Số nhà, tên đường, tòa nhà...")} value={addressLine} onChange={(event) => setAddressLine(event.target.value)} fullWidth multiline rows={3} required />
+            <div className="profile-address-type-section">
+              <span>{t("address_type", "Loại địa chỉ")}</span>
+              <div className="profile-address-type-options">
+                {[t("home_address", "Nhà riêng"), t("office_address", "Văn phòng")].map((addressType) => (
+                  <button key={addressType} type="button" className={label === addressType ? "is-selected" : ""} onClick={() => setLabel(addressType)}>
+                    {addressType}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <label className={"profile-default-address-option" + (addressId && user?.addresses?.find((address) => address._id === addressId)?.isDefault ? " is-locked" : "")}>
+              <Checkbox checked={isDefaultAddress} onChange={(event) => setIsDefaultAddress(event.target.checked)} disabled={Boolean(addressId && user?.addresses?.find((address) => address._id === addressId)?.isDefault)} size="small" />
+              <span>{t("set_as_default_address", "Đặt làm địa chỉ mặc định")}</span>
+            </label>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenAddressDialog(false)} disabled={savingAddress}>{t("cancel", "Hủy")}</Button>
-          <Button variant="contained" onClick={handleSaveAddress} disabled={savingAddress}>{savingAddress ? t("processing", "Đang xử lý...") : t("save_address", "Lưu địa chỉ")}</Button>
+          <Button className="profile-address-cancel" onClick={() => setOpenAddressDialog(false)} disabled={savingAddress}>{t("back", "Trở lại")}</Button>
+          <Button className="profile-address-submit" variant="contained" onClick={handleSaveAddress} disabled={savingAddress}>{savingAddress ? t("processing", "Đang xử lý...") : t("complete", "Hoàn thành")}</Button>
         </DialogActions>
       </Dialog>
     </AccountLayout>

@@ -7,7 +7,7 @@ const dbUri = `mongodb://localhost:27017/${dbName}`;
 
 mongoose.connect(dbUri)
   .then(async () => {
-    const user = await User.findOne({ phone: '0813158383' });
+    const user = await User.findOne({ phone: '0901513825' });
     if (user) {
       console.log('USER FOUND:');
       console.log(`Phone: ${user.phone}`);

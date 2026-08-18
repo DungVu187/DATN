@@ -39,7 +39,7 @@ const DEFAULT_FOOTER_CONTENT = {
   description: "Nova - Website bán hàng thiết bị công nghiệp, tự động hóa và linh kiện kỹ thuật.",
   address: "Số 25 ngõ 77, phố Bùi Xương Trạch, phường Khương Đình, quận Thanh Xuân, Hà Nội",
   phone: "0901513825",
-  email: "Nova.ltd@gmail.com",
+  email: "dungvutb1807@gmail.com",
 };
 
 const isImageAsset = (value) => typeof value === "string" && (

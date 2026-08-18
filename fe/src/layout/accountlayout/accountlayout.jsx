@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   AccountCircleOutlined,
-  LocationOnOutlined,
   LockResetOutlined,
   LogoutOutlined,
   PersonOutlineRounded,
@@ -18,10 +17,8 @@ const AccountLayout = ({ title, description, children }) => {
   const { t } = useLanguage();
   const location = useLocation();
   const [loggingOut, setLoggingOut] = useState(false);
-  const profileSection = new URLSearchParams(location.search).get("section");
   const menuItems = [
-    { to: "/profile", label: t("personal_info", "Thông tin cá nhân"), icon: PersonOutlineRounded, isActive: location.pathname === "/profile" && profileSection !== "addresses" },
-    { to: "/profile?section=addresses", label: t("my_addresses", "Địa chỉ của tôi"), icon: LocationOnOutlined, isActive: location.pathname === "/profile" && profileSection === "addresses" },
+    { to: "/profile", label: t("personal_info", "Thông tin cá nhân"), icon: PersonOutlineRounded, isActive: location.pathname === "/profile" },
     { to: "/myorder", label: t("my_orders", "Đơn hàng của tôi"), icon: ReceiptLongOutlined, isActive: location.pathname === "/myorder" },
     { to: "/change-password", label: t("change_password", "Đổi mật khẩu"), icon: LockResetOutlined, isActive: location.pathname === "/change-password" },
   ].filter(Boolean);
@@ -77,7 +74,7 @@ const AccountLayout = ({ title, description, children }) => {
             <SupportAgentOutlined />
             <div>
               <span>{t("customer_support_247", "Hỗ trợ khách hàng 24/7")}</span>
-              <strong>08.1315.8383</strong>
+              <strong>09.0151.3825</strong>
             </div>
           </div>
         </aside>

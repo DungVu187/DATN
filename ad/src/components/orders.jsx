@@ -28,6 +28,11 @@ import {
 import moment from "moment";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
+import {
+  ALL_ORDER_FILTER,
+  createInitialOrderFilters,
+  getOrderNavigationFilterPatch,
+} from "./orderFilters";
 import { useOrderContext } from "../context/useordercontext";
 import { io } from "socket.io-client";
 import {
@@ -58,16 +63,7 @@ const Orders = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
-  const [filters, setFilters] = useState({
-    status: "Tất cả",
-    payment: "Tất cả",
-    state: "Processing",
-    phone: "",
-    name: "",
-    id: location.state?.orderId || "",
-    startDate: "",
-    endDate: "",
-  });
+  const [filters, setFilters] = useState(() => createInitialOrderFilters(location.state));
   const { setOrderChanged } = useOrderContext();
 
   const uniqueNames = React.useMemo(() => {
@@ -125,9 +121,9 @@ const Orders = () => {
       setLoading(true);
       const queryFilters = {
         ...debouncedFilters,
-        status: debouncedFilters.status === "Tất cả" ? "" : debouncedFilters.status,
-        payment: debouncedFilters.payment === "Tất cả" ? "" : debouncedFilters.payment,
-        state: debouncedFilters.state === "Tất cả" ? "" : debouncedFilters.state,
+        status: debouncedFilters.status === ALL_ORDER_FILTER ? "" : debouncedFilters.status,
+        payment: debouncedFilters.payment === ALL_ORDER_FILTER ? "" : debouncedFilters.payment,
+        state: debouncedFilters.state === ALL_ORDER_FILTER ? "" : debouncedFilters.state,
       };
 
       const query = new URLSearchParams({
@@ -203,10 +199,11 @@ const Orders = () => {
     fetchOrders(page + 1);
   }, [page, fetchOrders]);
 
-  // Xử lý orderId từ location.state
+  // Xử lý bộ lọc được truyền từ Dashboard hoặc trang chi tiết
   useEffect(() => {
-    if (location.state?.orderId) {
-      setFilters((prev) => ({ ...prev, id: location.state.orderId }));
+    const navigationFilterPatch = getOrderNavigationFilterPatch(location.state);
+    if (navigationFilterPatch) {
+      setFilters((prev) => ({ ...prev, ...navigationFilterPatch }));
       setPage(0);
     }
   }, [location.state]);

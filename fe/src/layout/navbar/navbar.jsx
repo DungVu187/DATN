@@ -26,9 +26,8 @@ function Navbar() {
         });
         if (response.ok) {
           const data = await response.json();
-          const isCustomer = data.role === "customer";
-          setIsLoggedIn(isCustomer);
-          setUserName(isCustomer ? data.name || data.phone || "" : "");
+          setIsLoggedIn(true);
+          setUserName(data.name || data.phone || "");
         } else {
           setIsLoggedIn(false);
           setUserName("");
@@ -155,7 +154,7 @@ function Navbar() {
             </div>
           </div>
         </div>
-        <div className="store-drawer-footer"><a href="tel:0813158383"><i className="fa-solid fa-headset" /> {t("hotline_label")}: 08.1315.8383</a></div>
+        <div className="store-drawer-footer"><a href="tel:0901513825"><i className="fa-solid fa-headset" /> {t("hotline_label")}: 09.0151.3825</a></div>
       </aside>
     </header>
   );

@@ -136,20 +136,6 @@ describe('Order read query HTTP contract', () => {
     ]);
   });
 
-  it('rejects an admin session on the customer order history endpoint', async () => {
-    await createUser({ phone: '0931000004', role: 'admin' });
-    await createOrder({
-      orderCode: 'NOVA-READ-ADMIN-PHONE',
-      userPhone: '0931000004',
-    });
-    const agent = await loginAgent({ phone: '0931000004', role: 'admin' });
-
-    const response = await agent.get('/orders/userOrders');
-
-    expect(response.status).toBe(403);
-    expect(response.body.message).toBe('Access denied, customer account required');
-  });
-
   it('keeps processing count public and requires both processing fields', async () => {
     await createOrder({ orderCode: 'NOVA-READ-COUNT-1' });
     await createOrder({ orderCode: 'NOVA-READ-COUNT-2' });

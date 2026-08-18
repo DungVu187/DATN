@@ -142,7 +142,7 @@ const Policy = () => {
                 <div>
                   <strong>{t("need_help")}</strong>
                   <p>{t("support_team_ready")}</p>
-                  <a href="tel:0813158383"><i className="fa-solid fa-phone" /> 08.1315.8383</a>
+                  <a href="tel:0901513825"><i className="fa-solid fa-phone" /> 09.0151.3825</a>
                 </div>
               </div>
             </aside>
@@ -193,7 +193,7 @@ const Policy = () => {
               <div className="policy-contact-strip">
                 <span><i className="fa-solid fa-circle-info" /></span>
                 <p>{t("policy_contact_prompt")}</p>
-                <a href="mailto:Nova.ltd@gmail.com">
+                <a href="mailto:dungvutb1807@gmail.com">
                   <i className="fa-regular fa-comment-dots" /> {t("contact_now")}
                 </a>
               </div>

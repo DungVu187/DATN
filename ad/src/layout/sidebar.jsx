@@ -26,6 +26,7 @@ import {
   Sell as SoldIcon,
   Settings as ManageIcon,
   DisplaySettings as DisplayIcon,
+  Dashboard as DashboardIcon,
 } from "@mui/icons-material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
@@ -166,6 +167,7 @@ const Sidebar = () => {
   };
 
   const menuItems = [
+    { text: "Dashboard", path: "/dashboard", icon: <DashboardIcon /> },
     can("product.view") && { text: "Sản phẩm", path: "/product", icon: <ProductIcon /> },
     canViewOrders && {
       text: "Đơn bán hàng",

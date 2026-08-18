@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const dbNames = ['test', 'Ecom', 'TTSmartEcom'];
 
 async function seed() {
-  const phone = '0813158383';
-  const password = '0813158383';
+  const phone = '0901513825';
+  const password = '0901513825';
   const name = 'Super Admin';
   const role = 'superadmin';
 

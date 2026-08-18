@@ -227,12 +227,36 @@
   color: #fff;
 }
 
-.profile-address-dialog .MuiDialog-paper { border-radius: 16px; }
-.profile-address-dialog .MuiDialogTitle-root { padding: 22px 24px 12px; color: #15243d; font-size: 19px; font-weight: 800; }
-.profile-address-dialog .MuiDialogContent-root { padding: 12px 24px 8px; }
-.profile-address-dialog .MuiDialogActions-root { padding: 14px 24px 22px; }
-.profile-address-dialog .MuiButton-root { min-width: 100px; border-radius: 9px; text-transform: none; font-weight: 750; }
-.profile-dialog-fields { padding-top: 8px; display: flex; flex-direction: column; gap: 18px; }
+.profile-address-dialog .MuiBackdrop-root { background: rgba(14, 27, 48, .42); backdrop-filter: blur(2px); }
+.profile-address-dialog .MuiDialog-paper { max-width: 620px; overflow: hidden; border: 1px solid rgba(215, 224, 238, .88); border-radius: 20px; background: #fff; box-shadow: 0 24px 70px rgba(24, 48, 86, .2); }
+.profile-address-dialog .MuiDialogTitle-root { padding: 28px 30px 12px; color: #17233a; }
+.profile-address-dialog .MuiDialogTitle-root > span { display: block; font-size: 21px; font-weight: 750; letter-spacing: -.02em; }
+.profile-address-dialog .MuiDialogTitle-root small { display: block; margin-top: 6px; color: #7d899b; font-size: 12px; font-weight: 500; line-height: 1.5; }
+.profile-address-dialog .MuiDialogContent-root { padding: 14px 30px 10px; }
+.profile-address-dialog .MuiDialogActions-root { padding: 18px 30px 28px; gap: 12px; }
+.profile-address-dialog .MuiButton-root { min-width: 112px; min-height: 42px; border-radius: 10px; text-transform: none; font-weight: 700; }
+.profile-dialog-fields { padding-top: 4px; display: flex; flex-direction: column; gap: 20px; }
+.profile-address-contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.profile-address-administrative-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.profile-address-dialog .MuiOutlinedInput-root { border-radius: 12px; background: #fbfcff; transition: background .18s ease, box-shadow .18s ease; }
+.profile-address-dialog .MuiOutlinedInput-notchedOutline { border-color: #dce3ee; }
+.profile-address-dialog .MuiOutlinedInput-root:hover { background: #fff; }
+.profile-address-dialog .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline { border-color: #aebbd0; }
+.profile-address-dialog .MuiOutlinedInput-root.Mui-focused { background: #fff; box-shadow: 0 0 0 4px rgba(45, 103, 216, .08); }
+.profile-address-dialog .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline { border-color: #2d67d8; border-width: 1px; }
+.profile-address-detail-field textarea { line-height: 1.55; }
+.profile-address-type-section { display: flex; flex-direction: column; gap: 9px; }
+.profile-address-type-section > span { color: #465268; font-size: 13px; font-weight: 650; }
+.profile-address-type-options { display: flex; gap: 10px; }
+.profile-address-type-options button { min-width: 104px; min-height: 40px; padding: 0 16px; border: 1px solid #dce3ee; border-radius: 10px; background: #fbfcff; color: #334158; font: inherit; font-size: 13px; cursor: pointer; transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease; }
+.profile-address-type-options button:hover { transform: translateY(-1px); border-color: #8ea7d5; background: #fff; }
+.profile-address-type-options button.is-selected { border-color: #8eb0f6; background: #eef4ff; box-shadow: 0 5px 14px rgba(45, 103, 216, .1); color: #245bc4; font-weight: 700; }
+.profile-default-address-option { width: fit-content; display: inline-flex; align-items: center; margin-left: -8px; color: #536077; font-size: 13px; cursor: pointer; }
+.profile-default-address-option.is-locked { color: #98a2b2; cursor: default; }
+.profile-address-dialog .profile-address-cancel { color: #68758a; }
+.profile-address-dialog .profile-address-cancel:hover { background: #f2f5fa; }
+.profile-address-dialog .profile-address-submit { background: linear-gradient(135deg, #3473eb, #245ed4); box-shadow: 0 9px 20px rgba(40, 101, 215, .22); }
+.profile-address-dialog .profile-address-submit:hover { background: linear-gradient(135deg, #2e69dc, #1f55c2); box-shadow: 0 11px 24px rgba(40, 101, 215, .28); }
 
 @media (max-width: 1280px) {
   .profile-content-grid { grid-template-columns: minmax(320px, .86fr) minmax(400px, 1.14fr); }
@@ -278,10 +302,13 @@
   .profile-primary-button { min-height: 36px; }
   .profile-form-actions { flex-direction: column-reverse; }
   .profile-form-actions .MuiButton-root { width: 100%; }
-  .profile-address-dialog .MuiDialog-paper { margin: 14px; width: calc(100% - 28px); }
+  .profile-address-dialog .MuiDialog-paper { margin: 14px; width: calc(100% - 28px); border-radius: 16px; }
   .profile-address-dialog .MuiDialogTitle-root { padding: 19px 18px 10px; font-size: 17px; }
   .profile-address-dialog .MuiDialogContent-root { padding: 10px 18px 6px; }
   .profile-address-dialog .MuiDialogActions-root { padding: 12px 18px 18px; }
+  .profile-address-contact-grid { grid-template-columns: 1fr; gap: 14px; }
+  .profile-address-administrative-grid { grid-template-columns: 1fr; gap: 14px; }
+  .profile-address-type-options button { flex: 1; min-width: 0; }
 }
 
 @media (max-width: 380px) {

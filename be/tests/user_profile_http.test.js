@@ -64,13 +64,20 @@ describe('User profile and address HTTP lifecycle', () => {
         label: '',
         receiverName: 'Receiver One',
         receiverPhone: '0900000001',
-        addressDetail: 'Address One',
+        provinceCode: '79',
+        provinceName: 'Hồ Chí Minh',
+        wardCode: '26734',
+        wardName: 'Bến Thành',
+        addressLine: '123 Nguyễn Huệ',
+        addressDetail: '123 Nguyễn Huệ, Bến Thành, Hồ Chí Minh',
         isDefault: false,
       });
     expect(firstAddressResponse.status).toBe(201);
     expect(firstAddressResponse.body.addresses).toHaveLength(1);
     expect(firstAddressResponse.body.addresses[0]).toEqual(expect.objectContaining({
-      label: 'Công trình',
+      label: 'Địa chỉ',
+      provinceCode: '79',
+      wardCode: '26734',
       isDefault: true,
     }));
 
@@ -117,7 +124,7 @@ describe('User profile and address HTTP lifecycle', () => {
       email: 'updated-profile@example.com',
     }));
     expect(persistedUser.addresses).toHaveLength(1);
-    expect(persistedUser.addresses[0].label).toBe('Công trình');
+    expect(persistedUser.addresses[0].label).toBe('Địa chỉ');
     expect(persistedUser.addresses[0].isDefault).toBe(true);
   });
 

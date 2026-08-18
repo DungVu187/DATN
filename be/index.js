@@ -22,6 +22,7 @@ const { router: iporderRoutes } = require('./components/iporder');
 const { router: eporderRoutes } = require('./components/eporder');
 const { router: historyRoutes } = require('./components/storagehistory');
 const { router: activityLogRoutes } = require('./components/activitylog');
+const { router: dashboardRoutes } = require('./components/dashboard');
 
 // Tạo app + http server + socket.io
 const app = express();
@@ -146,6 +147,7 @@ app.use('/iporders', iporderRoutes);
 app.use('/eporders', eporderRoutes);
 app.use('/histories', historyRoutes);
 app.use('/activity-logs', activityLogRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 // Static files
 const fs = require('fs');
@@ -181,7 +183,8 @@ app.get('*', (req, res, next) => {
   const apiPaths = [
     '/users', '/products', '/orders', '/chips', '/carts',
     '/manages', '/iporders', '/eporders',
-    '/histories', '/images', '/documents', '/section-images'
+    '/histories', '/activity-logs', '/dashboard',
+    '/images', '/documents', '/section-images'
   ];
   const isApi = apiPaths.some(path => req.path.startsWith(path));
   const isStaticFile = /\.(jpg|jpeg|png|gif|webp|pdf|svg|css|js|ico|map)$/i.test(req.path);

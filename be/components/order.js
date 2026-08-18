@@ -1,11 +1,6 @@
 const express = require("express");
 const { Order } = require("../models/order");
-const {
-  authenticateUser,
-  authenticateAdmin,
-  checkPermission,
-  requireCustomer,
-} = require("../middlewares/auth");
+const { authenticateUser, authenticateAdmin, checkPermission } = require("../middlewares/auth");
 require("dotenv").config();
 const {
   getCustomerSuggestions,
@@ -79,15 +74,15 @@ router.post(
 
 router.delete("/delete-image", [authenticateAdmin, checkPermission('order.edit')], deleteOrderImage);
 
-router.post("/create-order", [authenticateUser, requireCustomer], createCustomerOrder);
-router.get("/userOrders", [authenticateUser, requireCustomer], listUserOrders);
+router.post("/create-order", authenticateUser, createCustomerOrder);
+router.get("/userOrders", authenticateUser, listUserOrders);
 
 router.get("/processing-count", getProcessingOrderCount);
 
-router.get('/:_id', [authenticateUser, requireCustomer], getOrderDetail);
-router.delete("/:id", [authenticateUser, requireCustomer], deleteOrder);
+router.get('/:_id', authenticateUser, getOrderDetail);
+router.delete("/:id", authenticateUser, deleteOrder);
 
-router.put("/:id", [authenticateUser, requireCustomer], cancelOrder);
+router.put("/:id", authenticateUser, cancelOrder);
 
 module.exports = {
   Order,

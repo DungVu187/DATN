@@ -73,10 +73,10 @@ function Item({ product }) {
             <Button
               className="catalog-contact-button"
               variant="outlined"
-              href="tel:0813158383"
+              href="tel:0901513825"
               startIcon={<LocalPhoneIcon />}
             >
-              0813158383
+              0901513825
             </Button>
           ) : (
             <>

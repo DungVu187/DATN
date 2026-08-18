@@ -85,7 +85,7 @@ const MyOrder = () => {
     try {
       const response = await getCustomerOrders();
 
-      if (response.status === 401 || response.status === 403) {
+      if (response.status === 401) {
         setAuthRequired(true);
         setOrders([]);
         return;

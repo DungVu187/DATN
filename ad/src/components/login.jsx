@@ -22,7 +22,7 @@ import {
   resetAdminPassword,
 } from "../api/adminAuthApi";
 
-const dashboardUrl = import.meta.env.VITE_DASHBOARD || "/admin/product";
+const dashboardUrl = import.meta.env.VITE_DASHBOARD || "/admin/dashboard";
 
 const customTheme = extendTheme({
   colorSchemes: {

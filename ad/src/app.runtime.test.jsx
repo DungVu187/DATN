@@ -37,6 +37,24 @@ describe("Admin product route runtime", () => {
           json: async () => ({ name: "Admin", role: "admin", permissions: [] }),
         };
       }
+      if (target.includes("/dashboard")) {
+        return {
+          ok: true,
+          status: 200,
+          json: async () => ({
+            success: true,
+            data: {
+              period: { startDate: "2026-07-20", endDate: "2026-08-18" },
+              summary: { revenue: 0, orderCount: 0, newCustomerCount: 0, pendingOrderCount: 0, pendingOver2HoursCount: 0 },
+              comparison: { revenuePercent: 0, orderPercent: 0, customerPercent: 0 },
+              revenueByDate: [],
+              ordersByStatus: [],
+              recentOrders: [],
+              lowStockProducts: [],
+            },
+          }),
+        };
+      }
       if (target.includes("/products?")) {
         return { ok: true, json: async () => ({ products: [], total: 0 }) };
       }
@@ -197,6 +215,23 @@ describe("Admin product route runtime", () => {
         };
       }
       return { ok: true, json: async () => [] };
+    });
+  });
+
+  it("renders the active admin dashboard route", async () => {
+    window.history.pushState({}, "", "/admin/dashboard");
+
+    render(
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <OrderProvider>
+          <App />
+        </OrderProvider>
+      </ThemeProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Tổng quan" })).toBeInTheDocument();
     });
   });
 
