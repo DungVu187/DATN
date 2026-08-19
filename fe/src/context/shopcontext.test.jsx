@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import toast from "react-hot-toast";
 import ShopContextProvider, { ShopContext } from "./shopcontext";
-import { LanguageProvider } from "./languagecontext.jsx";
 
 vi.mock("react-hot-toast", () => {
   const toastMock = {
@@ -58,16 +57,13 @@ const CartConsumer = () => {
 };
 
 const renderCartContext = () => render(
-  <LanguageProvider>
-    <ShopContextProvider>
+  <ShopContextProvider>
       <CartConsumer />
     </ShopContextProvider>
-  </LanguageProvider>
 );
 
 describe("ShopContextProvider", () => {
   beforeEach(() => {
-    localStorage.setItem("language", "vi");
     vi.stubEnv("VITE_BACK_END", "http://backend.test");
     global.fetch = vi.fn();
     vi.spyOn(console, "error").mockImplementation(() => {});

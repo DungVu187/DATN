@@ -2,7 +2,6 @@ const { Manage } = require('../models/manage');
 const {
     POLICY_KEYS,
     createDefaultPolicies,
-    ensurePolicyTranslations,
     normalizePoliciesPayload,
     policyComparableValue,
 } = require('../config/policydefaults');
@@ -14,7 +13,7 @@ async function getPolicies(req, res) {
             ? manageData.policies
             : createDefaultPolicies();
 
-        res.json({ success: 1, data: policies.map(ensurePolicyTranslations) });
+        res.json({ success: 1, data: policies });
     } catch (error) {
         console.error('Server error:', error);
         res.status(500).json({
@@ -69,7 +68,7 @@ async function updatePolicies(req, res) {
 
         const manage = await Manage.findOne();
         const currentPolicies = manage?.policies?.length === POLICY_KEYS.length
-            ? manage.policies.map(ensurePolicyTranslations)
+            ? manage.policies
             : createDefaultPolicies();
         const updatedAt = new Date();
         const policies = normalized.policies.map((policy) => {

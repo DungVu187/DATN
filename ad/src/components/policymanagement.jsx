@@ -23,12 +23,6 @@ import {
 } from "../api/storefrontManagementApi";
 import "./style/policymanagement.css";
 
-const languages = [
-  { key: "vi", label: "Tiếng Việt" },
-  { key: "zh", label: "中文简体" },
-  { key: "en", label: "English" },
-];
-
 const policyMeta = {
   purchase: { label: "Mua hàng", icon: ShoppingBagOutlinedIcon },
   warranty: { label: "Bảo hành & đổi trả", icon: VerifiedUserOutlinedIcon },
@@ -45,31 +39,22 @@ const normalizeContent = (content = {}) => ({
   })),
 });
 
-const toEditablePolicies = (items = []) => items.map((policy) => {
-  const vietnamese = normalizeContent(policy.translations?.vi || policy);
-  return {
-    key: policy.key,
-    translations: {
-      vi: vietnamese,
-      zh: normalizeContent(policy.translations?.zh || vietnamese),
-      en: normalizeContent(policy.translations?.en || vietnamese),
-    },
-    updatedAt: policy.updatedAt,
-  };
-});
+const toEditablePolicies = (items = []) => items.map((policy) => ({
+  key: policy.key,
+  ...normalizeContent(policy),
+  updatedAt: policy.updatedAt,
+}));
 
-const toPayload = (items) => items.map(({ key, translations }) => ({
+const toPayload = (items) => items.map(({ key, title, summary, sections }) => ({
   key,
-  title: translations.vi.title,
-  summary: translations.vi.summary,
-  sections: translations.vi.sections,
-  translations,
+  title,
+  summary,
+  sections,
 }));
 
 const PolicyManagement = () => {
   const [policies, setPolicies] = useState([]);
   const [selectedKey, setSelectedKey] = useState("purchase");
-  const [selectedLanguage, setSelectedLanguage] = useState("vi");
   const [savedValue, setSavedValue] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -101,98 +86,53 @@ const PolicyManagement = () => {
   }, []);
 
   const selectedPolicy = policies.find((policy) => policy.key === selectedKey);
-  const selectedContent = selectedPolicy?.translations?.[selectedLanguage];
+  const selectedContent = selectedPolicy;
   const currentValue = useMemo(() => JSON.stringify(toPayload(policies)), [policies]);
   const hasChanges = Boolean(savedValue && currentValue !== savedValue);
 
   const updatePolicy = (field, value) => {
     setPolicies((current) => current.map((policy) => (
-      policy.key === selectedKey
-        ? {
-            ...policy,
-            translations: {
-              ...policy.translations,
-              [selectedLanguage]: {
-                ...policy.translations[selectedLanguage],
-                [field]: value,
-              },
-            },
-          }
-        : policy
+      policy.key === selectedKey ? { ...policy, [field]: value } : policy
     )));
   };
 
   const updateSection = (sectionIndex, field, value) => {
-    setPolicies((current) => current.map((policy) => {
-      if (policy.key !== selectedKey) return policy;
-      const content = policy.translations[selectedLanguage];
-      return {
-        ...policy,
-        translations: {
-          ...policy.translations,
-          [selectedLanguage]: {
-            ...content,
-            sections: content.sections.map((section, index) => (
-              index === sectionIndex ? { ...section, [field]: value } : section
-            )),
-          },
-        },
-      };
-    }));
+    setPolicies((current) => current.map((policy) => (
+      policy.key === selectedKey
+        ? { ...policy, sections: policy.sections.map((section, index) => (
+            index === sectionIndex ? { ...section, [field]: value } : section
+          )) }
+        : policy
+    )));
   };
 
   const addSection = () => {
     if (!selectedContent || selectedContent.sections.length >= 20) return;
-    setPolicies((current) => current.map((policy) => {
-      if (policy.key !== selectedKey) return policy;
-      const content = policy.translations[selectedLanguage];
-      return {
-        ...policy,
-        translations: {
-          ...policy.translations,
-          [selectedLanguage]: {
-            ...content,
-            sections: [...content.sections, { title: "", content: "" }],
-          },
-        },
-      };
-    }));
+    setPolicies((current) => current.map((policy) => (
+      policy.key === selectedKey
+        ? { ...policy, sections: [...policy.sections, { title: "", content: "" }] }
+        : policy
+    )));
   };
 
   const removeSection = (sectionIndex) => {
     if (!selectedContent || selectedContent.sections.length === 1) {
-      toast.error("Mỗi bản ngôn ngữ cần ít nhất một nội dung");
+      toast.error("Mỗi chính sách cần ít nhất một nội dung");
       return;
     }
-    setPolicies((current) => current.map((policy) => {
-      if (policy.key !== selectedKey) return policy;
-      const content = policy.translations[selectedLanguage];
-      return {
-        ...policy,
-        translations: {
-          ...policy.translations,
-          [selectedLanguage]: {
-            ...content,
-            sections: content.sections.filter((_, index) => index !== sectionIndex),
-          },
-        },
-      };
-    }));
+    setPolicies((current) => current.map((policy) => (
+      policy.key === selectedKey
+        ? { ...policy, sections: policy.sections.filter((_, index) => index !== sectionIndex) }
+        : policy
+    )));
   };
 
   const validatePolicies = () => {
     for (const policy of policies) {
-      for (const language of languages) {
-        const content = policy.translations[language.key];
-        if (!content.title.trim()) {
-          return `Vui lòng nhập tiêu đề ${language.label} cho ${policyMeta[policy.key]?.label}`;
-        }
-        if (!content.sections.length) {
-          return `Chính sách ${policyMeta[policy.key]?.label} (${language.label}) cần ít nhất một nội dung`;
-        }
-        if (content.sections.some((section) => !section.title.trim() || !section.content.trim())) {
-          return `Vui lòng nhập đủ tiêu đề và nội dung ${language.label} trong ${policyMeta[policy.key]?.label}`;
-        }
+      if (!policy.title.trim()) return `Vui lòng nhập tiêu đề cho ${policyMeta[policy.key]?.label}`;
+      if (!policy.sections.length) return `Chính sách ${policyMeta[policy.key]?.label} cần ít nhất một nội dung`;
+      if (policy.sections.some((section) => !section.title.trim() || !section.content.trim())) {
+        return `Vui lòng nhập đầy đủ tiêu đề và nội dung trong ${policyMeta[policy.key]?.label}`;
       }
     }
     return "";
@@ -285,24 +225,10 @@ const PolicyManagement = () => {
               <span>{selectedContent.sections.length}/20 mục</span>
             </div>
 
-            <div className="policy-admin-language-tabs" role="tablist" aria-label="Ngôn ngữ chính sách">
-              {languages.map((language) => (
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={selectedLanguage === language.key}
-                  className={selectedLanguage === language.key ? "is-active" : ""}
-                  key={language.key}
-                  onClick={() => setSelectedLanguage(language.key)}
-                >
-                  {language.label}
-                </button>
-              ))}
-            </div>
 
             <div className="policy-admin-fields">
               <TextField
-                label={`Tiêu đề hiển thị · ${languages.find((item) => item.key === selectedLanguage)?.label}`}
+                label="Tiêu đề hiển thị"
                 value={selectedContent.title}
                 onChange={(event) => updatePolicy("title", event.target.value)}
                 fullWidth
@@ -331,7 +257,7 @@ const PolicyManagement = () => {
 
             <div className="policy-admin-sections">
               {selectedContent.sections.map((section, sectionIndex) => (
-                <Paper className="policy-admin-section" variant="outlined" key={`${selectedKey}-${selectedLanguage}-${sectionIndex}`}>
+                <Paper className="policy-admin-section" variant="outlined" key={`${selectedKey}-${sectionIndex}`}>
                   <div className="policy-admin-section-index">
                     <span>Nội dung {String(sectionIndex + 1).padStart(2, "0")}</span>
                     <IconButton

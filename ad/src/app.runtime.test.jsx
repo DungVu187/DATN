@@ -84,7 +84,6 @@ describe("Admin product route runtime", () => {
               topPurchaseUrl: "",
               highestRatingUrl: "",
               introduction: "",
-              introductionTranslations: {},
               homeCategoryConfig: { configured: false, items: [] },
             },
           }),

@@ -7,10 +7,9 @@ import {
   requestCustomerPasswordReset,
   resetCustomerPassword,
 } from "../api/customerAccountApi";
-import { useLanguage } from "../context/languagecontext.jsx";
+import { text } from "../constants/customerText.js";
 
 function LogIn() {
-  const { t } = useLanguage();
   const [isSignUpActive, setIsSignUpActive] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -47,19 +46,19 @@ function LogIn() {
   const handleRegister = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast.error(t("passwords_do_not_match_signup", "Mật khẩu không khớp"));
+      toast.error(text("passwords_do_not_match_signup", "Mật khẩu không khớp"));
       return;
     }
     if (!validatePhone(phone)) {
-      toast.error(t("phone_validation_msg", "Số điện thoại phải có đúng 10 chữ số"));
+      toast.error(text("phone_validation_msg", "Số điện thoại phải có đúng 10 chữ số"));
       return;
     }
     if (!email) {
-      toast.error(t("email_required_msg", "Vui lòng nhập email"));
+      toast.error(text("email_required_msg", "Vui lòng nhập email"));
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error(t("email_validation_msg", "Email không đúng định dạng"));
+      toast.error(text("email_validation_msg", "Email không đúng định dạng"));
       return;
     }
 
@@ -69,7 +68,7 @@ function LogIn() {
       const response = await registerCustomer(user);
 
       if (response.ok) {
-        toast.success(t("register_success", "Đăng ký thành công"));
+        toast.success(text("register_success", "Đăng ký thành công"));
         setName("");
         setEmail("");
         setPhone("");
@@ -77,17 +76,17 @@ function LogIn() {
         setConfirmPassword("");
         setIsSignUpActive(false);
       } else {
-        toast.error(t("register_failed"));
+        toast.error(text("register_failed"));
       }
     } catch (error) {
-      toast.error(t("error_occurred"));
+      toast.error(text("error_occurred"));
     }
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!loginIdentifier) {
-      toast.error(t("login_identifier_required", "Vui lòng nhập số điện thoại hoặc email"));
+      toast.error(text("login_identifier_required", "Vui lòng nhập số điện thoại hoặc email"));
       return;
     }
 
@@ -96,7 +95,7 @@ function LogIn() {
     const isPhone = /^\d{10}$/.test(loginIdentifier);
 
     if (!isEmail && !isPhone) {
-      toast.error(t("login_identifier_invalid", "Vui lòng nhập đúng số điện thoại (10 số) hoặc địa chỉ email"));
+      toast.error(text("login_identifier_invalid", "Vui lòng nhập đúng số điện thoại (10 số) hoặc địa chỉ email"));
       return;
     }
 
@@ -108,24 +107,24 @@ function LogIn() {
       const response = await loginCustomer(user);
 
       if (response.ok) {
-        toast.success(t("login_success", "Đăng nhập thành công"));
+        toast.success(text("login_success", "Đăng nhập thành công"));
         const queryParams = new URLSearchParams(window.location.search);
         const redirectUrl = queryParams.get("redirect") || "/";
         setTimeout(() => {
           window.location.href = redirectUrl;
         }, 1000);
       } else {
-        toast.error(t("invalid_credentials", "Số điện thoại/Email hoặc mật khẩu không đúng"));
+        toast.error(text("invalid_credentials", "Số điện thoại/Email hoặc mật khẩu không đúng"));
       }
     } catch (error) {
-      toast.error(t("error_occurred"));
+      toast.error(text("error_occurred"));
     }
   };
 
   const handleRequestOtp = async (e) => {
     e.preventDefault();
     if (!forgotIdentifier) {
-      toast.error(t("forgot_identifier_required", "Vui lòng nhập số điện thoại hoặc email"));
+      toast.error(text("forgot_identifier_required", "Vui lòng nhập số điện thoại hoặc email"));
       return;
     }
 
@@ -134,13 +133,13 @@ function LogIn() {
       const response = await requestCustomerPasswordReset(forgotIdentifier);
 
       if (response.ok) {
-        toast.success(t("otp_sent_success", "Mã OTP đã được gửi"));
+        toast.success(text("otp_sent_success", "Mã OTP đã được gửi"));
         setForgotPasswordStep(2);
       } else {
-        toast.error(t("otp_send_failed"));
+        toast.error(text("otp_send_failed"));
       }
     } catch (error) {
-      toast.error(t("error_occurred"));
+      toast.error(text("error_occurred"));
     } finally {
       setLoading(false);
     }
@@ -149,11 +148,11 @@ function LogIn() {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmNewPassword) {
-      toast.error(t("passwords_do_not_match_signup", "Mật khẩu không khớp"));
+      toast.error(text("passwords_do_not_match_signup", "Mật khẩu không khớp"));
       return;
     }
     if (!otp || otp.length < 6) {
-      toast.error(t("otp_invalid", "Vui lòng nhập mã OTP gồm 6 chữ số"));
+      toast.error(text("otp_invalid", "Vui lòng nhập mã OTP gồm 6 chữ số"));
       return;
     }
 
@@ -166,7 +165,7 @@ function LogIn() {
       });
 
       if (response.ok) {
-        toast.success(t("reset_password_success", "Đặt lại mật khẩu thành công"));
+        toast.success(text("reset_password_success", "Đặt lại mật khẩu thành công"));
         setIsForgotPasswordActive(false);
         setForgotPasswordStep(1);
         setForgotIdentifier("");
@@ -174,10 +173,10 @@ function LogIn() {
         setNewPassword("");
         setConfirmNewPassword("");
       } else {
-        toast.error(t("reset_password_failed"));
+        toast.error(text("reset_password_failed"));
       }
     } catch (error) {
-      toast.error(t("error_occurred"));
+      toast.error(text("error_occurred"));
     } finally {
       setLoading(false);
     }
@@ -191,40 +190,40 @@ function LogIn() {
       >
         <div className="form-container sign-up">
           <form onSubmit={handleRegister}>
-            <h1>{t("create_account", "Tạo tài khoản")}</h1>
+            <h1>{text("create_account", "Tạo tài khoản")}</h1>
             <input
               type="text"
-              placeholder={t("full_name")}
+              placeholder={text("full_name")}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
             <input
               type="tel"
-              placeholder={t("phone_number")}
+              placeholder={text("phone_number")}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
             <input
               type="email"
-              placeholder={t("email_address", "Địa chỉ email")}
+              placeholder={text("email_address", "Địa chỉ email")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"
-              placeholder={t("password", "Mật khẩu")}
+              placeholder={text("password", "Mật khẩu")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <input
               type="password"
-              placeholder={t("confirm_password", "Xác nhận mật khẩu")}
+              placeholder={text("confirm_password", "Xác nhận mật khẩu")}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <button type="submit">{t("register", "Đăng ký")}</button>
+            <button type="submit">{text("register", "Đăng ký")}</button>
             <p className="mobile-toggle-text" onClick={handleToggle}>
-              {t("already_have_account_login", "Đã có tài khoản? Đăng nhập ngay")}
+              {text("already_have_account_login", "Đã có tài khoản? Đăng nhập ngay")}
             </p>
           </form>
         </div>
@@ -233,13 +232,13 @@ function LogIn() {
           {isForgotPasswordActive ? (
             forgotPasswordStep === 1 ? (
               <form onSubmit={handleRequestOtp}>
-                <h1>{t("forgot_password_title", "Quên mật khẩu")}</h1>
+                <h1>{text("forgot_password_title", "Quên mật khẩu")}</h1>
                 <p style={{ textAlign: "center", fontSize: "13px", color: "#666", marginBottom: "15px" }}>
-                  {t("forgot_password_desc", "Nhập số điện thoại hoặc email của bạn để nhận mã OTP khôi phục mật khẩu.")}
+                  {text("forgot_password_desc", "Nhập số điện thoại hoặc email của bạn để nhận mã OTP khôi phục mật khẩu.")}
                 </p>
                 <input
                   type="text"
-                  placeholder={t("phone_or_email", "Số điện thoại hoặc Email")}
+                  placeholder={text("phone_or_email", "Số điện thoại hoặc Email")}
                   value={forgotIdentifier}
                   onChange={(e) => setForgotIdentifier(e.target.value)}
                   required
@@ -254,10 +253,10 @@ function LogIn() {
                   fontStyle: "italic",
                   lineHeight: "1.4"
                 }}>
-                  {t("otp_email_note", "Lưu ý: Mã OTP sẽ gửi về email đăng ký của khách hàng. OTP có hiệu lực trong vòng 5 phút!")}
+                  {text("otp_email_note", "Lưu ý: Mã OTP sẽ gửi về email đăng ký của khách hàng. OTP có hiệu lực trong vòng 5 phút!")}
                 </p>
                 <button type="submit" disabled={loading}>
-                  {loading ? t("processing") : t("send_otp", "Gửi mã OTP")}
+                  {loading ? text("processing") : text("send_otp", "Gửi mã OTP")}
                 </button>
                 <p
                   onClick={() => {
@@ -273,18 +272,18 @@ function LogIn() {
                     textDecoration: "underline"
                   }}
                 >
-                  {t("back_to_login", "Quay lại đăng nhập")}
+                  {text("back_to_login", "Quay lại đăng nhập")}
                 </p>
               </form>
             ) : (
               <form onSubmit={handleResetPassword}>
-                <h1>{t("reset_password_title", "Đặt lại mật khẩu")}</h1>
+                <h1>{text("reset_password_title", "Đặt lại mật khẩu")}</h1>
                 <p style={{ textAlign: "center", fontSize: "13px", color: "#666", marginBottom: "15px" }}>
-                  {t("otp_sent_to", "Mã OTP đã được gửi đến email liên kết của tài khoản:")} <strong>{forgotIdentifier}</strong>
+                  {text("otp_sent_to", "Mã OTP đã được gửi đến email liên kết của tài khoản:")} <strong>{forgotIdentifier}</strong>
                 </p>
                 <input
                   type="text"
-                  placeholder={t("otp_placeholder", "Nhập mã OTP 6 số")}
+                  placeholder={text("otp_placeholder", "Nhập mã OTP 6 số")}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   maxLength={6}
@@ -293,7 +292,7 @@ function LogIn() {
                 <div style={{ position: "relative", width: "100%" }}>
                   <input
                     type={showNewPassword ? "text" : "password"}
-                    placeholder={t("new_password", "Mật khẩu mới")}
+                    placeholder={text("new_password", "Mật khẩu mới")}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
@@ -318,7 +317,7 @@ function LogIn() {
                 <div style={{ position: "relative", width: "100%" }}>
                   <input
                     type={showConfirmNewPassword ? "text" : "password"}
-                    placeholder={t("confirm_new_password", "Nhập lại mật khẩu mới")}
+                    placeholder={text("confirm_new_password", "Nhập lại mật khẩu mới")}
                     value={confirmNewPassword}
                     onChange={(e) => setConfirmNewPassword(e.target.value)}
                     required
@@ -341,7 +340,7 @@ function LogIn() {
                   </span>
                 </div>
                 <button type="submit" disabled={loading}>
-                  {loading ? t("processing") : t("confirm_reset", "Xác nhận")}
+                  {loading ? text("processing") : text("confirm_reset", "Xác nhận")}
                 </button>
                 <p
                   onClick={() => setForgotPasswordStep(1)}
@@ -354,22 +353,22 @@ function LogIn() {
                     textDecoration: "underline"
                   }}
                 >
-                  {t("back", "Quay lại")}
+                  {text("back", "Quay lại")}
                 </p>
               </form>
             )
           ) : (
             <form onSubmit={handleLogin}>
-              <h1>{t("login")}</h1>
+              <h1>{text("login")}</h1>
               <input
                 type="text"
-                placeholder={t("phone_or_email", "Số điện thoại hoặc Email")}
+                placeholder={text("phone_or_email", "Số điện thoại hoặc Email")}
                 value={loginIdentifier}
                 onChange={(e) => setLoginIdentifier(e.target.value)}
               />
               <input
                 type="password"
-                placeholder={t("password", "Mật khẩu")}
+                placeholder={text("password", "Mật khẩu")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -389,11 +388,11 @@ function LogIn() {
                   textDecoration: "underline"
                 }}
               >
-                {t("forgot_password", "Quên mật khẩu?")}
+                {text("forgot_password", "Quên mật khẩu?")}
               </p>
-              <button type="submit">{t("login")}</button>
+              <button type="submit">{text("login")}</button>
               <p className="mobile-toggle-text" onClick={handleToggle}>
-                {t("dont_have_account_register", "Chưa có tài khoản? Đăng ký ngay")}
+                {text("dont_have_account_register", "Chưa có tài khoản? Đăng ký ngay")}
               </p>
             </form>
           )}
@@ -402,17 +401,17 @@ function LogIn() {
         <div className="login-toggle-container">
           <div className="login-toggle">
             <div className="login-toggle-panel login-toggle-left">
-              <h1>{t("welcome", "Chào mừng!")}</h1>
-              <p>{t("fill_to_register", "Hãy điền thông tin để tạo tài khoản")}</p>
+              <h1>{text("welcome", "Chào mừng!")}</h1>
+              <p>{text("fill_to_register", "Hãy điền thông tin để tạo tài khoản")}</p>
               <button onClick={handleToggle} className="hidden" id="login">
-                {t("login")}
+                {text("login")}
               </button>
             </div>
             <div className="login-toggle-panel login-toggle-right">
-              <h1>{t("hello", "Xin chào!")}</h1>
-              <p>{t("login_to_use_all_features", "Hãy đăng nhập để sử dụng hết các tính năng")}</p>
+              <h1>{text("hello", "Xin chào!")}</h1>
+              <p>{text("login_to_use_all_features", "Hãy đăng nhập để sử dụng hết các tính năng")}</p>
               <button onClick={handleToggle} className="hidden" id="register">
-                {t("register", "Đăng ký")}
+                {text("register", "Đăng ký")}
               </button>
             </div>
           </div>

@@ -54,9 +54,7 @@ describe('Manage storefront authorization', () => {
       'privacy',
     ]);
     expect(res.body.data[0].sections.length).toBeGreaterThan(0);
-    expect(res.body.data[0].translations.vi.title).toBe('Chính sách mua hàng');
-    expect(res.body.data[0].translations.zh.title).toBe('购买政策');
-    expect(res.body.data[0].translations.en.title).toBe('Purchase Policy');
+    expect(res.body.data[0].title).toBe('Ch\u00ednh s\u00e1ch mua h\u00e0ng');
   });
 
   it('allows storefront managers to update structured policies', async () => {
@@ -101,33 +99,21 @@ describe('Manage storefront authorization', () => {
     expect(res.body.success).toBe(0);
   });
 
-  it('stores and returns all three policy languages', async () => {
+  it('stores and returns Vietnamese policy content', async () => {
     const agent = await createStaffAgent({
       phone: '0944000010',
       permissions: ['storefront.manage'],
     });
     const defaults = await request(app).get('/manages/policies');
-    const policies = defaults.body.data.map((policy) => ({
-      key: policy.key,
-      title: policy.translations.vi.title,
-      summary: policy.translations.vi.summary,
-      sections: policy.translations.vi.sections,
-      translations: policy.translations,
-    }));
-    policies[0].translations.zh.summary = '面向中国客户的购买说明。';
-    policies[0].translations.en.summary = 'Purchasing guidance for international customers.';
+    const policies = defaults.body.data.map(({ key, title, summary, sections }) => ({ key, title, summary, sections }));
+    policies[0].summary = 'H??ng d?n mua h?ng ?? c?p nh?t.';
 
-    const res = await agent
-      .put('/manages/update-policies')
-      .send({ policies });
-
+    const res = await agent.put('/manages/update-policies').send({ policies });
     expect(res.status).toBe(200);
-    expect(res.body.data[0].translations.zh.summary).toBe('面向中国客户的购买说明。');
-    expect(res.body.data[0].translations.en.summary).toBe('Purchasing guidance for international customers.');
+    expect(res.body.data[0].summary).toBe('H??ng d?n mua h?ng ?? c?p nh?t.');
 
     const publicRes = await request(app).get('/manages/policies');
-    expect(publicRes.body.data[0].translations.zh.summary).toBe('面向中国客户的购买说明。');
-    expect(publicRes.body.data[0].translations.en.summary).toBe('Purchasing guidance for international customers.');
+    expect(publicRes.body.data[0].summary).toBe('H??ng d?n mua h?ng ?? c?p nh?t.');
   });
 
   it('blocks staff missing storefront.manage on structured policy updates', async () => {
@@ -164,8 +150,6 @@ describe('Manage storefront authorization', () => {
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(1);
     expect(res.body.data.introduction).toBe('Giới thiệu cửa hàng');
-    expect(res.body.data.introductionTranslations.zh).toBe('商城介绍');
-    expect(res.body.data.introductionTranslations.en).toBe('Storefront introduction');
   });
 
   it('blocks staff missing storefront.manage on update introduction', async () => {
@@ -203,22 +187,12 @@ describe('Manage storefront authorization', () => {
       .send({
         configured: true,
         sidebarTitle: 'Thiết bị nổi bật',
-        sidebarTitleTranslations: {
-          vi: 'Thiết bị nổi bật',
-          zh: '精选设备',
-          en: 'Featured Equipment',
-        },
         showSidebar: true,
         showQuickCategories: true,
         items: [
           {
             id: 'lighting',
             label: 'Đèn báo',
-            labelTranslations: {
-              vi: 'Đèn báo',
-              zh: '指示灯',
-              en: 'Indicator Lights',
-            },
             type: 'Đèn',
             link: '',
             icon: 'ri-tb-bulb',
@@ -235,11 +209,9 @@ describe('Manage storefront authorization', () => {
     expect(res.body.data.homeCategoryConfig.items).toHaveLength(1);
     expect(res.body.data.homeCategoryConfig.items[0].type).toBe('Đèn');
     expect(res.body.data.homeCategoryConfig.items[0].icon).toBe('ri-tb-bulb');
-    expect(res.body.data.homeCategoryConfig.sidebarTitleTranslations.en).toBe('Featured Equipment');
-    expect(res.body.data.homeCategoryConfig.items[0].labelTranslations.zh).toBe('指示灯');
   });
 
-  it('stores localized homepage section titles without changing the product filter name', async () => {
+  it('stores Vietnamese homepage section titles', async () => {
     const agent = await createStaffAgent({
       phone: '0944000011',
       permissions: ['storefront.manage'],
@@ -249,17 +221,10 @@ describe('Manage storefront authorization', () => {
       .put('/manages/update-section/section2')
       .send({
         name: 'Biến tần',
-        nameTranslations: {
-          vi: 'Biến tần',
-          zh: '变频器',
-          en: 'Variable Frequency Drives',
-        },
       });
 
     expect(res.status).toBe(200);
     expect(res.body.data.section2.name).toBe('Biến tần');
-    expect(res.body.data.section2.nameTranslations.zh).toBe('变频器');
-    expect(res.body.data.section2.nameTranslations.en).toBe('Variable Frequency Drives');
   });
 
   it('rejects invalid home category configuration', async () => {

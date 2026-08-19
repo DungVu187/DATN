@@ -54,10 +54,10 @@ export const deleteStorefrontImage = (imgUrl) =>
     json: { imgUrl },
   });
 
-export const updateStorefrontIntroduction = (introduction, translations) =>
+export const updateStorefrontIntroduction = (introduction) =>
   apiFetch("/manages/update-introduction", {
     method: "PUT",
-    json: { introduction, translations },
+    json: { introduction },
   });
 
 export const updateStorefrontSection = (section, update) =>

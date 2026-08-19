@@ -110,12 +110,6 @@ const SectionComponent = ({
 }) => {
   const sectionData = manageData?.[section] || {};
   const [name, setName] = useState(sectionData.name || "");
-  const [translationLanguage, setTranslationLanguage] = useState("zh");
-  const [nameTranslations, setNameTranslations] = useState({
-    vi: sectionData.nameTranslations?.vi || sectionData.name || "",
-    zh: sectionData.nameTranslations?.zh || sectionData.name || "",
-    en: sectionData.nameTranslations?.en || sectionData.name || "",
-  });
 
   const isTypeMatched = typesList.some((t) => t.Type === (sectionData.name || ""));
   const [isManual, setIsManual] = useState(!isTypeMatched && (sectionData.name || "") !== "");
@@ -126,54 +120,23 @@ const SectionComponent = ({
   useEffect(() => {
     const currentName = sectionData.name || "";
     setName(currentName);
-    setNameTranslations({
-      vi: sectionData.nameTranslations?.vi || currentName,
-      zh: sectionData.nameTranslations?.zh || currentName,
-      en: sectionData.nameTranslations?.en || currentName,
-    });
     const matched = typesList.some((t) => t.Type === currentName);
     setIsManual(!matched && currentName !== "");
     setSelectedType(matched ? currentName : "");
     setManualName(!matched ? currentName : "");
-  }, [sectionData.name, sectionData.nameTranslations, typesList]);
+  }, [sectionData.name, typesList]);
 
   const handleSaveName = async (finalName) => {
-    const nextTranslations = {
-      ...nameTranslations,
-      vi: finalName,
-      zh: nameTranslations.zh || finalName,
-      en: nameTranslations.en || finalName,
-    };
     const result = await runStorefrontRequest(
-      updateStorefrontSection(section, {
-        name: finalName,
-        nameTranslations: nextTranslations,
-      }),
+      updateStorefrontSection(section, { name: finalName }),
     );
 
     if (result?.success) {
-      setNameTranslations(nextTranslations);
       setManageData(result.data);
       toast.success(`Cập nhật tên thành công`);
     }
   };
 
-  const handleSaveTranslations = async () => {
-    const nextTranslations = {
-      ...nameTranslations,
-      vi: sectionData.name || nameTranslations.vi || name,
-    };
-    const result = await runStorefrontRequest(
-      updateStorefrontSection(section, {
-        name: nextTranslations.vi,
-        nameTranslations: nextTranslations,
-      }),
-    );
-    if (result?.success) {
-      setManageData(result.data);
-      toast.success("Cập nhật bản dịch tên mục thành công");
-    }
-  };
 
   const handleToggleDisplay = async (checked) => {
     const result = await runStorefrontRequest(
@@ -309,40 +272,6 @@ const SectionComponent = ({
                   </Button>
                 </>
               )}
-            </Box>
-          </Box>
-
-          <Box display="flex" flexDirection="column" gap={1} sx={{ minWidth: 360 }}>
-            <Typography variant="subtitle2" color="textSecondary" sx={{ fontWeight: 600 }}>
-              Bản dịch tên hiển thị
-            </Typography>
-            <Box display="flex" gap={1}>
-              {[
-                { key: "zh", label: "中文简体" },
-                { key: "en", label: "English" },
-              ].map((language) => (
-                <Button
-                  key={language.key}
-                  size="small"
-                  variant={translationLanguage === language.key ? "contained" : "outlined"}
-                  onClick={() => setTranslationLanguage(language.key)}
-                >
-                  {language.label}
-                </Button>
-              ))}
-            </Box>
-            <Box display="flex" gap={1}>
-              <TextField
-                size="small"
-                value={nameTranslations[translationLanguage]}
-                onChange={(event) => setNameTranslations((current) => ({
-                  ...current,
-                  [translationLanguage]: event.target.value,
-                }))}
-                placeholder={translationLanguage === "zh" ? "Tên mục bằng tiếng Trung giản thể" : "Section title in English"}
-                sx={{ width: 260 }}
-              />
-              <Button variant="contained" size="small" onClick={handleSaveTranslations}>Lưu bản dịch</Button>
             </Box>
           </Box>
 

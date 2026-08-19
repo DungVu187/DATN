@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getStoredTranslation } from "../context/languagecontext.jsx";
+import { text } from "../constants/customerText.js";
 
 function SafeProductImageContent({
   src,
@@ -12,7 +12,7 @@ function SafeProductImageContent({
   ...imageProps
 }) {
   const [hasError, setHasError] = useState(false);
-  const accessibleLabel = alt || getStoredTranslation("product_image_alt");
+  const accessibleLabel = alt || text("product_image_alt");
   const imageSource = typeof src === "string" ? src.trim() : src;
 
   if (!imageSource || hasError) {

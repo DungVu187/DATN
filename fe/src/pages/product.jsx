@@ -16,7 +16,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import "./styles/product.css";
 import Item from "../components/item";
-import { useLanguage } from "../context/languagecontext.jsx";
+import { text } from "../constants/customerText.js";
 import {
   getStorefrontBrands,
   getStorefrontProductTypes,
@@ -39,7 +39,6 @@ const filterSelectMenuProps = {
 };
 
 function Product() {
-  const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -216,10 +215,10 @@ function Product() {
 
   const filterForm = (
     <form onSubmit={handleSubmit} className="filter-product-string">
-      <Typography variant="h6">{t("search_products")}</Typography>
+      <Typography variant="h6">{text("search_products")}</Typography>
       
       <TextField
-        label={t("search_by_name")}
+        label={text("search_by_name")}
         variant="outlined"
         name="search"
         value={filters.search}
@@ -228,7 +227,7 @@ function Product() {
         size="small"
         margin="normal"
       />
-      <InputLabel>{t("search_by_brand")}</InputLabel>
+      <InputLabel>{text("search_by_brand")}</InputLabel>
       <Select
         value={filters.brand || ALL_FILTER_VALUE}
         MenuProps={filterSelectMenuProps}
@@ -241,14 +240,14 @@ function Product() {
         fullWidth
         sx={{ margin: "8px 0" }}
       >
-        <MenuItem value={ALL_FILTER_VALUE}>{t("all_brands")}</MenuItem>
+        <MenuItem value={ALL_FILTER_VALUE}>{text("all_brands")}</MenuItem>
         {brands.map((brand, index) => (
           <MenuItem key={index} value={brand.Brand}>
             {brand.Brand}
           </MenuItem>
         ))}
       </Select>
-      <InputLabel>{t("search_by_type")}</InputLabel>
+      <InputLabel>{text("search_by_type")}</InputLabel>
       <Select
         value={filters.type || ALL_FILTER_VALUE}
         MenuProps={filterSelectMenuProps}
@@ -261,14 +260,14 @@ function Product() {
         fullWidth
         sx={{ margin: "8px 0" }}
       >
-        <MenuItem value={ALL_FILTER_VALUE}>{t("all_types")}</MenuItem>
+        <MenuItem value={ALL_FILTER_VALUE}>{text("all_types")}</MenuItem>
         {types.map((type, index) => (
           <MenuItem key={index} value={type.Type}>
             {type.Type}
           </MenuItem>
         ))}
       </Select>
-      <InputLabel>{t("search_by_section")}</InputLabel>
+      <InputLabel>{text("search_by_section")}</InputLabel>
       <Select
         value={filters.section || ALL_FILTER_VALUE}
         MenuProps={filterSelectMenuProps}
@@ -278,14 +277,14 @@ function Product() {
         fullWidth
         sx={{ margin: "8px 0" }}
       >
-        <MenuItem value={ALL_FILTER_VALUE}>{t("all_sections")}</MenuItem>
+        <MenuItem value={ALL_FILTER_VALUE}>{text("all_sections")}</MenuItem>
         {sections.map((section, index) => (
           <MenuItem key={index} value={section}>
             {section}
           </MenuItem>
         ))}
       </Select>
-      <InputLabel>{t("search_by_equipment")}</InputLabel>
+      <InputLabel>{text("search_by_equipment")}</InputLabel>
       <Select
         value={filters.value || ALL_FILTER_VALUE}
         MenuProps={filterSelectMenuProps}
@@ -299,14 +298,14 @@ function Product() {
         fullWidth
         sx={{ margin: "8px 0" }}
       >
-        <MenuItem value={ALL_FILTER_VALUE}>{t("all_equipment")}</MenuItem>
+        <MenuItem value={ALL_FILTER_VALUE}>{text("all_equipment")}</MenuItem>
         {values.map((value, index) => (
           <MenuItem key={index} value={value}>
             {value}
           </MenuItem>
         ))}
       </Select>
-      <Typography variant="h6">{t("sort_by")}</Typography>
+      <Typography variant="h6">{text("sort_by")}</Typography>
       <Select
         value={filters.sortBy || "purchaseCount"}
         MenuProps={filterSelectMenuProps}
@@ -319,9 +318,9 @@ function Product() {
         fullWidth
         sx={{ margin: "8px 0" }}
       >
-        <MenuItem value="createdAt">{t("created_date")}</MenuItem>
-        <MenuItem value="averageReviews">{t("rating")}</MenuItem>
-        <MenuItem value="purchaseCount">{t("purchases")}</MenuItem>
+        <MenuItem value="createdAt">{text("created_date")}</MenuItem>
+        <MenuItem value="averageReviews">{text("rating")}</MenuItem>
+        <MenuItem value="purchaseCount">{text("purchases")}</MenuItem>
       </Select>
       <Select
         value={filters.sortOrder || "desc"}
@@ -335,8 +334,8 @@ function Product() {
         fullWidth
         sx={{ margin: "8px 0" }}
       >
-        <MenuItem value="desc">{t("descending")}</MenuItem>
-        <MenuItem value="asc">{t("ascending")}</MenuItem>
+        <MenuItem value="desc">{text("descending")}</MenuItem>
+        <MenuItem value="asc">{text("ascending")}</MenuItem>
       </Select>
       <div
         style={{
@@ -347,7 +346,7 @@ function Product() {
         }}
       >
         <Button type="submit" variant="contained" color="primary" fullWidth>
-          {t("search")}
+          {text("search")}
         </Button>
       </div>
     </form>
@@ -359,21 +358,21 @@ function Product() {
   return (
     <main className="product-catalog-page">
       <div className="product-catalog-shell">
-        <nav className="product-breadcrumb" aria-label={t("breadcrumb")}>
-          <Link to="/"><i className="fa-solid fa-house" /> {t("home")}</Link>
+        <nav className="product-breadcrumb" aria-label={text("breadcrumb")}>
+          <Link to="/"><i className="fa-solid fa-house" /> {text("home")}</Link>
           <i className="fa-solid fa-angle-right" />
-          <span>{t("products")}</span>
+          <span>{text("products")}</span>
         </nav>
 
         <div className="product-page-title-row">
-          <h1>{t("products")}</h1>
+          <h1>{text("products")}</h1>
           <Button
             className="filter-button"
             onClick={() => setOpenDialog(true)}
             variant="outlined"
             startIcon={<FilterListIcon />}
           >
-            {t("filters")}
+            {text("filters")}
           </Button>
         </div>
 
@@ -386,7 +385,7 @@ function Product() {
             fullWidth
             maxWidth="sm"
           >
-            <DialogTitle>{t("product_filters")}</DialogTitle>
+            <DialogTitle>{text("product_filters")}</DialogTitle>
             <DialogContent>{filterForm}</DialogContent>
           </Dialog>
 
@@ -394,8 +393,8 @@ function Product() {
             <div className="product-results-toolbar">
               <span>
                 {isLoadingProducts
-                  ? t("loading_products")
-                  : t("product_display_range")
+                  ? text("loading_products")
+                  : text("product_display_range")
                     .replace("{first}", firstProductIndex)
                     .replace("{last}", lastProductIndex)
                     .replace("{total}", totalProducts)}
@@ -409,7 +408,7 @@ function Product() {
             {isLoadingProducts ? (
               <div className="product-loading-state">
                 <span className="product-loading-spinner" />
-                {t("loading_products")}
+                {text("loading_products")}
               </div>
             ) : products.length > 0 ? (
               <div className="product-list-container">
@@ -422,7 +421,7 @@ function Product() {
             ) : (
               <Box className="product-empty-state">
                 <Typography variant="h6" sx={{ color: "text.secondary" }}>
-              {t("no_products_found", "Không tìm thấy sản phẩm phù hợp với bộ lọc hiện tại.")}
+              {text("no_products_found", "Không tìm thấy sản phẩm phù hợp với bộ lọc hiện tại.")}
                 </Typography>
               </Box>
             )}

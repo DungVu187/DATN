@@ -17,7 +17,7 @@ import {
 } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import moment from "moment";
-import { useLanguage } from "../context/languagecontext.jsx";
+import { text } from "../constants/customerText.js";
 import AccountLayout from "../layout/accountlayout/accountlayout.jsx";
 import SafeProductImage from "../components/safeproductimage.jsx";
 import { getStorefrontProduct } from "../api/storefrontCatalogApi";
@@ -26,7 +26,7 @@ import "./styles/myorder.css";
 
 const ordersPerPage = 10;
 
-const formatMoney = (value, locale) => new Intl.NumberFormat(locale).format(Number(value) || 0) + " VND";
+const formatMoney = (value) => new Intl.NumberFormat("vi-VN").format(Number(value) || 0) + " VND";
 const getOrderCode = (order) => order?.orderCode || order?._id || "";
 
 const enrichOrdersWithProducts = async (rawOrders, unavailableProductName) => {
@@ -65,7 +65,6 @@ const enrichOrdersWithProducts = async (rawOrders, unavailableProductName) => {
 };
 
 const MyOrder = () => {
-  const { t, locale } = useLanguage();
   const location = useLocation();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,16 +95,16 @@ const MyOrder = () => {
       }
 
       const data = await response.json();
-      if (!response.ok) throw new Error(t("error_loading_orders", "Không thể tải đơn hàng"));
-      setOrders(await enrichOrdersWithProducts(data.orders || [], t("product_no_longer_exists")));
+      if (!response.ok) throw new Error(text("error_loading_orders", "Không thể tải đơn hàng"));
+      setOrders(await enrichOrdersWithProducts(data.orders || [], text("product_no_longer_exists")));
     } catch {
-      const message = t("error_loading_orders", "Không thể tải đơn hàng");
+      const message = text("error_loading_orders", "Không thể tải đơn hàng");
       setError(message);
       toast.error(message);
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, []);
 
   useEffect(() => {
     fetchOrders();
@@ -128,12 +127,12 @@ const MyOrder = () => {
   }, []);
 
   const tabs = useMemo(() => [
-    { value: "", label: t("all", "Tất cả") },
-    { value: "Processing", label: t("state_processing", "Đang xử lý") },
-    { value: "Delivering", label: t("delivering", "Đang giao hàng") },
-    { value: "Completed", label: t("completed", "Hoàn thành") },
-    { value: "Cancelled", label: t("cancelled", "Đã hủy") },
-  ], [t]);
+    { value: "", label: text("all", "Tất cả") },
+    { value: "Processing", label: text("state_processing", "Đang xử lý") },
+    { value: "Delivering", label: text("delivering", "Đang giao hàng") },
+    { value: "Completed", label: text("completed", "Hoàn thành") },
+    { value: "Cancelled", label: text("cancelled", "Đã hủy") },
+  ], []);
 
   const tabCounts = useMemo(() => Object.fromEntries(tabs.map((tab) => [tab.value, orders.filter((order) => matchesState(order, tab.value)).length])), [matchesState, orders, tabs]);
   const filteredOrders = useMemo(() => orders.filter((order) => matchesState(order, selectedState)), [matchesState, orders, selectedState]);
@@ -151,10 +150,10 @@ const MyOrder = () => {
   };
 
   const getStatus = (order) => {
-    if (order?.state === "Cancelled") return { label: t("cancelled", "Đã hủy"), tone: "cancelled" };
-    if (order?.status === "Completed") return { label: t("completed", "Hoàn thành"), tone: "completed" };
-    if (order?.status === "Delivering") return { label: t("delivering", "Đang giao hàng"), tone: "delivering" };
-    return { label: t("state_processing", "Đang xử lý"), tone: "processing" };
+    if (order?.state === "Cancelled") return { label: text("cancelled", "Đã hủy"), tone: "cancelled" };
+    if (order?.status === "Completed") return { label: text("completed", "Hoàn thành"), tone: "completed" };
+    if (order?.status === "Delivering") return { label: text("delivering", "Đang giao hàng"), tone: "delivering" };
+    return { label: text("state_processing", "Đang xử lý"), tone: "processing" };
   };
 
   const canCancelOrder = (order) => Boolean(order && order.state !== "Cancelled" && order.status === "Processing");
@@ -163,9 +162,9 @@ const MyOrder = () => {
     try {
       if (!navigator.clipboard) throw new Error();
       await navigator.clipboard.writeText(getOrderCode(order));
-      toast.success(t("copied", "Đã sao chép mã đơn"));
+      toast.success(text("copied", "Đã sao chép mã đơn"));
     } catch (copyError) {
-      toast.error(t("copy_failed", "Không thể sao chép mã đơn"));
+      toast.error(text("copy_failed", "Không thể sao chép mã đơn"));
     }
   };
 
@@ -184,14 +183,14 @@ const MyOrder = () => {
     setIsCancelling(true);
     try {
       const response = await cancelCustomerOrder(selectedOrder._id);
-      if (!response.ok) throw new Error(t("cancel_order_failed", "Hủy đơn hàng thất bại"));
+      if (!response.ok) throw new Error(text("cancel_order_failed", "Hủy đơn hàng thất bại"));
 
       setOrders((currentOrders) => currentOrders.map((order) => order._id === selectedOrder._id ? { ...order, state: "Cancelled" } : order));
       setOpenCancelDialog(false);
       setOpenDialog(false);
-      toast.success(t("cancel_order_success", "Hủy đơn hàng thành công"));
+      toast.success(text("cancel_order_success", "Hủy đơn hàng thành công"));
     } catch {
-      toast.error(t("cancel_order_failed", "Hủy đơn hàng thất bại"));
+      toast.error(text("cancel_order_failed", "Hủy đơn hàng thất bại"));
     } finally {
       setIsCancelling(false);
     }
@@ -213,22 +212,22 @@ const MyOrder = () => {
             {renderProductThumb(item)}
             <div>
               <strong>{item.productName}</strong>
-              <span>{t("quantity", "Số lượng")}: {item.quantity}</span>
+              <span>{text("quantity", "Số lượng")}: {item.quantity}</span>
             </div>
           </div>
         ))}
-        {remainingItems > 0 && <span className="order-more-products">+{remainingItems} {t("other_products", "sản phẩm khác")}</span>}
+        {remainingItems > 0 && <span className="order-more-products">+{remainingItems} {text("other_products", "sản phẩm khác")}</span>}
       </div>
     );
   };
 
   return (
     <AccountLayout
-      title={t("orders_list", "Danh sách đơn hàng")}
-      description={t("orders_description", "Theo dõi trạng thái xử lý, giao hàng và thanh toán của các đơn đã đặt.")}
+      title={text("orders_list", "Danh sách đơn hàng")}
+      description={text("orders_description", "Theo dõi trạng thái xử lý, giao hàng và thanh toán của các đơn đã đặt.")}
     >
       <section className="orders-panel">
-        <div className="orders-tabs" role="tablist" aria-label={t("order_status", "Trạng thái đơn hàng")}>
+        <div className="orders-tabs" role="tablist" aria-label={text("order_status", "Trạng thái đơn hàng")}>
           {tabs.map((tab) => (
             <button type="button" role="tab" aria-selected={selectedState === tab.value} className={"orders-tab" + (selectedState === tab.value ? " is-active" : "")} key={tab.value || "all"} onClick={() => selectState(tab.value)}>
               <span>{tab.label}</span>
@@ -237,29 +236,29 @@ const MyOrder = () => {
           ))}
         </div>
 
-        {loading && <div className="orders-feedback"><CircularProgress size={34} /><p>{t("loading_orders", "Đang tải đơn hàng...")}</p></div>}
+        {loading && <div className="orders-feedback"><CircularProgress size={34} /><p>{text("loading_orders", "Đang tải đơn hàng...")}</p></div>}
         {!loading && authRequired && (
           <div className="orders-feedback orders-empty-state">
             <span className="orders-empty-icon"><ReceiptLongRounded /></span>
-            <h2>{t("login_to_view_orders", "Đăng nhập để xem đơn hàng")}</h2>
-            <p>{t("login_to_view_orders_table", "Bạn cần đăng nhập để theo dõi danh sách đơn hàng của mình.")}</p>
-            <Link to={"/login?redirect=" + encodeURIComponent("/myorder")}>{t("login_now", "Đăng nhập ngay")}</Link>
+            <h2>{text("login_to_view_orders", "Đăng nhập để xem đơn hàng")}</h2>
+            <p>{text("login_to_view_orders_table", "Bạn cần đăng nhập để theo dõi danh sách đơn hàng của mình.")}</p>
+            <Link to={"/login?redirect=" + encodeURIComponent("/myorder")}>{text("login_now", "Đăng nhập ngay")}</Link>
           </div>
         )}
         {!loading && error && !authRequired && (
           <div className="orders-feedback orders-empty-state">
             <span className="orders-empty-icon is-error"><ReceiptLongRounded /></span>
-            <h2>{t("unable_to_load_orders", "Không thể tải đơn hàng")}</h2>
+            <h2>{text("unable_to_load_orders", "Không thể tải đơn hàng")}</h2>
             <p>{error}</p>
-            <button type="button" onClick={fetchOrders}>{t("try_again", "Thử lại")}</button>
+            <button type="button" onClick={fetchOrders}>{text("try_again", "Thử lại")}</button>
           </div>
         )}
         {!loading && !error && !authRequired && filteredOrders.length === 0 && (
           <div className="orders-feedback orders-empty-state">
             <span className="orders-empty-icon"><ReceiptLongRounded /></span>
-            <h2>{t("no_orders_yet", "Chưa có đơn hàng")}</h2>
-            <p>{t("empty_orders_hint", "Không có đơn hàng phù hợp với trạng thái bạn đang chọn.")}</p>
-            <Link to="/product">{t("continue_shopping", "Tiếp tục mua sắm")}</Link>
+            <h2>{text("no_orders_yet", "Chưa có đơn hàng")}</h2>
+            <p>{text("empty_orders_hint", "Không có đơn hàng phù hợp với trạng thái bạn đang chọn.")}</p>
+            <Link to="/product">{text("continue_shopping", "Tiếp tục mua sắm")}</Link>
           </div>
         )}
 
@@ -269,13 +268,13 @@ const MyOrder = () => {
               <table className="orders-table">
                 <thead>
                   <tr>
-                    <th>{t("order_code", "Mã đơn")}</th>
-                    <th>{t("order_date", "Ngày đặt")}</th>
-                    <th>{t("product_name", "Sản phẩm")}</th>
-                    <th>{t("total_money", "Tổng tiền")}</th>
-                    <th>{t("payment", "Thanh toán")}</th>
-                    <th>{t("status", "Trạng thái")}</th>
-                    <th>{t("actions", "Thao tác")}</th>
+                    <th>{text("order_code", "Mã đơn")}</th>
+                    <th>{text("order_date", "Ngày đặt")}</th>
+                    <th>{text("product_name", "Sản phẩm")}</th>
+                    <th>{text("total_money", "Tổng tiền")}</th>
+                    <th>{text("payment", "Thanh toán")}</th>
+                    <th>{text("status", "Trạng thái")}</th>
+                    <th>{text("actions", "Thao tác")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -286,15 +285,15 @@ const MyOrder = () => {
                         <td>
                           <div className="order-code-cell">
                             <strong title={getOrderCode(order)}>{getOrderCode(order)}</strong>
-                            <button type="button" onClick={() => copyOrderCode(order)} aria-label={t("copy_order_code", "Sao chép mã đơn")}><ContentCopyRounded /></button>
+                            <button type="button" onClick={() => copyOrderCode(order)} aria-label={text("copy_order_code", "Sao chép mã đơn")}><ContentCopyRounded /></button>
                           </div>
                         </td>
                         <td><span className="order-date-cell">{moment(order.createdAt).format("DD/MM/YYYY")}<small>{moment(order.createdAt).format("HH:mm")}</small></span></td>
                         <td>{renderProductSummary(order)}</td>
-                        <td><strong className="order-total-cell">{formatMoney(order.total, locale)}</strong></td>
-                        <td><span className={"order-pill payment-" + (order.payment ? "paid" : "unpaid")}>{order.payment ? t("paid", "Đã thanh toán") : t("unpaid", "Chưa thanh toán")}</span></td>
+                        <td><strong className="order-total-cell">{formatMoney(order.total)}</strong></td>
+                        <td><span className={"order-pill payment-" + (order.payment ? "paid" : "unpaid")}>{order.payment ? text("paid", "Đã thanh toán") : text("unpaid", "Chưa thanh toán")}</span></td>
                         <td><span className={"order-pill status-" + status.tone}>{status.label}</span></td>
-                        <td><button type="button" className="order-detail-button" onClick={() => openOrderDetails(order)}>{t("view_details", "Xem chi tiết")}<ArrowForwardIosRounded /></button></td>
+                        <td><button type="button" className="order-detail-button" onClick={() => openOrderDetails(order)}>{text("view_details", "Xem chi tiết")}<ArrowForwardIosRounded /></button></td>
                       </tr>
                     );
                   })}
@@ -309,10 +308,10 @@ const MyOrder = () => {
                   <article className="order-mobile-card" key={order._id}>
                     <div className="order-mobile-card-header">
                       <div>
-                        <span>{t("order_code", "Mã đơn")}</span>
+                        <span>{text("order_code", "Mã đơn")}</span>
                         <strong>{getOrderCode(order)}</strong>
                       </div>
-                      <button type="button" onClick={() => copyOrderCode(order)} aria-label={t("copy_order_code", "Sao chép mã đơn")}><ContentCopyRounded /></button>
+                      <button type="button" onClick={() => copyOrderCode(order)} aria-label={text("copy_order_code", "Sao chép mã đơn")}><ContentCopyRounded /></button>
                     </div>
                     <div className="order-mobile-meta">
                       <span>{moment(order.createdAt).format("DD/MM/YYYY · HH:mm")}</span>
@@ -320,10 +319,10 @@ const MyOrder = () => {
                     </div>
                     {renderProductSummary(order)}
                     <div className="order-mobile-summary">
-                      <div><span>{t("total_money", "Tổng tiền")}</span><strong>{formatMoney(order.total, locale)}</strong></div>
-                      <span className={"order-pill payment-" + (order.payment ? "paid" : "unpaid")}>{order.payment ? t("paid", "Đã thanh toán") : t("unpaid", "Chưa thanh toán")}</span>
+                      <div><span>{text("total_money", "Tổng tiền")}</span><strong>{formatMoney(order.total)}</strong></div>
+                      <span className={"order-pill payment-" + (order.payment ? "paid" : "unpaid")}>{order.payment ? text("paid", "Đã thanh toán") : text("unpaid", "Chưa thanh toán")}</span>
                     </div>
-                    <button type="button" className="order-mobile-detail-button" onClick={() => openOrderDetails(order)}>{t("view_details", "Xem chi tiết")}<ArrowForwardIosRounded /></button>
+                    <button type="button" className="order-mobile-detail-button" onClick={() => openOrderDetails(order)}>{text("view_details", "Xem chi tiết")}<ArrowForwardIosRounded /></button>
                   </article>
                 );
               })}
@@ -339,7 +338,7 @@ const MyOrder = () => {
       <Dialog open={openDialog} onClose={closeOrderDetails} fullWidth maxWidth="md" className="order-detail-dialog">
         <DialogTitle>
           <div>
-            <span>{t("order_details", "Chi tiết đơn hàng")}</span>
+            <span>{text("order_details", "Chi tiết đơn hàng")}</span>
             <small>{getOrderCode(selectedOrder)}</small>
           </div>
           {selectedOrder && <span className={"order-pill status-" + getStatus(selectedOrder).tone}>{getStatus(selectedOrder).label}</span>}
@@ -348,11 +347,11 @@ const MyOrder = () => {
           {selectedOrder && (
             <div className="order-dialog-content">
               <div className="order-dialog-summary">
-                <div><span>{t("order_date", "Ngày đặt")}</span><strong>{moment(selectedOrder.createdAt).format("DD/MM/YYYY HH:mm")}</strong></div>
-                <div><span>{t("total_money", "Tổng tiền")}</span><strong>{formatMoney(selectedOrder.total, locale)}</strong></div>
-                <div><span>{t("payment", "Thanh toán")}</span><strong>{selectedOrder.payment ? t("paid", "Đã thanh toán") : t("unpaid", "Chưa thanh toán")}</strong></div>
+                <div><span>{text("order_date", "Ngày đặt")}</span><strong>{moment(selectedOrder.createdAt).format("DD/MM/YYYY HH:mm")}</strong></div>
+                <div><span>{text("total_money", "Tổng tiền")}</span><strong>{formatMoney(selectedOrder.total)}</strong></div>
+                <div><span>{text("payment", "Thanh toán")}</span><strong>{selectedOrder.payment ? text("paid", "Đã thanh toán") : text("unpaid", "Chưa thanh toán")}</strong></div>
               </div>
-              <h3>{t("product_list", "Danh sách sản phẩm")}</h3>
+              <h3>{text("product_list", "Danh sách sản phẩm")}</h3>
               <div className="order-dialog-products">
                 {selectedOrder.cartItems.map((item, index) => {
                   const attributes = [item.productColor, item.productShape, item.productFrame, item.productButtonCount].filter(Boolean).join(" · ");
@@ -372,17 +371,17 @@ const MyOrder = () => {
           )}
         </DialogContent>
         <DialogActions>
-          {canCancelOrder(selectedOrder) && <Button color="error" variant="outlined" onClick={() => setOpenCancelDialog(true)}>{t("cancel_order", "Hủy đơn hàng")}</Button>}
-          <Button variant="contained" onClick={closeOrderDetails}>{t("close", "Đóng")}</Button>
+          {canCancelOrder(selectedOrder) && <Button color="error" variant="outlined" onClick={() => setOpenCancelDialog(true)}>{text("cancel_order", "Hủy đơn hàng")}</Button>}
+          <Button variant="contained" onClick={closeOrderDetails}>{text("close", "Đóng")}</Button>
         </DialogActions>
       </Dialog>
 
       <Dialog open={openCancelDialog} onClose={() => !isCancelling && setOpenCancelDialog(false)} className="order-cancel-dialog">
-        <DialogTitle>{t("confirm_cancel_order", "Xác nhận hủy đơn hàng")}</DialogTitle>
-        <DialogContent><p>{t("confirm_cancel_order_msg", "Bạn có chắc chắn muốn hủy đơn hàng này?").replace("{id}", getOrderCode(selectedOrder))}</p></DialogContent>
+        <DialogTitle>{text("confirm_cancel_order", "Xác nhận hủy đơn hàng")}</DialogTitle>
+        <DialogContent><p>{text("confirm_cancel_order_msg", "Bạn có chắc chắn muốn hủy đơn hàng này?").replace("{id}", getOrderCode(selectedOrder))}</p></DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenCancelDialog(false)} disabled={isCancelling}>{t("no", "Không")}</Button>
-          <Button color="error" variant="contained" onClick={cancelOrder} disabled={isCancelling}>{isCancelling ? t("processing", "Đang xử lý...") : t("cancel_order", "Hủy đơn hàng")}</Button>
+          <Button onClick={() => setOpenCancelDialog(false)} disabled={isCancelling}>{text("no", "Không")}</Button>
+          <Button color="error" variant="contained" onClick={cancelOrder} disabled={isCancelling}>{isCancelling ? text("processing", "Đang xử lý...") : text("cancel_order", "Hủy đơn hàng")}</Button>
         </DialogActions>
       </Dialog>
     </AccountLayout>

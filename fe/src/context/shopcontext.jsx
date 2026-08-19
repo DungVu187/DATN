@@ -1,12 +1,11 @@
 import React, { createContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { apiFetch, getAuthFailure } from "../api/httpClient";
-import { useLanguage } from "./languagecontext.jsx";
+import { text } from "../constants/customerText.js";
 
 export const ShopContext = createContext(null);
 
 const ShopContextProvider = ({ children }) => {
-  const { t } = useLanguage();
   const [cartItems, setCartItems] = useState([]);
 
   // Hàm gửi yêu cầu API với cookie
@@ -21,7 +20,7 @@ const ShopContextProvider = ({ children }) => {
       });
       if (!response.ok) {
         if (getAuthFailure(response) === "unauthorized") {
-          toast.error(t("login_required_action"));
+          toast.error(text("login_required_action"));
           setTimeout(() => {
             window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
           }, 1000);
@@ -35,7 +34,7 @@ const ShopContextProvider = ({ children }) => {
     } catch (error) {
       console.error(`Error with ${path}:`, error);
       if (error.message !== "Unauthorized") {
-        toast.error(t("generic_error_retry"));
+        toast.error(text("generic_error_retry"));
       }
       throw error;
     }
@@ -78,7 +77,7 @@ const ShopContextProvider = ({ children }) => {
         variantIndex,
         quantity: sanitizedQuantity,
       });
-      toast.success(t("add_cart_success"));
+      toast.success(text("add_cart_success"));
     } catch (error) {
       // Lỗi đã được xử lý trong sendRequest
     }
@@ -117,7 +116,7 @@ const ShopContextProvider = ({ children }) => {
         variantIndex,
         status,
       });
-      toast.success(t("cart_status_updated"));
+      toast.success(text("cart_status_updated"));
     } catch (error) {
       // Lỗi đã được xử lý trong sendRequest
     }
@@ -127,7 +126,7 @@ const ShopContextProvider = ({ children }) => {
   const clearCart = async () => {
     try {
       await sendRequest("/carts/clearCart", "POST");
-      toast.success(t("cart_cleared"));
+      toast.success(text("cart_cleared"));
     } catch (error) {
       // Lỗi đã được xử lý trong sendRequest
     }

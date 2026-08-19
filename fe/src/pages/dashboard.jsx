@@ -12,8 +12,7 @@ import HomeCategoryIcon from "../components/homecategoryicon";
 import SafeProductImage from "../components/safeproductimage";
 import { getCategoryIcon, normalizeTypeName } from "../utils/homecategoryicons";
 import { formatVariantPrice, isContactOnlyVariant } from "../utils/productpricing";
-import { useLanguage } from "../context/languagecontext.jsx";
-import { getLocalizedText } from "../utils/localizedcontent";
+import { text } from "../constants/customerText.js";
 import {
   getStorefrontContent,
   getStorefrontProductsByIds,
@@ -78,19 +77,17 @@ const resolveSectionLink = (name, types) => {
 };
 
 function SectionHeader({ title, href = "/product", showViewAll = true }) {
-  const { t } = useLanguage();
   return (
     <div className="home-section-heading">
       <h2>{title}</h2>
       {showViewAll && (
-        <Link to={href}>{t("view_all")} <i className="fa-solid fa-angle-right" /></Link>
+        <Link to={href}>{text("view_all")} <i className="fa-solid fa-angle-right" /></Link>
       )}
     </div>
   );
 }
 
 function Dashboard() {
-  const { t, language } = useLanguage();
   const location = useLocation();
   const { addToCart } = useContext(ShopContext);
   const [manageData, setManageData] = useState(null);
@@ -164,7 +161,7 @@ function Dashboard() {
           );
           return {
             id: item.id || `configured-category-${index}`,
-            label: getLocalizedText(item.labelTranslations, language, item.label),
+            label: item.label || "",
             type: item.type || "",
             link: item.link || "",
             icon: item.icon || matchedType?.icon || getCategoryIcon(item.type),
@@ -175,7 +172,7 @@ function Dashboard() {
         });
     }
     return buildAutomaticCategories(types);
-  }, [language, manageData?.homeCategoryConfig, types]);
+  }, [manageData?.homeCategoryConfig, types]);
   const sidebarCategories = homeCategories.filter((category) => category.showSidebar);
   const quickCategories = homeCategories.filter((category) => category.showQuick);
   const hasSidebarCategories = (
@@ -189,12 +186,9 @@ function Dashboard() {
       : true
   ) && quickCategories.length > 0;
   const sidebarTitle = manageData?.homeCategoryConfig?.configured
-    ? getLocalizedText(
-        manageData.homeCategoryConfig.sidebarTitleTranslations,
-        language,
-        manageData.homeCategoryConfig.sidebarTitle || t("product_categories")
+    ? manageData.homeCategoryConfig.sidebarTitle || text("product_categories"
       )
-    : t("product_categories");
+    : text("product_categories");
   const featuredBrandImages = useMemo(() => {
     if (!Array.isArray(manageData?.partners)) return [];
     return manageData.partners.filter(isImageAsset);
@@ -223,7 +217,7 @@ function Dashboard() {
         if (secProducts.length >= 5) {
           list.push({
             key,
-            name: getLocalizedText(sec.nameTranslations, language, sec.name),
+            name: sec.name || "",
             filterName: sec.name,
             image: sec.image,
             products: secProducts.slice(0, 5), // Lấy tối đa đúng 5 sản phẩm
@@ -232,7 +226,7 @@ function Dashboard() {
       }
     }
     return list;
-  }, [language, manageData, products]);
+  }, [manageData, products]);
 
   return (
     <main className="customer-home">
@@ -252,7 +246,7 @@ function Dashboard() {
                 ))}
               </div>
               <Link className="home-category-all" to="/product">
-                <i className="fa-solid fa-border-all" /> {t("view_all_categories")}
+                <i className="fa-solid fa-border-all" /> {text("view_all_categories")}
               </Link>
             </aside>
           )}
@@ -269,15 +263,15 @@ function Dashboard() {
                   <div className="home-hero-slide" style={{ backgroundImage: `url(${image})` }}>
                     <div className="home-hero-overlay" />
                     <div className="home-hero-copy">
-                      <p className="home-hero-eyebrow">{t("industrial_solutions")}</p>
-                      <h1>{t("equipment_solutions")}<br /><span>{t("for_industrial_equipment_systems")}</span></h1>
+                      <p className="home-hero-eyebrow">{text("industrial_solutions")}</p>
+                      <h1>{text("equipment_solutions")}<br /><span>{text("for_industrial_equipment_systems")}</span></h1>
                       <ul>
-                        <li><i className="fa-regular fa-circle-check" /> {t("genuine_quality")}</li>
-                        <li><i className="fa-regular fa-circle-check" /> {t("expert_technical_consulting")}</li>
-                        <li><i className="fa-regular fa-circle-check" /> {t("official_warranty")}</li>
+                        <li><i className="fa-regular fa-circle-check" /> {text("genuine_quality")}</li>
+                        <li><i className="fa-regular fa-circle-check" /> {text("expert_technical_consulting")}</li>
+                        <li><i className="fa-regular fa-circle-check" /> {text("official_warranty")}</li>
                       </ul>
                       <div className="home-hero-actions">
-                        <a className="home-primary-button" href="https://Nova.vn" target="_blank" rel="noreferrer">{t("explore_now")}</a>
+                        <a className="home-primary-button" href="https://Nova.vn" target="_blank" rel="noreferrer">{text("explore_now")}</a>
                       </div>
                     </div>
                   </div>
@@ -288,7 +282,7 @@ function Dashboard() {
         </section>
 
         {showQuickCategories && (
-          <section className="home-quick-categories" aria-label={t("featured_categories")}>
+          <section className="home-quick-categories" aria-label={text("featured_categories")}>
             {quickCategories.map((category) => {
               const matchingProduct = category.type
                 ? products.find((product) => product.type?.trim() === category.type.trim())
@@ -309,16 +303,16 @@ function Dashboard() {
             })}
             <Link className="home-quick-category-more" to="/product">
               <div className="home-quick-category-image"><i className="fa-solid fa-border-all" /></div>
-              <span>{t("view_all")}</span>
+              <span>{text("view_all")}</span>
             </Link>
           </section>
         )}
 
         {section1Products.length >= 6 && manageData?.section1?.display !== false && (
           <section className="home-section home-section--framed">
-            <SectionHeader title={manageData?.section1?.name || t("best_selling_products")} />
+            <SectionHeader title={manageData?.section1?.name || text("best_selling_products")} />
             {loading ? (
-              <div className="home-loading-row">{t("loading_products")}</div>
+              <div className="home-loading-row">{text("loading_products")}</div>
             ) : (
               <Swiper
                 modules={[Autoplay]}
@@ -365,7 +359,7 @@ function Dashboard() {
                             type="button"
                             disabled={!canPurchase}
                             onClick={() => canPurchase && addToCart(product._id, 0, 1)}
-                            aria-label={`${t("add_product_to_cart")}: ${product.name}`}
+                            aria-label={`${text("add_product_to_cart")}: ${product.name}`}
                           >
                             <i className="fa-solid fa-cart-shopping" />
                           </button>
@@ -392,9 +386,9 @@ function Dashboard() {
                 )}
               </div>
               <div className="highlight-info-group">
-                <h3 className="highlight-title">{sec.name || t("category")}</h3>
+                <h3 className="highlight-title">{sec.name || text("category")}</h3>
                 <Link to={resolveSectionLink(sec.filterName, types)} className="highlight-more-btn">
-                  {t("view_more")}
+                  {text("view_more")}
                 </Link>
               </div>
             </div>
@@ -440,9 +434,9 @@ function Dashboard() {
                         
                         {/* Thông số kỹ thuật chi tiết */}
                         <div className="home-product-specs">
-                          <div><span>{t("product_type_label")}</span> <strong>{product.type || "N/A"}</strong></div>
-                          <div><span>{t("cluster_label")}</span> <strong>{product.section || "N/A"}</strong></div>
-                          <div><span>{t("equipment_label")}</span> <strong>{product.value || "N/A"}</strong></div>
+                          <div><span>{text("product_type_label")}</span> <strong>{product.type || "N/A"}</strong></div>
+                          <div><span>{text("cluster_label")}</span> <strong>{product.section || "N/A"}</strong></div>
+                          <div><span>{text("equipment_label")}</span> <strong>{product.value || "N/A"}</strong></div>
                         </div>
 
                         <div className="home-product-price">
@@ -453,7 +447,7 @@ function Dashboard() {
                             type="button"
                             disabled={!canPurchase}
                             onClick={() => canPurchase && addToCart(product._id, 0, 1)}
-                            aria-label={`${t("add_product_to_cart")}: ${product.name}`}
+                            aria-label={`${text("add_product_to_cart")}: ${product.name}`}
                           >
                             <i className="fa-solid fa-cart-shopping" />
                           </button>
@@ -469,7 +463,7 @@ function Dashboard() {
 
         {manageData?.displayPartners !== false && featuredBrandImages.length > 0 && (
           <section className="home-section home-brand-section">
-            <SectionHeader title={t("featured_brands")} showViewAll={false} />
+            <SectionHeader title={text("featured_brands")} showViewAll={false} />
             {shouldRotateBrands ? (
               <Swiper
                 modules={[Autoplay]}
@@ -495,7 +489,7 @@ function Dashboard() {
                     <div className="home-brand-logo-card">
                       <img
                         src={resolveStorefrontAssetUrl(image)}
-                        alt={`${t("featured_brands")} ${(index % featuredBrandImages.length) + 1}`}
+                        alt={`${text("featured_brands")} ${(index % featuredBrandImages.length) + 1}`}
                       />
                     </div>
                   </SwiperSlide>
@@ -507,7 +501,7 @@ function Dashboard() {
                   <div className="home-brand-logo-card" key={`${image}-${index}`}>
                     <img
                       src={resolveStorefrontAssetUrl(image)}
-                      alt={`${t("featured_brands")} ${index + 1}`}
+                      alt={`${text("featured_brands")} ${index + 1}`}
                     />
                   </div>
                 ))}

@@ -1,7 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import SafeProductImage from "./safeproductimage";
-import { getStoredTranslation } from "../context/languagecontext.jsx";
+import { CUSTOMER_TEXT } from "../constants/customerText.js";
 
 describe("SafeProductImage", () => {
   it("renders a native image with the requested source, label, and class", () => {
@@ -58,7 +58,7 @@ describe("SafeProductImage", () => {
 
     expect(
       screen.getByRole("img", {
-        name: getStoredTranslation("product_image_alt"),
+        name: CUSTOMER_TEXT.product_image_alt,
       })
     ).toBeInTheDocument();
   });

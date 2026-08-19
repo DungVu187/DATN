@@ -39,19 +39,12 @@ import {
   uploadStorefrontSectionImage,
 } from "../api/storefrontManagementApi";
 
-const contentLanguages = [
-  { key: "vi", label: "Tiếng Việt" },
-  { key: "zh", label: "中文简体" },
-  { key: "en", label: "English" },
-];
-
 const createCategoryId = () =>
   `home-category-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
 const createEmptyCategory = () => ({
   id: createCategoryId(),
   label: "",
-  labelTranslations: { vi: "", zh: "", en: "" },
   type: "",
   link: "",
   icon: "ri-tb-box-multiple",
@@ -64,11 +57,6 @@ const createCategoriesFromTypes = (types) =>
   types.slice(0, 9).map((type, index) => ({
     id: type._id || createCategoryId(),
     label: type.Type || "",
-    labelTranslations: {
-      vi: type.Type || "",
-      zh: type.Type || "",
-      en: type.Type || "",
-    },
     type: type.Type || "",
     link: "",
     icon: type.icon || getCategoryIcon(type.Type),
@@ -84,11 +72,6 @@ const normalizeConfig = (value, types) => {
     ? storedItems.map((item) => ({
         id: item.id || createCategoryId(),
         label: item.label || item.type || "",
-        labelTranslations: {
-          vi: item.labelTranslations?.vi || item.label || item.type || "",
-          zh: item.labelTranslations?.zh || item.label || item.type || "",
-          en: item.labelTranslations?.en || item.label || item.type || "",
-        },
         type: item.type || "",
         link: item.link || "",
         icon: item.icon || types.find(
@@ -103,11 +86,6 @@ const normalizeConfig = (value, types) => {
   return {
     configured: value?.configured === true,
     sidebarTitle: value?.sidebarTitle || "Danh mục sản phẩm",
-    sidebarTitleTranslations: {
-      vi: value?.sidebarTitleTranslations?.vi || value?.sidebarTitle || "Danh mục sản phẩm",
-      zh: value?.sidebarTitleTranslations?.zh || value?.sidebarTitle || "Danh mục sản phẩm",
-      en: value?.sidebarTitleTranslations?.en || value?.sidebarTitle || "Danh mục sản phẩm",
-    },
     showSidebar: value?.showSidebar !== false,
     showQuickCategories: value?.showQuickCategories !== false,
     items,
@@ -119,7 +97,6 @@ const HomeCategoryManager = ({ value, onSaved }) => {
   const [config, setConfig] = useState(() => normalizeConfig(value, []));
   const [saving, setSaving] = useState(false);
   const [uploadingIndex, setUploadingIndex] = useState(null);
-  const [contentLanguage, setContentLanguage] = useState("vi");
 
   const typeOptions = useMemo(
     () => types.map((type) => type.Type).filter(Boolean),
@@ -154,16 +131,7 @@ const HomeCategoryManager = ({ value, onSaved }) => {
     setConfig((current) => ({ ...current, [field]: nextValue }));
   };
 
-  const updateSidebarTitle = (nextValue) => {
-    setConfig((current) => ({
-      ...current,
-      sidebarTitle: contentLanguage === "vi" ? nextValue : current.sidebarTitle,
-      sidebarTitleTranslations: {
-        ...current.sidebarTitleTranslations,
-        [contentLanguage]: nextValue,
-      },
-    }));
-  };
+  const updateSidebarTitle = (nextValue) => updateConfig("sidebarTitle", nextValue);
 
   const updateItem = (index, field, nextValue) => {
     setConfig((current) => ({
@@ -174,23 +142,7 @@ const HomeCategoryManager = ({ value, onSaved }) => {
     }));
   };
 
-  const updateItemLabel = (index, nextValue) => {
-    setConfig((current) => ({
-      ...current,
-      items: current.items.map((item, itemIndex) => (
-        itemIndex === index
-          ? {
-              ...item,
-              label: contentLanguage === "vi" ? nextValue : item.label,
-              labelTranslations: {
-                ...item.labelTranslations,
-                [contentLanguage]: nextValue,
-              },
-            }
-          : item
-      )),
-    }));
-  };
+  const updateItemLabel = (index, nextValue) => updateItem(index, "label", nextValue);
 
   const updateItemType = (index, nextType) => {
     const matchedType = types.find(
@@ -288,7 +240,7 @@ const HomeCategoryManager = ({ value, onSaved }) => {
 
   const saveConfig = async () => {
     const invalidItem = config.items.find((item) => (
-      contentLanguages.some((language) => !item.labelTranslations?.[language.key]?.trim())
+      !item.label.trim()
       || (!item.type.trim() && !item.link.trim())
     ));
     if (invalidItem) {
@@ -340,23 +292,10 @@ const HomeCategoryManager = ({ value, onSaved }) => {
         </Alert>
       )}
 
-      <Box sx={{ display: "flex", gap: 1, mt: 2, mb: 2 }}>
-        {contentLanguages.map((language) => (
-          <Button
-            key={language.key}
-            size="small"
-            variant={contentLanguage === language.key ? "contained" : "outlined"}
-            onClick={() => setContentLanguage(language.key)}
-          >
-            {language.label}
-          </Button>
-        ))}
-      </Box>
-
       <Box className="home-category-manager__settings">
         <TextField
-          label={`Tiêu đề menu bên trái · ${contentLanguages.find((item) => item.key === contentLanguage)?.label}`}
-          value={config.sidebarTitleTranslations[contentLanguage]}
+                  label="Tên hiển thị"
+          value={config.sidebarTitle}
           onChange={(event) => updateSidebarTitle(event.target.value)}
           size="small"
           fullWidth
@@ -458,8 +397,8 @@ const HomeCategoryManager = ({ value, onSaved }) => {
 
               <Box className="home-category-manager__fields">
                 <TextField
-                  label={`Tên hiển thị · ${contentLanguages.find((language) => language.key === contentLanguage)?.label}`}
-                  value={item.labelTranslations[contentLanguage]}
+                  label="Tên hiển thị"
+                  value={item.label}
                   onChange={(event) => updateItemLabel(index, event.target.value)}
                   size="small"
                   fullWidth

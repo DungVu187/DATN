@@ -71,9 +71,6 @@ export const getStorefrontContent = (options) =>
 export const getStorefrontProductTypes = (options) =>
   publicFetch("/products/types", options);
 
-export const getStorefrontSectionDocument = () =>
-  publicFetch("/chips/section-doc");
-
 export const getStorefrontPolicies = () => publicFetch("/manages/policies");
 
 export const getStorefrontSectionValues = (sectionName) =>

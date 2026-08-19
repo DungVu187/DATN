@@ -35,7 +35,7 @@ describe('Product and Section Model Unit Tests (Phase 2)', () => {
       variant: [{
         color: 'Xám',
         price: '5000000',
-        imgUrl: 'https://ttsmart.com.vn/api/images/product_1741235837924.png',
+        imgUrl: 'https://nova.com.vn/api/images/product_1741235837924.png',
         quantityForSale: 10,
         quantityInStorage: 10
       }]
@@ -56,7 +56,7 @@ describe('Product and Section Model Unit Tests (Phase 2)', () => {
         {
           name: 'Siemens PLC',
           value: ['S7-1200', 'S7-1500'],
-          imgUrl: 'https://ttsmart.com.vn/api/section-images/sectionImage_1750388070165.jpg'
+          imgUrl: 'https://nova.com.vn/api/section-images/sectionImage_1750388070165.jpg'
         }
       ]
     });

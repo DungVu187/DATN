@@ -50,79 +50,24 @@ describe("storefrontManagementApi", () => {
     apiFetchMock.mockResolvedValue(response);
 
     await expect(getStorefrontManagement()).resolves.toBe(response);
-    await expect(
-      getStorefrontManagement({ includeJsonHeader: true }),
-    ).resolves.toBe(response);
-    await expect(
-      updateStorefrontPartnerSettings({ partners: ["ABB"] }),
-    ).resolves.toBe(response);
-    await expect(deleteStorefrontImage("/images/banner.webp")).resolves.toBe(
-      response,
-    );
-    await expect(
-      updateStorefrontIntroduction("Giới thiệu", {
-        vi: "Giới thiệu",
-        zh: "介绍",
-        en: "Introduction",
-      }),
-    ).resolves.toBe(response);
-    await expect(
-      updateStorefrontSection("section11", { display: false, image: "" }),
-    ).resolves.toBe(response);
-    await expect(
-      updateStorefrontHomeCategories({ configured: true, items: [] }),
-    ).resolves.toBe(response);
+    await expect(getStorefrontManagement({ includeJsonHeader: true })).resolves.toBe(response);
+    await expect(updateStorefrontPartnerSettings({ partners: ["ABB"] })).resolves.toBe(response);
+    await expect(deleteStorefrontImage("/images/banner.webp")).resolves.toBe(response);
+    await expect(updateStorefrontIntroduction("Giới thiệu")).resolves.toBe(response);
+    await expect(updateStorefrontSection("section11", { display: false, image: "" })).resolves.toBe(response);
+    await expect(updateStorefrontHomeCategories({ configured: true, items: [] })).resolves.toBe(response);
     await expect(getStorefrontPolicies()).resolves.toBe(response);
-    await expect(updateStorefrontPolicies([{ key: "purchase" }])).resolves.toBe(
-      response,
-    );
+    await expect(updateStorefrontPolicies([{ key: "purchase" }])).resolves.toBe(response);
 
     expect(apiFetchMock).toHaveBeenNthCalledWith(1, "/manages/");
-    expect(apiFetchMock).toHaveBeenNthCalledWith(
-      2,
-      "/manages/",
-      { headers: { "Content-Type": "application/json" } },
-    );
-    expect(apiFetchMock).toHaveBeenNthCalledWith(
-      3,
-      "/manages/update-partners-text",
-      { method: "PUT", json: { partners: ["ABB"] } },
-    );
-    expect(apiFetchMock).toHaveBeenNthCalledWith(4, "/manages/delete-image", {
-      method: "DELETE",
-      json: { imgUrl: "/images/banner.webp" },
-    });
-    expect(apiFetchMock).toHaveBeenNthCalledWith(
-      5,
-      "/manages/update-introduction",
-      {
-        method: "PUT",
-        json: {
-          introduction: "Giới thiệu",
-          translations: {
-            vi: "Giới thiệu",
-            zh: "介绍",
-            en: "Introduction",
-          },
-        },
-      },
-    );
-    expect(apiFetchMock).toHaveBeenNthCalledWith(
-      6,
-      "/manages/update-section/section11",
-      { method: "PUT", json: { display: false, image: "" } },
-    );
-    expect(apiFetchMock).toHaveBeenNthCalledWith(
-      7,
-      "/manages/update-home-categories",
-      { method: "PUT", json: { configured: true, items: [] } },
-    );
+    expect(apiFetchMock).toHaveBeenNthCalledWith(2, "/manages/", { headers: { "Content-Type": "application/json" } });
+    expect(apiFetchMock).toHaveBeenNthCalledWith(3, "/manages/update-partners-text", { method: "PUT", json: { partners: ["ABB"] } });
+    expect(apiFetchMock).toHaveBeenNthCalledWith(4, "/manages/delete-image", { method: "DELETE", json: { imgUrl: "/images/banner.webp" } });
+    expect(apiFetchMock).toHaveBeenNthCalledWith(5, "/manages/update-introduction", { method: "PUT", json: { introduction: "Giới thiệu" } });
+    expect(apiFetchMock).toHaveBeenNthCalledWith(6, "/manages/update-section/section11", { method: "PUT", json: { display: false, image: "" } });
+    expect(apiFetchMock).toHaveBeenNthCalledWith(7, "/manages/update-home-categories", { method: "PUT", json: { configured: true, items: [] } });
     expect(apiFetchMock).toHaveBeenNthCalledWith(8, "/manages/policies");
-    expect(apiFetchMock).toHaveBeenNthCalledWith(
-      9,
-      "/manages/update-policies",
-      { method: "PUT", json: { policies: [{ key: "purchase" }] } },
-    );
+    expect(apiFetchMock).toHaveBeenNthCalledWith(9, "/manages/update-policies", { method: "PUT", json: { policies: [{ key: "purchase" }] } });
   });
 
   it("resolves storefront asset URLs without rewriting absolute sources", () => {

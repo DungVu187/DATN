@@ -16,7 +16,6 @@ const expectedExportNames = [
   "getStorefrontProductReviews",
   "getStorefrontProductsByIds",
   "getStorefrontProductTypes",
-  "getStorefrontSectionDocument",
   "getStorefrontSectionImages",
   "getStorefrontSections",
   "getStorefrontSectionValues",
@@ -174,7 +173,6 @@ describe("storefrontCatalogApi", () => {
     await storefrontCatalogApi.getStorefrontProductTypes({
       cache: "no-store",
     });
-    await storefrontCatalogApi.getStorefrontSectionDocument();
     await storefrontCatalogApi.getStorefrontPolicies();
     await storefrontCatalogApi.getStorefrontSectionValues("Pipes & Valves");
     await storefrontCatalogApi.getStorefrontBrands();
@@ -192,7 +190,6 @@ describe("storefrontCatalogApi", () => {
       ],
       ["https://api.test/products/types"],
       ["https://api.test/products/types", { cache: "no-store" }],
-      ["https://api.test/chips/section-doc"],
       ["https://api.test/manages/policies"],
       ["https://api.test/chips/Pipes & Valves/value"],
       ["https://api.test/chips/brands"],

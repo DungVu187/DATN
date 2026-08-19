@@ -133,8 +133,6 @@ describe("backend model boundaries", () => {
     expect(orderModel.Order.schema).toBe(orderModel.orderSchema);
     expect(orderModel.Counter.schema).toBe(orderModel.counterSchema);
     expect(manageModel.Manage.schema).toBe(manageModel.manageSchema);
-    expect(manageModel.manageSchema.path("introductionTranslations").schema)
-      .toBe(manageModel.localizedTextSchema);
     expect(manageModel.manageSchema.path("homeCategoryConfig.items").schema)
       .toBe(manageModel.homeCategoryItemSchema);
     expect(productTypeModel.Type.schema).toBe(productTypeModel.productTypeSchema);

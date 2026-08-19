@@ -19,7 +19,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import InfoIcon from "@mui/icons-material/Info";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { ShopContext } from "../context/shopcontext";
-import { useLanguage } from "../context/languagecontext";
+import { text } from "../constants/customerText.js";
 import { isContactOnlyVariant } from "../utils/productpricing";
 import {
   getStorefrontSectionValues,
@@ -27,7 +27,6 @@ import {
 } from "../api/storefrontCatalogApi";
 
 const ValueList = () => {
-  const { t } = useLanguage();
   const { sectionName } = useParams();
   const [values, setValues] = useState([]);
   const [productsByValue, setProductsByValue] = useState({});
@@ -109,8 +108,8 @@ const ValueList = () => {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">{t("image", "Ảnh")}</TableCell>
-                      <TableCell>{t("product_name", "Tên sản phẩm")}</TableCell>
+                      <TableCell align="center">{text("image", "Ảnh")}</TableCell>
+                      <TableCell>{text("product_name", "Tên sản phẩm")}</TableCell>
                       <TableCell align="right"></TableCell>
                     </TableRow>
                   </TableHead>
@@ -136,11 +135,11 @@ const ValueList = () => {
                           </Typography>
                           {(product.variant?.[0]?.quantityForSale ?? 0) > 0 ? (
                             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                              {t("quantity_left_val", "Còn lại: ")}{product.variant[0].quantityForSale}
+                              {text("quantity_left_val", "Còn lại: ")}{product.variant[0].quantityForSale}
                             </Typography>
                           ) : (
                             <Typography variant="body2" color="error" sx={{ mt: 0.5, fontWeight: "bold" }}>
-                              {t("out_of_stock_val", "Liên hệ")}
+                              {text("out_of_stock_val", "Liên hệ")}
                             </Typography>
                           )}
                         </TableCell>
@@ -171,7 +170,7 @@ const ValueList = () => {
                                {isSmallScreen ? <PhoneIcon /> : (
                                 <>
                                   <PhoneIcon sx={{ fontSize: 16 }} />
-                                  {t("contact_phone", "Liên hệ: 0901 513 825")}
+                                  {text("contact_phone", "Liên hệ: 0901 513 825")}
                                 </>
                               )}
                             </Button>
@@ -193,7 +192,7 @@ const ValueList = () => {
                               {isSmallScreen ? (
                                 <ShoppingCartIcon />
                               ) : (
-                                t("add_to_cart_short", "Thêm vào giỏ")
+                                text("add_to_cart_short", "Thêm vào giỏ")
                               )}
                             </Button>
                             <Button
@@ -212,7 +211,7 @@ const ValueList = () => {
                                 gap: 1,
                               }}
                             >
-                              {isSmallScreen ? <InfoIcon /> : t("details", "Chi tiết")}
+                              {isSmallScreen ? <InfoIcon /> : text("details", "Chi tiết")}
                             </Button>
 
                           </Box>

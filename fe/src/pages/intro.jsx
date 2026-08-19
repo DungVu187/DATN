@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { useLanguage } from "../context/languagecontext.jsx";
-import { getLocalizedText } from "../utils/localizedcontent";
+import { text } from "../constants/customerText.js";
 import { getStorefrontContent } from "../api/storefrontCatalogApi";
 
 const Intro = () => {
-  const { t, language } = useLanguage();
   const [manageData, setManageData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -30,14 +28,10 @@ const Intro = () => {
     fetchIntroduction();
   }, []);
 
-  const introduction = useMemo(() => getLocalizedText(
-    manageData?.introductionTranslations,
-    language,
-    manageData?.introduction || ""
-  ), [language, manageData]);
+  const introduction = useMemo(() => manageData?.introduction || "", [manageData]);
 
   const formatIntroduction = (text) => {
-    if (!text) return <Typography>{t("introduction_empty")}</Typography>;
+    if (!text) return <Typography>{text("introduction_empty")}</Typography>;
     const paragraphs = text.split("\n").filter((line) => line.trim() !== "");
 
     return paragraphs.map((paragraph, index) => {
@@ -80,12 +74,12 @@ const Intro = () => {
         }}
       >
         <Typography variant="h4" gutterBottom align="center" sx={{ fontWeight: 700, mb: 3 }}>
-          {t("introduction")}
+          {text("introduction")}
         </Typography>
         {loading ? (
-          <Typography align="center">{t("loading_introduction")}</Typography>
+          <Typography align="center">{text("loading_introduction")}</Typography>
         ) : error ? (
-          <Typography align="center" color="error">{t("introduction_load_error")}</Typography>
+          <Typography align="center" color="error">{text("introduction_load_error")}</Typography>
         ) : (
           <Box>{formatIntroduction(introduction)}</Box>
         )}

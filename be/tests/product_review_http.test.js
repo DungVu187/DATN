@@ -9,9 +9,9 @@ const PRODUCT_CODE_PREFIX = 'PRODUCT-REVIEW-HTTP-';
 const OWNER_PHONE = '0987609101';
 const OTHER_PHONE = '0987609102';
 const MODERATOR_PHONE = '0987609103';
-const OWNER_EMAIL = 'product-review-http-owner@ttsmart.test';
-const OTHER_EMAIL = 'product-review-http-other@ttsmart.test';
-const MODERATOR_EMAIL = 'product-review-http-moderator@ttsmart.test';
+const OWNER_EMAIL = 'product-review-http-owner@nova.test';
+const OTHER_EMAIL = 'product-review-http-other@nova.test';
+const MODERATOR_EMAIL = 'product-review-http-moderator@nova.test';
 const TEST_USERS = [
   {
     phone: OWNER_PHONE,

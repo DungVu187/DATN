@@ -230,7 +230,6 @@ const Manage = () => {
     topPurchaseUrl: "",
     highestRatingUrl: "",
     introduction: "",
-    introductionTranslations: { vi: "", zh: "", en: "" },
     homeCategoryConfig: {
       configured: false,
       sidebarTitle: "Danh mục sản phẩm",
@@ -243,8 +242,7 @@ const Manage = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [bannerThumbsSwiper, setBannerThumbsSwiper] = useState(null);
-  const [introductionInputs, setIntroductionInputs] = useState({ vi: "", zh: "", en: "" });
-  const [introductionLanguage, setIntroductionLanguage] = useState("vi");
+  const [introductionInput, setIntroductionInput] = useState("");
   const [footerInputs, setFooterInputs] = useState(DEFAULT_FOOTER_CONTENT);
 
   const bannerInputRef = useRef(null);
@@ -263,11 +261,7 @@ const Manage = () => {
       const result = await response.json();
       if (result.success) {
         setManageData(result.data);
-        setIntroductionInputs({
-          vi: result.data.introductionTranslations?.vi || result.data.introduction || "",
-          zh: result.data.introductionTranslations?.zh || result.data.introduction || "",
-          en: result.data.introductionTranslations?.en || result.data.introduction || "",
-        });
+        setIntroductionInput(result.data.introduction || "");
         setFooterInputs({
           ...DEFAULT_FOOTER_CONTENT,
           ...(result.data.footerContent || {}),
@@ -410,16 +404,12 @@ const Manage = () => {
   const handleUpdateIntroduction = async () => {
     setLoading(true);
     try {
-      const response = await updateStorefrontIntroduction(
-        introductionInputs.vi,
-        introductionInputs,
-      );
+      const response = await updateStorefrontIntroduction(introductionInput);
       const result = await response.json();
       if (result.success) {
         setManageData((prev) => ({
           ...prev,
           introduction: result.data.introduction,
-          introductionTranslations: result.data.introductionTranslations,
         }));
         toast.success("Cập nhật thành công");
       } else {
@@ -669,35 +659,15 @@ const Manage = () => {
       </Box>
 
       <Box sx={{ mb: 4, width: "900px" }}>
-        <Typography variant="h6" sx={{ mb: 1 }}>Giới thiệu ba ngôn ngữ</Typography>
-        <Typography sx={{ color: "#64748b", mb: 2 }}>
-          Nội dung này hiển thị tại trang Giới thiệu phía khách hàng theo ngôn ngữ đang chọn.
-        </Typography>
-        <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-          {[
-            { key: "vi", label: "Tiếng Việt" },
-            { key: "zh", label: "中文简体" },
-            { key: "en", label: "English" },
-          ].map((language) => (
-            <Button
-              key={language.key}
-              variant={introductionLanguage === language.key ? "contained" : "outlined"}
-              onClick={() => setIntroductionLanguage(language.key)}
-            >
-              {language.label}
-            </Button>
-          ))}
-        </Box>
+        <Typography variant="h6" sx={{ mb: 1 }}>Giới thiệu</Typography>
+        <Typography sx={{ color: "#64748b", mb: 2 }}>N?i dung hi?n th? t?i trang Giới thiệu ph?a kh?ch h?ng.</Typography>
         <TextUpdateSection
           title=""
           buttonLoadingText="Đang cập nhật..."
           buttonText="Cập nhật cả ba ngôn ngữ"
           label="Nhập nội dung giới thiệu"
-          value={introductionInputs[introductionLanguage]}
-          onChange={(event) => setIntroductionInputs((current) => ({
-            ...current,
-            [introductionLanguage]: event.target.value,
-          }))}
+          value={introductionInput}
+          onChange={(event) => setIntroductionInput(event.target.value)}
           onUpdate={handleUpdateIntroduction}
           loading={loading}
         />

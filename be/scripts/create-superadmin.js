@@ -1,7 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 
-const dbNames = ['test', 'Ecom', 'TTSmartEcom'];
+const dbNames = ['test', 'Ecom'];
 
 async function seed() {
   const phone = '0901513825';

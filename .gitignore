@@ -39,6 +39,7 @@ wdata/
 
 # Deployment exclusions
 /AGENT.md
+/AGENTS.md
 /BUG_TRACKING.md
 /CHANGELOG.md
 /CLAUDE.md

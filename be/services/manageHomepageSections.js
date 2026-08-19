@@ -1,23 +1,16 @@
 const { Manage } = require("../models/manage");
-const { normalizeLocalizedText } = require("../utils/manageLocalization");
 
 const updateHomepageSection = async (sectionId, body) => {
-  const { name, nameTranslations, productId, display, image, link } = body;
+  const { name, productId, display, image, link } = body;
 
   if (!/^section(1[0-1]|[1-9])$/.test(sectionId)) {
     return { error: "sectionId không hợp lệ" };
   }
 
-  if (name !== undefined && typeof name !== "string") {
-    return { error: "Tên section phải là chuỗi" };
+  if (name !== undefined && (typeof name !== "string" || name.trim().length > 150)) {
+    return { error: "T\u00ean section ph\u1ea3i l\u00e0 chu\u1ed7i kh\u00f4ng qu\u00e1 150 k\u00fd t\u1ef1" };
   }
 
-  const normalizedName = nameTranslations !== undefined
-    ? normalizeLocalizedText(nameTranslations, name || "", 150)
-    : null;
-  if (normalizedName?.error) {
-    return { error: normalizedName.error };
-  }
 
   if (productId !== undefined && !Array.isArray(productId)) {
     return { error: "productId phải là một mảng" };
@@ -38,11 +31,7 @@ const updateHomepageSection = async (sectionId, body) => {
   }
 
   const updateData = {};
-  if (name !== undefined) updateData[`${sectionId}.name`] = name;
-  if (normalizedName) {
-    updateData[`${sectionId}.nameTranslations`] = normalizedName.value;
-    if (name === undefined) updateData[`${sectionId}.name`] = normalizedName.value.vi;
-  }
+  if (name !== undefined) updateData[`${sectionId}.name`] = name.trim();
   if (productId !== undefined) updateData[`${sectionId}.productId`] = productId;
   if (display !== undefined) updateData[`${sectionId}.display`] = display;
   if (image !== undefined) updateData[`${sectionId}.image`] = image;

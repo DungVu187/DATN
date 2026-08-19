@@ -23,7 +23,7 @@ import {
 import { Delete, Add, Remove } from "@mui/icons-material";
 import "./styles/cart.css";
 import { toast } from "react-hot-toast";
-import { useLanguage } from "../context/languagecontext.jsx";
+import { text } from "../constants/customerText.js";
 import { formatVariantPrice, isContactOnlyVariant } from "../utils/productpricing";
 import { getCustomerProfile } from "../api/customerAccountApi";
 import { createCustomerOrder } from "../api/customerOrderApi";
@@ -33,7 +33,6 @@ import {
 } from "../api/storefrontCatalogApi";
 
 function Cart() {
-  const { t, locale } = useLanguage();
   const navigate = useNavigate();
   const {
     cartItems,
@@ -98,7 +97,7 @@ function Cart() {
 
     try {
       if (!isLoggedIn) {
-        toast.error(t("login_to_order"));
+        toast.error(text("login_to_order"));
         setTimeout(() => {
           window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         }, 1000);
@@ -107,11 +106,11 @@ function Cart() {
 
       const selectedItems = cartItems.filter((item) => item.status);
       if (selectedItems.length === 0) {
-        toast.error(t("no_items_selected"));
+        toast.error(text("no_items_selected"));
         return;
       }
       if (selectedItems.some((item) => item.available === false)) {
-        toast.error(t("product_unavailable"));
+        toast.error(text("product_unavailable"));
         return;
       }
 
@@ -119,18 +118,18 @@ function Cart() {
       for (const item of selectedItems) {
         const productRes = await getStorefrontProduct(item.productId);
         if (!productRes.ok) {
-          toast.error(t("product_unavailable"));
+          toast.error(text("product_unavailable"));
           return;
         }
         const productData = await productRes.json();
         const variant = productData.variant[item.variantIndex];
         if (!variant || isContactOnlyVariant(variant)) {
-          toast.error(t("contact_only_product"));
+          toast.error(text("contact_only_product"));
           return;
         }
         if (variant.quantityForSale < item.quantity) {
           toast.error(
-            t("insufficient_stock")
+            text("insufficient_stock")
               .replace("{name}", productData.name)
               .replace("{qty}", variant.quantityForSale)
           );
@@ -158,16 +157,16 @@ function Cart() {
 
       if (!response.ok) {
         if (response.status === 401) {
-          toast.error(t("session_expired"));
+          toast.error(text("session_expired"));
           setTimeout(() => {
             window.location.href = `/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
           }, 1000);
           return;
         }
-        throw new Error(t("order_creation_failed"));
+        throw new Error(text("order_creation_failed"));
       }
 
-      toast.success(t("order_success"));
+      toast.success(text("order_success"));
       await fetchProducts(); // Cập nhật lại danh sách sản phẩm
       await fetchCart(); // Đồng bộ giỏ hàng mới từ database (các sản phẩm đã đặt đã được server xóa)
       if (data.order && data.order._id) {
@@ -175,7 +174,7 @@ function Cart() {
       }
     } catch (error) {
       console.error("Lỗi khi đặt hàng:", error);
-      toast.error(t("order_creation_failed"));
+      toast.error(text("order_creation_failed"));
     } finally {
       setIsCreatingOrder(false);
     }
@@ -197,7 +196,7 @@ function Cart() {
       setProducts(fetchedProducts.filter((product) => product !== null));
     } catch (error) {
       console.error("Error fetching products:", error);
-      toast.error(t("failed_to_load_product"));
+      toast.error(text("failed_to_load_product"));
     } finally {
       setLoading(false);
     }
@@ -223,10 +222,10 @@ function Cart() {
   return (
     <div style={{ width: '100%', backgroundColor: 'rgb(235, 246, 254)', padding: '3rem 16px', minHeight: '100vh', boxSizing: 'border-box' }}>
       <Container sx={{ backgroundColor: 'white', margin: 'auto', borderRadius: '5px', boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', py: '2rem' }}>
-        <h1>{t("cart")}</h1>
+        <h1>{text("cart")}</h1>
         {cartItems.length === 0 ? (
           <Typography variant="body1">
-            {t("cart_empty")}
+            {text("cart_empty")}
           </Typography>
         ) : (
           <List>
@@ -254,26 +253,26 @@ function Cart() {
                   variant="body2"
                   sx={{ fontWeight: "bold", gridColumn: "1 / 2" }}
                 >
-                  {t("product_name")}
+                  {text("product_name")}
                 </Typography>
                 <Typography
                   variant="body2"
                   sx={{ fontWeight: "bold", gridColumn: "2 / 3" }}
                 >
-                  {t("price")}
+                  {text("price")}
                 </Typography>
                 <Typography
                   variant="body2"
                   sx={{ fontWeight: "bold", gridColumn: "3 / 4" }}
                 >
-                  {t("attributes")}
+                  {text("attributes")}
                 </Typography>
               </Box>
               <Typography
                 variant="body2"
                 sx={{ fontWeight: "bold", width: 140, margin: "0 -1rem 0 2rem", textAlign: "center" }}
               >
-                {t("quantity")}
+                {text("quantity")}
               </Typography>
               <Box sx={{ width: 40 }} />
             </ListItem>
@@ -287,12 +286,12 @@ function Cart() {
                     sx={{ borderBottom: "1px solid #eee", py: 2 }}
                   >
                     <ListItemText
-                      primary={t("no_product_info")}
-                      secondary={t("remove_unavailable_product")}
+                      primary={text("no_product_info")}
+                      secondary={text("remove_unavailable_product")}
                     />
                     <IconButton
                       edge="end"
-                      aria-label={t("remove_from_cart")}
+                      aria-label={text("remove_from_cart")}
                       onClick={() => removeFromCart(item.productId, item.variantIndex)}
                       sx={{ color: "error.main" }}
                     >
@@ -443,7 +442,7 @@ function Cart() {
 
                           if (!parsedValue || parsedValue < 1) {
                             updateCartItem(item.productId, item.variantIndex, 1);
-                            toast.error(t("min_qty_warning"));
+                            toast.error(text("min_qty_warning"));
                           } else if (parsedValue > variant?.quantityForSale) {
                             updateCartItem(
                               item.productId,
@@ -451,7 +450,7 @@ function Cart() {
                               variant.quantityForSale
                             );
                             toast.error(
-                              t("max_qty_warning") + variant?.quantityForSale
+                              text("max_qty_warning") + variant?.quantityForSale
                             );
                           }
                         }}
@@ -483,7 +482,7 @@ function Cart() {
                               item.quantity + 1
                             );
                           } else {
-                            toast.error(t("insufficient_stock_general"));
+                            toast.error(text("insufficient_stock_general"));
                           }
                         }}
                         disabled={isContactOnly}
@@ -494,7 +493,7 @@ function Cart() {
                     </Box>
                     <IconButton
                       edge="end"
-                      aria-label={t("remove_from_cart")}
+                      aria-label={text("remove_from_cart")}
                       onClick={() => removeFromCart(item.productId, item.variantIndex)}
                       sx={{ color: "error.main", ml: 2 }}
                     >
@@ -514,9 +513,9 @@ function Cart() {
             color: "#555",
           }}
         >
-          <h2>{t("total")}</h2>
+          <h2>{text("total")}</h2>
           <p style={{ fontWeight: "600", marginLeft: "10px" }}>
-            {totalPrice.toLocaleString(locale)} VND
+            {totalPrice.toLocaleString("vi-VN")} VND
           </p>
         </div>
         <div style={{ display: "grid", justifyContent: "end" }}>
@@ -528,7 +527,7 @@ function Cart() {
             onClick={handleClearItems}
             disabled={cartItems.length === 0}
           >
-            {t("clear_cart")}
+            {text("clear_cart")}
           </Button>
           <Button
             variant="contained"
@@ -537,27 +536,27 @@ function Cart() {
             onClick={createOrder}
             disabled={isCreatingOrder || cartItems.length === 0}
           >
-            {isCreatingOrder ? t("processing") : t("place_order")}
+            {isCreatingOrder ? text("processing") : text("place_order")}
           </Button>
         </div>
 
         <Dialog open={openClearDialog} onClose={cancelClearItems}>
-          <DialogTitle>{t("confirm_clear_cart")}</DialogTitle>
+          <DialogTitle>{text("confirm_clear_cart")}</DialogTitle>
           <DialogContent>
             <Typography>
-              {t("confirm_clear_cart_msg")}
+              {text("confirm_clear_cart_msg")}
             </Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={cancelClearItems} color="primary">
-              {t("cancel")}
+              {text("cancel")}
             </Button>
             <Button
               onClick={confirmClearItems}
               color="error"
               variant="contained"
             >
-              {t("clear")}
+              {text("clear")}
             </Button>
           </DialogActions>
         </Dialog>

@@ -10,20 +10,6 @@ vi.mock("react-hot-toast", () => ({
   },
 }));
 
-vi.mock("../context/languagecontext.jsx", () => ({
-  useLanguage: () => ({
-    t: (key, fallback) => {
-      const translations = {
-        login: "Đăng nhập",
-        register: "Đăng ký",
-        full_name: "Họ và tên",
-        phone_number: "Số điện thoại",
-        processing: "Đang xử lý",
-      };
-      return fallback || translations[key] || key;
-    },
-  }),
-}));
 
 const responseOf = ({ ok = true, data = {} } = {}) => ({
   ok,

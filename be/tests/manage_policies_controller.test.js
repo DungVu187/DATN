@@ -31,23 +31,9 @@ function createResponse() {
 function createPoliciesPayload() {
   return createDefaultPolicies().map((policy) => ({
     key: policy.key,
-    title: policy.translations.vi.title,
-    summary: policy.translations.vi.summary,
-    sections: policy.translations.vi.sections.map((section) => ({ ...section })),
-    translations: {
-      vi: {
-        ...policy.translations.vi,
-        sections: policy.translations.vi.sections.map((section) => ({ ...section })),
-      },
-      zh: {
-        ...policy.translations.zh,
-        sections: policy.translations.zh.sections.map((section) => ({ ...section })),
-      },
-      en: {
-        ...policy.translations.en,
-        sections: policy.translations.en.sections.map((section) => ({ ...section })),
-      },
-    },
+    title: policy.title,
+    summary: policy.summary,
+    sections: policy.sections.map((section) => ({ ...section })),
   }));
 }
 
@@ -112,11 +98,6 @@ describe('manage policies controller contract', () => {
       data: expect.arrayContaining([
         expect.objectContaining({
           key: 'purchase',
-          translations: expect.objectContaining({
-            vi: expect.any(Object),
-            zh: expect.any(Object),
-            en: expect.any(Object),
-          }),
         }),
       ]),
     });
@@ -166,7 +147,6 @@ describe('manage policies controller contract', () => {
 
     const currentPolicies = createDefaultPolicies();
     const payload = createPoliciesPayload();
-    payload[0].translations.vi.sections[0].content = 'Nội dung mua hàng đã cập nhật';
     payload[0].sections[0].content = 'Nội dung mua hàng đã cập nhật';
 
     Manage.findOne.mockResolvedValue({ policies: currentPolicies });

@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { Manage } = require("../models/manage");
 const fs = require("fs").promises;
 const path = require("path");
-const { normalizeLocalizedText } = require("../utils/manageLocalization");
 
 const isImageAssetPath = (value) => typeof value === "string" && (
     /^data:image\//i.test(value)
@@ -290,7 +289,6 @@ async function updateHomeCategories(req, res) {
         const {
             configured = true,
             sidebarTitle = "Danh mục sản phẩm",
-            sidebarTitleTranslations,
             showSidebar = true,
             showQuickCategories = true,
             items = []
@@ -301,10 +299,6 @@ async function updateHomeCategories(req, res) {
         }
         if (typeof sidebarTitle !== 'string' || sidebarTitle.trim().length > 80) {
             return res.status(400).json({ success: 0, message: "Tiêu đề danh mục không hợp lệ" });
-        }
-        const normalizedSidebarTitle = normalizeLocalizedText(sidebarTitleTranslations, sidebarTitle, 80);
-        if (normalizedSidebarTitle.error) {
-            return res.status(400).json({ success: 0, message: normalizedSidebarTitle.error });
         }
         if (typeof showSidebar !== 'boolean' || typeof showQuickCategories !== 'boolean') {
             return res.status(400).json({ success: 0, message: "Trạng thái hiển thị không hợp lệ" });
@@ -323,10 +317,6 @@ async function updateHomeCategories(req, res) {
             }
 
             const label = typeof item.label === 'string' ? item.label.trim() : '';
-            const normalizedLabel = normalizeLocalizedText(item.labelTranslations, label, 80);
-            if (normalizedLabel.error) {
-                return res.status(400).json({ success: 0, message: normalizedLabel.error });
-            }
             const type = typeof item.type === 'string' ? item.type.trim() : '';
             const link = typeof item.link === 'string' ? item.link.trim() : '';
             const icon = typeof item.icon === 'string' ? item.icon.trim() : 'ri-tb-box-multiple';
@@ -360,7 +350,6 @@ async function updateHomeCategories(req, res) {
             normalizedItems.push({
                 id,
                 label,
-                labelTranslations: normalizedLabel.value,
                 type,
                 link,
                 icon,
@@ -373,7 +362,6 @@ async function updateHomeCategories(req, res) {
         const homeCategoryConfig = {
             configured,
             sidebarTitle: sidebarTitle.trim() || "Danh mục sản phẩm",
-            sidebarTitleTranslations: normalizedSidebarTitle.value,
             showSidebar,
             showQuickCategories,
             items: normalizedItems
@@ -526,7 +514,7 @@ async function deleteManageImage(req, res) {
 
 async function updateIntroduction(req, res) {
     try {
-        const { introduction = '', translations } = req.body;
+        const { introduction = '' } = req.body;
 
         if (typeof introduction !== 'string') {
             return res.status(400).json({
@@ -535,11 +523,7 @@ async function updateIntroduction(req, res) {
             });
         }
 
-        const normalizedTranslations = normalizeLocalizedText(translations, introduction, 20000);
-        if (normalizedTranslations.error) {
-            return res.status(400).json({ success: 0, message: normalizedTranslations.error });
-        }
-        const introductionValue = normalizedTranslations.value.vi;
+        const introductionValue = introduction.trim();
 
         let manage = await Manage.findOne();
         let updatedManage;
@@ -547,14 +531,11 @@ async function updateIntroduction(req, res) {
         if (manage) {
             updatedManage = await Manage.findOneAndUpdate(
                 {},
-                { $set: { introduction: introductionValue, introductionTranslations: normalizedTranslations.value } },
+                { $set: { introduction: introductionValue } },
                 { new: true }
             );
         } else {
-            updatedManage = await new Manage({
-                introduction: introductionValue,
-                introductionTranslations: normalizedTranslations.value
-            }).save();
+            updatedManage = await new Manage({ introduction: introductionValue }).save();
         }
 
         res.json({

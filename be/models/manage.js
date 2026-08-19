@@ -1,16 +1,9 @@
 const mongoose = require("mongoose");
 const { createDefaultPolicies, storefrontPolicySchema } = require('../config/policydefaults');
 
-const localizedTextSchema = new mongoose.Schema({
-    vi: { type: String, default: '' },
-    zh: { type: String, default: '' },
-    en: { type: String, default: '' }
-}, { _id: false });
-
 const homeCategoryItemSchema = new mongoose.Schema({
     id: { type: String, default: '' },
     label: { type: String, default: '' },
-    labelTranslations: { type: localizedTextSchema, default: () => ({}) },
     type: { type: String, default: '' },
     link: { type: String, default: '' },
     icon: { type: String, default: 'ri-tb-box-multiple' },
@@ -55,12 +48,7 @@ const manageSchema = new mongoose.Schema({
     introduction: {
         type: String,
         default: ''
-    },
-    introductionTranslations: {
-        type: localizedTextSchema,
-        default: () => ({})
-    },
-    mainPolicy: {
+    },    mainPolicy: {
         type: String,
         default: ''
     },
@@ -71,7 +59,6 @@ const manageSchema = new mongoose.Schema({
     homeCategoryConfig: {
         configured: { type: Boolean, default: false },
         sidebarTitle: { type: String, default: 'Danh mục sản phẩm' },
-        sidebarTitleTranslations: { type: localizedTextSchema, default: () => ({}) },
         showSidebar: { type: Boolean, default: true },
         showQuickCategories: { type: Boolean, default: true },
         items: { type: [homeCategoryItemSchema], default: [] }
@@ -81,7 +68,6 @@ const manageSchema = new mongoose.Schema({
             type: String,
             default: ''
         },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: {
             type: [String],
             default: []
@@ -93,7 +79,6 @@ const manageSchema = new mongoose.Schema({
     },
     section2: {
         name: { type: String, default: '' },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: { type: [String], default: [] },
         display: { type: Boolean, default: true },
         image: { type: String, default: '' },
@@ -101,7 +86,6 @@ const manageSchema = new mongoose.Schema({
     },
     section3: {
         name: { type: String, default: '' },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: { type: [String], default: [] },
         display: { type: Boolean, default: true },
         image: { type: String, default: '' },
@@ -109,7 +93,6 @@ const manageSchema = new mongoose.Schema({
     },
     section4: {
         name: { type: String, default: '' },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: { type: [String], default: [] },
         display: { type: Boolean, default: true },
         image: { type: String, default: '' },
@@ -117,7 +100,6 @@ const manageSchema = new mongoose.Schema({
     },
     section5: {
         name: { type: String, default: '' },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: { type: [String], default: [] },
         display: { type: Boolean, default: true },
         image: { type: String, default: '' },
@@ -125,7 +107,6 @@ const manageSchema = new mongoose.Schema({
     },
     section6: {
         name: { type: String, default: '' },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: { type: [String], default: [] },
         display: { type: Boolean, default: true },
         image: { type: String, default: '' },
@@ -133,7 +114,6 @@ const manageSchema = new mongoose.Schema({
     },
     section7: {
         name: { type: String, default: '' },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: { type: [String], default: [] },
         display: { type: Boolean, default: true },
         image: { type: String, default: '' },
@@ -141,7 +121,6 @@ const manageSchema = new mongoose.Schema({
     },
     section8: {
         name: { type: String, default: '' },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: { type: [String], default: [] },
         display: { type: Boolean, default: true },
         image: { type: String, default: '' },
@@ -149,7 +128,6 @@ const manageSchema = new mongoose.Schema({
     },
     section9: {
         name: { type: String, default: '' },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: { type: [String], default: [] },
         display: { type: Boolean, default: true },
         image: { type: String, default: '' },
@@ -157,7 +135,6 @@ const manageSchema = new mongoose.Schema({
     },
     section10: {
         name: { type: String, default: '' },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: { type: [String], default: [] },
         display: { type: Boolean, default: true },
         image: { type: String, default: '' },
@@ -165,7 +142,6 @@ const manageSchema = new mongoose.Schema({
     },
     section11: {
         name: { type: String, default: '' },
-        nameTranslations: { type: localizedTextSchema, default: () => ({}) },
         productId: { type: [String], default: [] },
         display: { type: Boolean, default: true },
         image: { type: String, default: '' },
@@ -178,6 +154,5 @@ const Manage = mongoose.model("Manage", manageSchema);
 module.exports = {
     Manage,
     manageSchema,
-    localizedTextSchema,
     homeCategoryItemSchema,
 };

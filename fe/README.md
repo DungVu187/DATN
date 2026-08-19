@@ -1,6 +1,6 @@
 # Nova Customer Frontend
 
-Frontend khách hàng của hệ thống TTSmartEcomWeb, chạy bằng React và Vite.
+Frontend khách hàng của hệ thống Nova, chạy bằng React và Vite.
 
 ## Yêu cầu
 

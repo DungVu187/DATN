@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/nova-logo-dark.svg";
-import { useLanguage } from "../../context/languagecontext.jsx";
+import { text } from "../../constants/customerText.js";
 import {
   getStorefrontContent,
   resolveStorefrontAssetUrl,
@@ -17,7 +17,6 @@ const DEFAULT_CONTACT = {
 };
 
 function Footer() {
-  const { t } = useLanguage();
   const [footerContent, setFooterContent] = useState(DEFAULT_CONTACT);
 
   useEffect(() => {
@@ -44,8 +43,8 @@ function Footer() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
   const hasCustomLogo = Boolean(footerContent.logo);
   const footerLogo = hasCustomLogo ? resolveStorefrontAssetUrl(footerContent.logo) : logo;
-  const description = footerContent.description || t("footer_brand_desc");
-  const address = footerContent.address || t("footer_address");
+  const description = footerContent.description || text("footer_brand_desc");
+  const address = footerContent.address || text("footer_address");
   const phone = footerContent.phone || DEFAULT_CONTACT.phone;
   const email = footerContent.email || DEFAULT_CONTACT.email;
   const phoneHref = phone.replace(/[^\d+]/g, "");
@@ -63,40 +62,39 @@ function Footer() {
               <li><i className="fa-solid fa-envelope" /><a href={`mailto:${email}`}>{email}</a></li>
             </ul>
             <div className="store-footer-socials">
-              <a href={`tel:${phoneHref}`} aria-label={t("hotline_label")}><i className="fa-solid fa-phone" /></a>
-              <a href={`mailto:${email}`} aria-label={t("send_email")}><i className="fa-solid fa-envelope" /></a>
+              <a href={`tel:${phoneHref}`} aria-label={text("hotline_label")}><i className="fa-solid fa-phone" /></a>
+              <a href={`mailto:${email}`} aria-label={text("send_email")}><i className="fa-solid fa-envelope" /></a>
             </div>
           </section>
 
           <section className="store-footer-column">
-            <h3>{t("quick_links")}</h3>
-            <Link to="/" onClick={scrollToTop}>{t("home")}</Link>
-            <Link to="/product" onClick={scrollToTop}>{t("products")}</Link>
-            <Link to="/dashboard" onClick={scrollToTop}>{t("equipment_group")}</Link>
-            <Link to="/introduction" onClick={scrollToTop}>{t("introduction")}</Link>
+            <h3>{text("quick_links")}</h3>
+            <Link to="/" onClick={scrollToTop}>{text("home")}</Link>
+            <Link to="/product" onClick={scrollToTop}>{text("products")}</Link>
+            <Link to="/introduction" onClick={scrollToTop}>{text("introduction")}</Link>
           </section>
 
           <section className="store-footer-column">
-            <h3>{t("policies")}</h3>
-            <Link to="/policy/purchase" onClick={scrollToTop}>{t("purchase_policy")}</Link>
-            <Link to="/policy/warranty" onClick={scrollToTop}>{t("return_warranty")}</Link>
-            <Link to="/policy/shipping" onClick={scrollToTop}>{t("shipping_policy")}</Link>
-            <Link to="/policy/privacy" onClick={scrollToTop}>{t("privacy_policy")}</Link>
+            <h3>{text("policies")}</h3>
+            <Link to="/policy/purchase" onClick={scrollToTop}>{text("purchase_policy")}</Link>
+            <Link to="/policy/warranty" onClick={scrollToTop}>{text("return_warranty")}</Link>
+            <Link to="/policy/shipping" onClick={scrollToTop}>{text("shipping_policy")}</Link>
+            <Link to="/policy/privacy" onClick={scrollToTop}>{text("privacy_policy")}</Link>
           </section>
 
           <section className="store-footer-column">
-            <h3>{t("support")}</h3>
-            <Link to="/policy/purchase" onClick={scrollToTop}>{t("shopping_guide")}</Link>
-            <Link to="/policy/warranty" onClick={scrollToTop}>{t("warranty_request")}</Link>
-            <a href={`mailto:${email}`}>{t("send_support_request")}</a>
-            <a href={`tel:${phoneHref}`}>{t("technical_support_247")}</a>
+            <h3>{text("support")}</h3>
+            <Link to="/policy/purchase" onClick={scrollToTop}>{text("shopping_guide")}</Link>
+            <Link to="/policy/warranty" onClick={scrollToTop}>{text("warranty_request")}</Link>
+            <a href={`mailto:${email}`}>{text("send_support_request")}</a>
+            <a href={`tel:${phoneHref}`}>{text("technical_support_247")}</a>
           </section>
 
         </div>
 
         <div className="store-footer-bottom">
-          <span>{t("copyright")}</span>
-          <button type="button" onClick={scrollToTop} aria-label={t("back_to_top")}><i className="fa-solid fa-angle-up" /></button>
+          <span>{text("copyright")}</span>
+          <button type="button" onClick={scrollToTop} aria-label={text("back_to_top")}><i className="fa-solid fa-angle-up" /></button>
         </div>
       </div>
     </footer>

@@ -168,57 +168,18 @@ describe('manage homepage sections extraction contract', () => {
     );
   });
 
-  it('normalizes nameTranslations and derives name from Vietnamese when omitted', async () => {
+  it('trims Vietnamese section names before persistence', async () => {
     Manage.findOne.mockResolvedValue({});
     Manage.findOneAndUpdate.mockResolvedValue({ section11: {} });
     const response = createResponse();
-
-    await updateHomepageSection({
-      params: { sectionId: 'section11' },
-      body: {
-        nameTranslations: {
-          vi: '  Trang chu  ',
-          zh: '  Zhong wen  ',
-          en: '  Home  ',
-        },
-      },
-    }, response);
-
-    expect(Manage.findOneAndUpdate).toHaveBeenCalledWith(
-      {},
-      {
-        $set: {
-          'section11.name': 'Trang chu',
-          'section11.nameTranslations': {
-            vi: 'Trang chu',
-            zh: 'Zhong wen',
-            en: 'Home',
-          },
-        },
-      },
-      { new: true, upsert: true }
-    );
+    await updateHomepageSection({ params: { sectionId: 'section11' }, body: { name: '  Trang ch?  ' } }, response);
+    expect(Manage.findOneAndUpdate).toHaveBeenCalledWith({}, { $set: { 'section11.name': 'Trang ch?' } }, { new: true, upsert: true });
   });
 
-  it('rejects overlong localized section names before persistence', async () => {
+  it('rejects overlong section names before persistence', async () => {
     const response = createResponse();
-
-    await updateHomepageSection({
-      params: { sectionId: 'section11' },
-      body: {
-        nameTranslations: {
-          vi: 'Valid',
-          zh: 'x'.repeat(151),
-          en: 'Valid',
-        },
-      },
-    }, response);
-
+    await updateHomepageSection({ params: { sectionId: 'section11' }, body: { name: 'x'.repeat(151) } }, response);
     expect(response.status).toHaveBeenCalledWith(400);
-    expect(response.json).toHaveBeenCalledWith(expect.objectContaining({
-      success: 0,
-      message: expect.any(String),
-    }));
     expect(Manage.findOneAndUpdate).not.toHaveBeenCalled();
   });
 

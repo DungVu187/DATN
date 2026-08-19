@@ -67,7 +67,6 @@ const FIELD_LABELS = {
   productId: "Danh sách sản phẩm",
   configured: "Dùng cấu hình thủ công",
   sidebarTitle: "Tiêu đề menu bên trái",
-  sidebarTitleTranslations: "Tiêu đề menu bên trái",
   showSidebar: "Hiện menu bên trái",
   showQuickCategories: "Hiện danh mục ngang",
   items: "Danh sách danh mục",

@@ -32,8 +32,8 @@ describe('Authentication API Tests (Phase 3)', () => {
 
     const productionOptions = getCookieOptions({
       secure: true,
-      hostname: 'ttsmart.com.vn',
-      get: () => 'ttsmart.com.vn'
+      hostname: 'nova.com.vn',
+      get: () => 'nova.com.vn'
     });
 
     expect(productionOptions.secure).toBe(true);

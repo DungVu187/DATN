@@ -40,11 +40,6 @@
 .store-drawer-action > i { width: 20px; color: #1473e6; }
 .store-drawer-links a:hover, .store-drawer-action:hover { background: #eef5ff; color: #1473e6; }
 .store-drawer-action:disabled { opacity: .6; cursor: wait; }
-.store-drawer-language { margin-top: 12px; padding: 16px 11px 8px; border-top: 1px solid #e5eaf0; }
-.store-drawer-language strong { display: block; margin-bottom: 10px; color: #64748b; font-size: 11px; letter-spacing: .05em; }
-.store-drawer-language > div { display: flex; gap: 8px; }
-.store-drawer-language button { min-width: 42px; height: 32px; border: 1px solid #d8e1ea; border-radius: 6px; background: #fff; color: #334e68; cursor: pointer; }
-.store-drawer-language button.is-active { border-color: #1473e6; background: #eef5ff; color: #1473e6; font-weight: 700; }
 .store-drawer-footer { padding: 14px 16px; border-top: 1px solid #e5eaf0; background: #f8fafc; }
 .store-drawer-footer a { color: #1473e6; text-decoration: none; font-weight: 700; font-size: 13px; }
 
@@ -85,7 +80,7 @@
   .store-nav-actions > a > i,
   .store-nav-popover > button > i:first-child,
   .store-cart-icon { font-size: 20px; }
-  .store-nav-actions > a:first-child, .store-language-menu { display: none; }
+  .store-nav-actions > a:first-child { display: none; }
   .store-mobile-account-link { display: flex !important; }
   .store-account-popover { display: none; }
   .store-cart-icon b {
