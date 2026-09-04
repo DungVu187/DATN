@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { apiFetch, getAuthFailure } from "../api/httpClient";
 import { text } from "../constants/customerText.js";
+import { trackCustomerBehavior } from "../utils/customerBehaviorTracker";
 
 export const ShopContext = createContext(null);
 
@@ -77,6 +78,7 @@ const ShopContextProvider = ({ children }) => {
         variantIndex,
         quantity: sanitizedQuantity,
       });
+      trackCustomerBehavior({ eventType: "add_to_cart", productId });
       toast.success(text("add_cart_success"));
     } catch (error) {
       // Lỗi đã được xử lý trong sendRequest

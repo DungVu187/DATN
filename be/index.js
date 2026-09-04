@@ -23,6 +23,9 @@ const { router: eporderRoutes } = require('./components/eporder');
 const { router: historyRoutes } = require('./components/storagehistory');
 const { router: activityLogRoutes } = require('./components/activitylog');
 const { router: dashboardRoutes } = require('./components/dashboard');
+const { router: paymentRoutes } = require('./components/payment');
+const { router: chatRoutes } = require('./components/chat');
+const { startSepayOrderExpiryJob } = require('./services/sepayOrderExpiry');
 
 // Tạo app + http server + socket.io
 const app = express();
@@ -148,6 +151,8 @@ app.use('/eporders', eporderRoutes);
 app.use('/histories', historyRoutes);
 app.use('/activity-logs', activityLogRoutes);
 app.use('/dashboard', dashboardRoutes);
+app.use('/payments', paymentRoutes);
+app.use('/chat', chatRoutes);
 
 // Static files
 const fs = require('fs');
@@ -183,7 +188,7 @@ app.get('*', (req, res, next) => {
   const apiPaths = [
     '/users', '/products', '/orders', '/chips', '/carts',
     '/manages', '/iporders', '/eporders',
-    '/histories', '/activity-logs', '/dashboard',
+    '/histories', '/activity-logs', '/dashboard', '/payments', '/chat',
     '/images', '/documents', '/section-images'
   ];
   const isApi = apiPaths.some(path => req.path.startsWith(path));
@@ -223,6 +228,7 @@ const startServer = async () => {
     server.listen(PORT, () => {
       server.removeListener('error', reject);
       console.log(`Server running on port ${PORT}`);
+      startSepayOrderExpiryJob({ io });
       resolve(server);
     });
   });

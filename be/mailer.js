@@ -92,6 +92,40 @@ const sendNewOrderNotification = async (orderInfo) => {
   }
 };
 
+const sendPaymentConfirmationEmail = async (orderInfo) => {
+  const { email, orderId, userName, total, createdAt } = orderInfo;
+  if (!email || !process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) return;
+
+  const totalFormatted = Number(total).toLocaleString('vi-VN') + ' đ';
+  const orderTime = new Date(createdAt).toLocaleString('vi-VN', {
+    timeZone: 'Asia/Ho_Chi_Minh',
+    dateStyle: 'full',
+    timeStyle: 'short',
+  });
+
+  const htmlBody = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+      <div style="background-color: #1565c0; padding: 20px 24px; text-align: center;"><h2 style="color: #ffffff; margin: 0;">Thanh toán thành công — Nova</h2></div>
+      <div style="padding: 24px; background-color: #ffffff; color: #333;">
+        <p>Xin chào <strong>${userName || 'Quý khách'}</strong>,</p>
+        <p>Nova đã nhận được thanh toán cho đơn hàng của bạn và sẽ bắt đầu xử lý đơn.</p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+          <tr style="background-color: #f5f5f5;"><td style="padding: 10px 14px; font-weight: bold;">Mã đơn hàng</td><td style="padding: 10px 14px;">${orderId}</td></tr>
+          <tr><td style="padding: 10px 14px; font-weight: bold;">Số tiền đã thanh toán</td><td style="padding: 10px 14px; color: #1565c0; font-weight: bold;">${totalFormatted}</td></tr>
+          <tr style="background-color: #f5f5f5;"><td style="padding: 10px 14px; font-weight: bold;">Thời gian đặt hàng</td><td style="padding: 10px 14px;">${orderTime}</td></tr>
+        </table>
+      </div>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: `"Nova Ecom" <${process.env.GMAIL_USER}>`,
+    to: email,
+    subject: `Thanh toán thành công cho đơn #${orderId}`,
+    html: htmlBody,
+  });
+};
+
 const sendResetOtpEmail = async (email, otp, userName) => {
   if (!email || !process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     console.warn('Bỏ qua gửi email: thiếu cấu hình GMAIL_USER / GMAIL_APP_PASSWORD trong .env hoặc thiếu email nhận');
@@ -136,4 +170,4 @@ const sendResetOtpEmail = async (email, otp, userName) => {
   }
 };
 
-module.exports = { sendNewOrderNotification, sendResetOtpEmail };
+module.exports = { sendNewOrderNotification, sendPaymentConfirmationEmail, sendResetOtpEmail };

@@ -129,13 +129,22 @@ const Sidebar = () => {
       }
     };
 
-    socketInstance.on("order_created", updateCount);
+    const handleOrderCreated = (order) => {
+      updateCount();
+      toast.success(
+        order?.paymentMethod === "SEPAY"
+          ? `SePay đã thanh toán đơn ${order.orderCode || "mới"}`
+          : "Có đơn hàng mới!"
+      );
+    };
+
+    socketInstance.on("order_created", handleOrderCreated);
     socketInstance.on("order_updated", updateCount);
     socketInstance.on("order_cancelled", updateCount);
     socketInstance.on("order_deleted", updateCount);
 
     return () => {
-      socketInstance.off("order_created", updateCount);
+      socketInstance.off("order_created", handleOrderCreated);
       socketInstance.off("order_updated", updateCount);
       socketInstance.off("order_cancelled", updateCount);
       socketInstance.off("order_deleted", updateCount);

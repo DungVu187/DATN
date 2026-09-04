@@ -2,10 +2,16 @@ import { apiFetch } from "./httpClient";
 
 const jsonHeaders = { "Content-Type": "application/json" };
 
-export const createCustomerOrder = ({ cartItems, total }) =>
+export const createCustomerOrder = ({ cartItems, total, addressId, checkoutNote, paymentMethod }) =>
   apiFetch("/orders/create-order", {
     method: "POST",
-    json: { cartItems, total },
+    json: {
+      cartItems,
+      ...(total !== undefined ? { total } : {}),
+      ...(addressId !== undefined ? { addressId } : {}),
+      ...(checkoutNote !== undefined ? { checkoutNote } : {}),
+      ...(paymentMethod !== undefined ? { paymentMethod } : {}),
+    },
   });
 
 export const getCustomerOrders = () =>

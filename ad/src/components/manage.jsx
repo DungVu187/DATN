@@ -660,11 +660,11 @@ const Manage = () => {
 
       <Box sx={{ mb: 4, width: "900px" }}>
         <Typography variant="h6" sx={{ mb: 1 }}>Giới thiệu</Typography>
-        <Typography sx={{ color: "#64748b", mb: 2 }}>N?i dung hi?n th? t?i trang Giới thiệu ph?a kh?ch h?ng.</Typography>
+        <Typography sx={{ color: "#64748b", mb: 2 }}>Nội dung hiển thị tại trang Giới thiệu phía khách hàng</Typography>
         <TextUpdateSection
           title=""
           buttonLoadingText="Đang cập nhật..."
-          buttonText="Cập nhật cả ba ngôn ngữ"
+          buttonText="Cập nhật"
           label="Nhập nội dung giới thiệu"
           value={introductionInput}
           onChange={(event) => setIntroductionInput(event.target.value)}

@@ -10,6 +10,37 @@ const {
   getRouteErrorMessage,
   getRouteErrorStatus,
 } = require('../utils/orderRouteErrors');
+const {
+  assertSepayConfigured,
+  buildSepayPaymentDetails,
+  createPaymentReference,
+} = require('../services/sepay');
+
+const supportedCustomerPaymentMethods = new Set(['COD', 'SEPAY']);
+
+const getShippingAddressSnapshot = (user, addressId) => {
+  if (!addressId) return null;
+
+  const address = user.addresses?.find((candidate) => candidate._id?.toString() === String(addressId));
+  if (!address) {
+    const error = new Error('Dia chi nhan hang khong hop le.');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  return {
+    addressId: address._id.toString(),
+    label: address.label || '',
+    receiverName: address.receiverName || '',
+    receiverPhone: address.receiverPhone || '',
+    provinceCode: address.provinceCode || '',
+    provinceName: address.provinceName || '',
+    wardCode: address.wardCode || '',
+    wardName: address.wardName || '',
+    addressLine: address.addressLine || '',
+    addressDetail: address.addressDetail || '',
+  };
+};
 
 async function createAdminDraftOrder(req, res) {
   try {
@@ -81,7 +112,7 @@ async function createAdminOrder(req, res) {
       await rollbackOrThrow(appliedAdjustments, error);
     }
 
-    io.to('admins').emit('order_created', {
+    io?.to('admins').emit('order_created', {
       orderId: savedOrder._id,
       orderCode: savedOrder.orderCode,
       userPhone,
@@ -104,13 +135,40 @@ async function createAdminOrder(req, res) {
 }
 
 async function createCustomerOrder(req, res) {
-  const { cartItems } = req.body;
+  const {
+    cartItems,
+    addressId,
+    checkoutNote,
+    paymentMethod: requestedPaymentMethod = 'COD',
+  } = req.body;
   const io = req.app.get('io');
 
   try {
     const orderingUser = await User.findById(req.user.userId);
     if (!orderingUser) {
       return res.status(404).json({ message: 'Không tìm thấy người dùng.' });
+    }
+
+    const paymentMethod = String(requestedPaymentMethod || '').toUpperCase();
+    if (!supportedCustomerPaymentMethods.has(paymentMethod)) {
+      return res.status(400).json({ message: 'Phuong thuc thanh toan khong hop le.' });
+    }
+
+    const shippingAddress = getShippingAddressSnapshot(orderingUser, addressId) || {
+      addressId: '',
+      label: '',
+      receiverName: orderingUser.name || '',
+      receiverPhone: orderingUser.phone || '',
+      provinceCode: '',
+      provinceName: '',
+      wardCode: '',
+      wardName: '',
+      addressLine: '',
+      addressDetail: '',
+    };
+
+    if (paymentMethod === 'SEPAY') {
+      assertSepayConfigured();
     }
 
     const preparedOrder = await prepareOrderItemsForCreation(cartItems, {
@@ -134,13 +192,24 @@ async function createCustomerOrder(req, res) {
         { new: true, upsert: true }
       );
       const orderCode = 'NOVA-' + String(counter.seq).padStart(2, '0');
+      const paymentExpiresAt = paymentMethod === 'SEPAY'
+        ? new Date(Date.now() + (Number(process.env.SEPAY_PAYMENT_EXPIRES_MINUTES) || 30) * 60 * 1000)
+        : null;
 
       savedOrder = await new Order({
         orderCode,
         userPhone,
         userName,
+        customerEmail: orderingUser.email || '',
         cartItems: preparedOrder.cartItems,
         total: preparedOrder.total,
+        paymentMethod,
+        paymentStatus: paymentMethod === 'SEPAY' ? 'PENDING' : 'UNPAID',
+        paymentReference: paymentMethod === 'SEPAY' ? createPaymentReference(orderCode) : null,
+        paymentAmount: preparedOrder.total,
+        paymentExpiresAt,
+        checkoutNote: String(checkoutNote || '').trim().slice(0, 500),
+        shippingAddress,
       }).save();
     } catch (error) {
       await rollbackOrThrow(appliedAdjustments, error);
@@ -162,21 +231,23 @@ async function createCustomerOrder(req, res) {
       console.error('Order created but cart cleanup failed:', postSaveError);
     }
 
-    sendNewOrderNotification({
-      orderId: savedOrder.orderCode || savedOrder._id,
-      userPhone,
-      userName,
-      total: preparedOrder.total,
-      createdAt: savedOrder.createdAt,
-    }).catch((error) => console.error('Lỗi gửi email thông báo đơn hàng:', error.message));
+    if (paymentMethod === 'COD') {
+      sendNewOrderNotification({
+        orderId: savedOrder.orderCode || savedOrder._id,
+        userPhone,
+        userName,
+        total: preparedOrder.total,
+        createdAt: savedOrder.createdAt,
+      }).catch((error) => console.error('Lỗi gửi email thông báo đơn hàng:', error.message));
 
-    io.to('admins').emit('order_created', {
-      orderId: savedOrder._id,
-      orderCode: savedOrder.orderCode,
-      userPhone,
-      total: preparedOrder.total,
-      createdAt: savedOrder.createdAt,
-    });
+      io?.to('admins').emit('order_created', {
+        orderId: savedOrder._id,
+        orderCode: savedOrder.orderCode,
+        userPhone,
+        total: preparedOrder.total,
+        createdAt: savedOrder.createdAt,
+      });
+    }
 
     res.status(201).json({
       message: 'Đặt hàng thành công',

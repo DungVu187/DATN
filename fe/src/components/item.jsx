@@ -15,6 +15,7 @@ import { ShopContext } from "../context/shopcontext";
 import { formatVariantPrice, isContactOnlyVariant } from "../utils/productpricing";
 import SafeProductImage from "./safeproductimage";
 import { text } from "../constants/customerText.js";
+import { trackCustomerBehavior } from "../utils/customerBehaviorTracker";
 
 function Item({ product }) {
   const navigate = useNavigate();
@@ -29,7 +30,10 @@ function Item({ product }) {
     ? `${primaryVariant.imgUrl}${primaryVariant.imgUrl.includes("?") ? "&" : "?"}v=${imageVersion}`
     : "";
 
-  const handleClick = () => navigate(`/product/${product._id}`);
+  const handleClick = () => {
+    trackCustomerBehavior({ eventType: "click_product", productId: product._id });
+    navigate(`/product/${product._id}`);
+  };
 
   const handleAddToCartClick = (event) => {
     event.stopPropagation();

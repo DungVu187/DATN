@@ -580,12 +580,10 @@ const Orders = () => {
                 </TableCell>
                 <TableCell align="center">
                   <Chip
-                    label={order.payment ? "Đã thanh toán" : "Chưa thanh toán"}
-                    color={order.payment ? "success" : "error"}
-                    onClick={() =>
-                      updateOrder(order._id, "payment", !order.payment)
-                    }
-                    clickable
+                    label={order.paymentStatus === "PENDING" ? "Chờ thanh toán SePay" : order.paymentStatus === "EXPIRED" ? "SePay đã hết hạn" : order.payment ? "Đã thanh toán" : "Chưa thanh toán"}
+                    color={order.paymentStatus === "PENDING" ? "warning" : order.paymentStatus === "EXPIRED" ? "default" : order.payment ? "success" : "error"}
+                    onClick={order.paymentMethod === "SEPAY" ? undefined : () => updateOrder(order._id, "payment", !order.payment)}
+                    clickable={order.paymentMethod !== "SEPAY"}
                   />
                 </TableCell>
                 <TableCell align="center">{order.createdAt}</TableCell>

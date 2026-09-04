@@ -12,6 +12,7 @@ const proxyPaths = [
   "/images",
   "/documents",
   "/section-images",
+  "/chat",
 ];
 
 const proxy = Object.fromEntries(

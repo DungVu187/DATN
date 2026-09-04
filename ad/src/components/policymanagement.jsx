@@ -156,7 +156,7 @@ const PolicyManagement = () => {
       const editablePolicies = toEditablePolicies(result.data);
       setPolicies(editablePolicies);
       setSavedValue(JSON.stringify(toPayload(editablePolicies)));
-      toast.success("Đã cập nhật chính sách ba ngôn ngữ phía khách hàng");
+      toast.success("Đã cập nhật chính sách khách hàng");
     } catch (error) {
       console.error("Error saving policies:", error);
       toast.error(error.message || "Đã xảy ra lỗi khi lưu chính sách");
@@ -176,7 +176,7 @@ const PolicyManagement = () => {
           <span className="policy-admin-eyebrow"><PolicyOutlinedIcon /> Quản lý trang chủ</span>
           <Typography component="h1">Chính sách khách hàng</Typography>
           <Typography component="p">
-            Chỉnh sửa riêng nội dung Tiếng Việt, Trung giản thể và Tiếng Anh hiển thị phía khách hàng.
+            Chỉnh sửa nội dung chính sách hiển thị phía khách hàng.
           </Typography>
         </Box>
         <Button
@@ -196,7 +196,6 @@ const PolicyManagement = () => {
             {policies.map((policy) => {
               const meta = policyMeta[policy.key] || {};
               const Icon = meta.icon || PolicyOutlinedIcon;
-              const vietnameseContent = policy.translations.vi;
               return (
                 <button
                   type="button"
@@ -206,8 +205,8 @@ const PolicyManagement = () => {
                 >
                   <span><Icon /></span>
                   <span>
-                    <strong>{meta.label || vietnameseContent.title}</strong>
-                    <small>{vietnameseContent.sections.length} nội dung</small>
+                    <strong>{meta.label || policy.title}</strong>
+                    <small>{policy.sections?.length || 0} nội dung</small>
                   </span>
                 </button>
               );

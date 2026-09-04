@@ -5,6 +5,7 @@ import logo from "../../assets/nova-logo-light.svg";
 import { apiFetch } from "../../api/httpClient";
 import { ShopContext } from "../../context/shopcontext";
 import { text } from "../../constants/customerText.js";
+import { trackCustomerBehavior } from "../../utils/customerBehaviorTracker";
 import "./navbar.css";
 
 function Navbar() {
@@ -51,6 +52,9 @@ function Navbar() {
   const handleSearch = (event) => {
     event.preventDefault();
     const term = search.trim();
+    if (term) {
+      trackCustomerBehavior({ eventType: "search_product", query: term, path: "/product" });
+    }
     navigate(term ? `/product?search=${encodeURIComponent(term)}` : "/product");
   };
 

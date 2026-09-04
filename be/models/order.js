@@ -21,6 +21,10 @@ const orderSchema = new mongoose.Schema(
     userName: {
       type: String,
     },
+    customerEmail: {
+      type: String,
+      default: "",
+    },
     cartItems: [
       {
         productId: { type: String, require: true },
@@ -41,6 +45,58 @@ const orderSchema = new mongoose.Schema(
     payment: {
       type: Boolean,
       default: false
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "SEPAY"],
+      default: "COD",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["UNPAID", "PENDING", "UNDERPAID", "PAID", "FAILED", "CANCELLED", "EXPIRED", "REFUNDED"],
+      default: "UNPAID",
+    },
+    paymentReference: {
+      type: String,
+      default: null,
+      index: true,
+    },
+    paymentTransactionId: {
+      type: String,
+      default: undefined,
+    },
+    paymentAmount: {
+      type: Number,
+      default: 0,
+    },
+    paymentReceivedAmount: {
+      type: Number,
+      default: 0,
+    },
+    paymentExpiresAt: {
+      type: Date,
+      default: null,
+    },
+    paidAt: {
+      type: Date,
+      default: null,
+    },
+    checkoutNote: {
+      type: String,
+      default: "",
+      maxlength: 500,
+    },
+    shippingAddress: {
+      addressId: { type: String, default: "" },
+      label: { type: String, default: "" },
+      receiverName: { type: String, default: "" },
+      receiverPhone: { type: String, default: "" },
+      provinceCode: { type: String, default: "" },
+      provinceName: { type: String, default: "" },
+      wardCode: { type: String, default: "" },
+      wardName: { type: String, default: "" },
+      addressLine: { type: String, default: "" },
+      addressDetail: { type: String, default: "" },
     },
     state: {
       type: String,

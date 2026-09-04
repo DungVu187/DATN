@@ -24,6 +24,7 @@ import {
   getStorefrontSectionValues,
   listStorefrontProducts,
 } from "../api/storefrontCatalogApi";
+import { trackCustomerBehavior } from "../utils/customerBehaviorTracker";
 const ALL_FILTER_VALUE = "__all__";
 const filterSelectMenuProps = {
   disableScrollLock: true,
@@ -152,6 +153,9 @@ function Product() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (filters.search.trim()) {
+      trackCustomerBehavior({ eventType: "search_product", query: filters.search, path: "/product" });
+    }
     const urlQuery = new URLSearchParams({
       ...filters,
       brand: filters.brand === ALL_FILTER_VALUE ? "" : filters.brand,

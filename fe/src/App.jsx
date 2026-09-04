@@ -18,6 +18,8 @@ import ChangePassword from './pages/changepassword.jsx';
 import Profile from './pages/profile.jsx';
 import CustomerRouteHistory from './components/customerroutehistory.jsx';
 import MobileBottomNav from './layout/mobilebottomnav/mobilebottomnav.jsx';
+import SepayPayment from './pages/sepayPayment.jsx';
+import Chatbox from './components/chatbox.jsx';
 
 
 function App() {
@@ -36,6 +38,7 @@ function App() {
                 <Route path="/product/:productId" element={<ProductDisplay />} />
                 <Route path="/login" element={<LogIn />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/payment/sepay/:orderId" element={<SepayPayment />} />
                 <Route path="/myorder" element={<MyOrder />} />
                 <Route path="/introduction" element={<Intro />} />
                 <Route path="/policy" element={<Policy />} />
@@ -50,6 +53,7 @@ function App() {
         </div>
 
         <MobileBottomNav />
+        <Chatbox />
         <Toaster position="top-center" />
       </BrowserRouter>
     </ShopContextProvider>
