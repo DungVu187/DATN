@@ -22,7 +22,6 @@ const PERMISSION_CATALOG = [
       { key: "order.edit", label: "Sửa" },
       { key: "order.delete", label: "Xóa" },
       { key: "order.excel", label: "Excel (mẫu/nhập/xuất)", dependsOn: "order.edit" },
-      { key: "order.scan_ai", label: "Quét hóa đơn AI", dependsOn: "order.edit" },
     ],
   },
   {

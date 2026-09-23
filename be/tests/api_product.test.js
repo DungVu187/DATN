@@ -543,10 +543,11 @@ describe('Products API Tests (Phase 4)', () => {
     expect(await Product.findById(protectedProduct._id)).toBeDefined();
   });
 
-  it('scan invoice accepts any scan permission and blocks staff without scan permission', async () => {
+  it('scan invoice accepts iporder/eporder scan permission and blocks the rest (sales order has no AI scan)', async () => {
+    // Quyền cũ order.scan_ai còn sót trong DB cũng không được quét nữa
     const orderScanAgent = await createStaffAgent({
       phone: '0987654337',
-      permissions: ['order.scan_ai']
+      permissions: ['order.edit', 'order.scan_ai']
     });
     const iporderScanAgent = await createStaffAgent({
       phone: '0987654338',
@@ -562,7 +563,7 @@ describe('Products API Tests (Phase 4)', () => {
     });
 
     const orderScan = await orderScanAgent.post('/products/scan-invoice');
-    expect(orderScan.status).not.toBe(403);
+    expect(orderScan.status).toBe(403);
 
     const iporderScan = await iporderScanAgent.post('/products/scan-invoice');
     expect(iporderScan.status).not.toBe(403);
@@ -573,7 +574,7 @@ describe('Products API Tests (Phase 4)', () => {
     const blocked = await blockedAgent.post('/products/scan-invoice');
     expect(blocked.status).toBe(403);
     expect(blocked.body.message).toBe(
-      'Access denied, missing one of permissions: order.scan_ai, iporder.scan_ai, eporder.scan_ai'
+      'Access denied, missing one of permissions: iporder.scan_ai, eporder.scan_ai'
     );
   });
 

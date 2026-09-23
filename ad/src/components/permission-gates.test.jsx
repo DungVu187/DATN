@@ -19,7 +19,8 @@ const PermissionGateHarness = () => {
   const canProductDelete = can("product.delete");
   const canOrderEdit = can("order.edit");
   const canOrderExcel = canOrderEdit && can("order.excel");
-  const canOrderScanAi = canOrderEdit && can("order.scan_ai");
+  // Quét AI chỉ có ở đơn nhập/xuất (đơn bán không có)
+  const canIporderScanAi = can("iporder.edit") && can("iporder.scan_ai");
 
   return (
     <div>
@@ -34,7 +35,7 @@ const PermissionGateHarness = () => {
       {canOrderExcel && <button>Xuất Excel</button>}
       {canOrderExcel && <button>Nhập Excel</button>}
       {canOrderExcel && <button>Tải file mẫu</button>}
-      {canOrderScanAi && <button>Quét hóa đơn AI</button>}
+      {canIporderScanAi && <button>Quét hóa đơn AI</button>}
 
     </div>
   );
@@ -66,8 +67,8 @@ describe("permission gate combinations", () => {
     expect(screen.queryByRole("button", { name: "Xóa sản phẩm" })).not.toBeInTheDocument();
   });
 
-  it("hides order write, excel, and AI actions when order.edit is missing", () => {
-    renderWithPermissions(["order.excel", "order.scan_ai"]);
+  it("hides order write, excel, and AI actions when edit permission is missing", () => {
+    renderWithPermissions(["order.excel", "iporder.scan_ai"]);
 
     expect(screen.queryByRole("button", { name: "Lưu thông tin" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Thêm sản phẩm" })).not.toBeInTheDocument();
@@ -85,8 +86,8 @@ describe("permission gate combinations", () => {
     expect(screen.getByRole("button", { name: "Tải file mẫu" })).toBeInTheDocument();
   });
 
-  it("shows order AI action only with order.edit and order.scan_ai", () => {
-    renderWithPermissions(["order.edit", "order.scan_ai"]);
+  it("shows AI action only with iporder.edit and iporder.scan_ai", () => {
+    renderWithPermissions(["iporder.edit", "iporder.scan_ai"]);
 
     expect(screen.getByRole("button", { name: "Quét hóa đơn AI" })).toBeInTheDocument();
   });

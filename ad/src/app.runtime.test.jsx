@@ -14,6 +14,19 @@ class ResizeObserverMock {
   disconnect() {}
 }
 
+// Admin chỉ tự có account.manage; quyền nghiệp vụ phải được gán từng cái
+const ADMIN_ROUTE_PERMISSIONS = [
+  "product.view",
+  "order.view",
+  "iporder.view",
+  "eporder.view",
+  "storefront.manage",
+  "history_import.view",
+  "history_export.view",
+  "activitylog.view",
+];
+let mockProfile;
+
 describe("Admin product route runtime", () => {
   beforeEach(() => {
     globalThis.ResizeObserver = ResizeObserverMock;
@@ -29,12 +42,13 @@ describe("Admin product route runtime", () => {
     }));
     sessionStorage.clear();
     window.history.pushState({}, "", "/admin/product");
+    mockProfile = { name: "Admin", role: "admin", permissions: [...ADMIN_ROUTE_PERMISSIONS] };
     globalThis.fetch = vi.fn(async (url) => {
       const target = String(url);
       if (target.includes("/users/profile")) {
         return {
           ok: true,
-          json: async () => ({ name: "Admin", role: "admin", permissions: [] }),
+          json: async () => mockProfile,
         };
       }
       if (target.includes("/dashboard")) {
@@ -247,6 +261,27 @@ describe("Admin product route runtime", () => {
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Danh mục sản phẩm" })).toBeInTheDocument();
     });
+  });
+
+  it("blocks an admin without assigned business permissions from permission-guarded routes", async () => {
+    mockProfile = { name: "Admin", role: "admin", permissions: [] };
+    window.history.pushState({}, "", "/admin/order");
+
+    render(
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <OrderProvider>
+          <App />
+        </OrderProvider>
+      </ThemeProvider>,
+    );
+
+    // RoleGuard chặn và chuyển về /product (cũng bị chặn) nên không trang nào hiển thị
+    await waitFor(() => {
+      expect(window.location.pathname).toBe("/admin/product");
+    });
+    expect(screen.queryByRole("heading", { name: "Quản lý đơn hàng bán" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Danh mục sản phẩm" })).not.toBeInTheDocument();
   });
 
   it("renders the public admin login route", async () => {

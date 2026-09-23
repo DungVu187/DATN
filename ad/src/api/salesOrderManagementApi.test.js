@@ -16,7 +16,6 @@ vi.mock("./httpClient", () => ({
 import {
   addSalesOrderItem,
   cancelSalesOrder,
-  cleanSalesOrderTempImage,
   createAdminSalesOrderDraft,
   deleteSalesOrderImage,
   deleteSalesOrderItem,
@@ -24,11 +23,9 @@ import {
   getProcessingSalesOrderCount,
   getSalesOrderProductsByCodes,
   getSalesOrderProductsByIds,
-  getSalesOrderProductsForScan,
   getSalesOrders,
   reorderSalesOrderItems,
   resolveSalesOrderAssetUrl,
-  scanSalesOrderInvoice,
   searchSalesOrderProducts,
   updateSalesOrderCustomer,
   updateSalesOrderField,
@@ -50,7 +47,6 @@ describe("salesOrderManagementApi", () => {
     await getSalesOrders({ page: 2, limit: 10, status: "Completed" });
     await getAdminSalesOrderDetail("order-1");
     await searchSalesOrderProducts({ search: "PLC S7", code: "P1", limit: 20 });
-    await getSalesOrderProductsForScan();
     await getSalesOrderProductsByIds(["p1", "p2"]);
     await getSalesOrderProductsByCodes(["P1", "P2"]);
     await getProcessingSalesOrderCount();
@@ -70,23 +66,18 @@ describe("salesOrderManagementApi", () => {
       "/products?search=PLC+S7&code=P1&limit=20",
       { headers: jsonHeaders },
     );
-    expect(apiFetchMock).toHaveBeenNthCalledWith(
-      4,
-      "/products/?limit=9999",
-      { headers: jsonHeaders },
-    );
-    expect(apiFetchMock).toHaveBeenNthCalledWith(5, "/products/fetch-by-ids", {
+    expect(apiFetchMock).toHaveBeenNthCalledWith(4, "/products/fetch-by-ids", {
       method: "POST",
       headers: jsonHeaders,
       json: { ids: ["p1", "p2"] },
     });
-    expect(apiFetchMock).toHaveBeenNthCalledWith(6, "/products/by-codes", {
+    expect(apiFetchMock).toHaveBeenNthCalledWith(5, "/products/by-codes", {
       method: "POST",
       headers: jsonHeaders,
       json: { codes: ["P1", "P2"] },
     });
     expect(apiFetchMock).toHaveBeenNthCalledWith(
-      7,
+      6,
       "/orders/processing-count",
     );
   });
@@ -149,35 +140,36 @@ describe("salesOrderManagementApi", () => {
     });
   });
 
-  it("keeps invoice and order image multipart contracts", async () => {
-    const scanFile = new File(["scan"], "scan.webp", { type: "image/webp" });
+  it("keeps order image multipart contracts", async () => {
     const orderFile = new File(["order"], "order.webp", { type: "image/webp" });
 
-    await scanSalesOrderInvoice(scanFile);
-    await cleanSalesOrderTempImage("/tmp/invoice one.webp");
     await uploadSalesOrderImage(orderFile);
     await deleteSalesOrderImage("/orders/invoice one.webp");
 
-    const scanOptions = apiFetchMock.mock.calls[0][1];
-    expect(apiFetchMock.mock.calls[0][0]).toBe("/products/scan-invoice");
-    expect(scanOptions.method).toBe("POST");
-    expect(scanOptions.body).toBeInstanceOf(FormData);
-    expect(scanOptions.body.get("invoice")).toBe(scanFile);
-    expect(apiFetchMock).toHaveBeenNthCalledWith(
-      2,
-      "/products/clean-temp-image?imageUrl=%2Ftmp%2Finvoice%20one.webp",
-      { method: "DELETE", headers: jsonHeaders },
-    );
-    const uploadOptions = apiFetchMock.mock.calls[2][1];
-    expect(apiFetchMock.mock.calls[2][0]).toBe("/orders/upload-image");
+    const uploadOptions = apiFetchMock.mock.calls[0][1];
+    expect(apiFetchMock.mock.calls[0][0]).toBe("/orders/upload-image");
     expect(uploadOptions.method).toBe("POST");
     expect(uploadOptions.body).toBeInstanceOf(FormData);
     expect(uploadOptions.body.get("invoice")).toBe(orderFile);
     expect(apiFetchMock).toHaveBeenNthCalledWith(
-      4,
+      2,
       "/orders/delete-image?imageUrl=%2Forders%2Finvoice%20one.webp",
       { method: "DELETE", headers: jsonHeaders },
     );
+  });
+
+  it("does not expose AI invoice scanning for sales orders", async () => {
+    const api = await import("./salesOrderManagementApi");
+    expect(api.scanSalesOrderInvoice).toBeUndefined();
+    expect(api.getSalesOrderProductsForScan).toBeUndefined();
+
+    const detailSource = fs.readFileSync(
+      path.join(currentDirectory, "..", "components", "order", "orderdetail.jsx"),
+      "utf8",
+    );
+    expect(detailSource).not.toContain("scan-invoice");
+    expect(detailSource).not.toContain("canScanAi");
+    expect(detailSource).not.toContain("Quét hóa đơn");
   });
 
   it("resolves relative invoice images against the API origin", () => {

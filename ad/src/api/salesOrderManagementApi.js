@@ -37,9 +37,6 @@ export const searchSalesOrderProducts = ({ search, code, limit }) => {
   return jsonRequest(`/products?${query}`);
 };
 
-export const getSalesOrderProductsForScan = () =>
-  jsonRequest("/products/?limit=9999");
-
 export const getSalesOrderProductsByIds = (ids) =>
   apiFetch("/products/fetch-by-ids", {
     method: "POST",
@@ -98,21 +95,6 @@ export const getSalesOrderProductsByCodes = (codes) =>
     headers: jsonHeaders,
     json: { codes },
   });
-
-export const scanSalesOrderInvoice = (file) => {
-  const formData = new FormData();
-  formData.append("invoice", file);
-  return apiFetch("/products/scan-invoice", {
-    method: "POST",
-    body: formData,
-  });
-};
-
-export const cleanSalesOrderTempImage = (imageUrl) =>
-  jsonRequest(
-    `/products/clean-temp-image?imageUrl=${encodeURIComponent(imageUrl)}`,
-    { method: "DELETE" },
-  );
 
 export const uploadSalesOrderImage = (file) => {
   const formData = new FormData();

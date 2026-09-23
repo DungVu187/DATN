@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Alert,
-  Autocomplete,
   Box,
   Button,
   Chip,
@@ -24,7 +23,6 @@ import {
   styled,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -52,16 +50,13 @@ import { getOrderDetailAbilities } from "../../utils/orderpermissions";
 import {
   addSalesOrderItem,
   cancelSalesOrder,
-  cleanSalesOrderTempImage,
   createAdminSalesOrderDraft,
   deleteSalesOrderImage,
   deleteSalesOrderItem,
   getAdminSalesOrderDetail,
   getSalesOrderProductsByCodes,
-  getSalesOrderProductsForScan,
   reorderSalesOrderItems,
   resolveSalesOrderAssetUrl,
-  scanSalesOrderInvoice,
   searchSalesOrderProducts,
   updateSalesOrderCustomer,
   updateSalesOrderImages,
@@ -187,49 +182,6 @@ const compressImage = (file, maxWidth = 1800, quality = 0.82) => {
   });
 };
 
-const performLevel1Matching = (items, catalogProducts, currentItems) => {
-  const currentProductIds = new Set((currentItems || []).map((item) => String(item.productId)));
-  const orderedCatalog = [
-    ...catalogProducts.filter((product) => currentProductIds.has(String(product._id))),
-    ...catalogProducts.filter((product) => !currentProductIds.has(String(product._id))),
-  ];
-
-  return (items || []).map((item) => {
-    const scannedCode = normalizeCode(item.code);
-    const scannedName = removeVietnameseTones(item.rawScannedName || item.name || "");
-    let bestProduct = null;
-    let confidence = "low";
-
-    if (scannedCode) {
-      bestProduct = orderedCatalog.find((product) => normalizeCode(product.code) === scannedCode);
-      if (bestProduct) confidence = "high";
-    }
-
-    if (!bestProduct && scannedCode) {
-      bestProduct = orderedCatalog.find((product) => {
-        const productCode = normalizeCode(product.code);
-        return productCode && (productCode.includes(scannedCode) || scannedCode.includes(productCode));
-      });
-      if (bestProduct) confidence = "medium";
-    }
-
-    if (!bestProduct && scannedName) {
-      bestProduct = orderedCatalog.find((product) => {
-        const productName = removeVietnameseTones(product.name);
-        return productName && (productName.includes(scannedName) || scannedName.includes(productName));
-      });
-      if (bestProduct) confidence = "medium";
-    }
-
-    return {
-      ...item,
-      quantity: parseQuantity(item.quantity) || 1,
-      matchedProductId: bestProduct?._id || "",
-      confidence,
-    };
-  });
-};
-
 const SortableTableRow = ({
   item,
   index,
@@ -329,16 +281,14 @@ const SalesOrderDetail = () => {
   const { can, profile } = usePermissions();
   const canCancel = can("order.delete");
   const excelInputRef = useRef(null);
-  const scanInputRef = useRef(null);
   const manualImageInputRef = useRef(null);
   const [order, setOrder] = useState(null);
   // canEdit = được sửa nội dung (quyền Sửa, hoặc quyền Thêm với đơn nháp của mình);
-  // canEditFull = quyền Sửa đầy đủ (xoá file ảnh trên server, Excel, quét AI…)
+  // canEditFull = quyền Sửa đầy đủ (xoá file ảnh trên server, Excel…)
   const {
     canEdit: canEditFull,
     canEditContent: canEdit,
     canExcel,
-    canScanAi,
     canAddImage,
     canCopy,
   } = getOrderDetailAbilities({ module: "order", can, profile, order });
@@ -352,12 +302,6 @@ const SalesOrderDetail = () => {
   const [codeTerm, setCodeTerm] = useState("");
   const [products, setProducts] = useState([]);
   const [productLoading, setProductLoading] = useState(false);
-  const [allProducts, setAllProducts] = useState([]);
-  const [isScanDialogOpen, setIsScanDialogOpen] = useState(false);
-  const [isScanning, setIsScanning] = useState(false);
-  const [scanResults, setScanResults] = useState([]);
-  const [selectedScanImage, setSelectedScanImage] = useState("");
-  const [tempScanImageUrl, setTempScanImageUrl] = useState(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [bulkProcessing, setBulkProcessing] = useState(false);
@@ -453,14 +397,6 @@ const SalesOrderDetail = () => {
     () => (order?.cartItems || []).map((item, index) => `${item.productId}-${item.variantIndex}-${index}`),
     [order]
   );
-
-  const loadAllProductsForScan = async () => {
-    if (allProducts.length > 0) return allProducts;
-    const data = await runSalesOrderRequest(getSalesOrderProductsForScan());
-    const loadedProducts = data?.products || [];
-    setAllProducts(loadedProducts);
-    return loadedProducts;
-  };
 
   const mergeItemsIntoOrder = async (itemsToAdd, targetOrderId = id, baseItems = order?.cartItems || []) => {
     const workingItems = baseItems.map((item) => ({ ...item }));
@@ -774,93 +710,6 @@ const SalesOrderDetail = () => {
     }
   };
 
-  const handleScanInvoiceSelect = async (event) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file || locked) return;
-
-    const previewUrl = URL.createObjectURL(file);
-    if (selectedScanImage) URL.revokeObjectURL(selectedScanImage);
-
-    setIsScanDialogOpen(true);
-    setIsScanning(true);
-    setScanResults([]);
-    setSelectedScanImage(previewUrl);
-    setTempScanImageUrl(null);
-
-    try {
-      const [compressedFile, catalogProducts] = await Promise.all([
-        compressImage(file),
-        loadAllProductsForScan(),
-      ]);
-      const result = await runSalesOrderRequest(
-        scanSalesOrderInvoice(compressedFile),
-      );
-
-      if (result?.success) {
-        const processedItems = performLevel1Matching(result.items || [], catalogProducts, order.cartItems || []);
-        setScanResults(processedItems);
-        setTempScanImageUrl(result.imageUrl || null);
-        toast.success("AI đã phân tích hóa đơn xong");
-      } else {
-        URL.revokeObjectURL(previewUrl);
-        setSelectedScanImage("");
-        setIsScanDialogOpen(false);
-      }
-    } catch (err) {
-      toast.error(err.message || "Lỗi khi quét hóa đơn");
-      URL.revokeObjectURL(previewUrl);
-      setSelectedScanImage("");
-      setIsScanDialogOpen(false);
-    } finally {
-      setIsScanning(false);
-    }
-  };
-
-  const handleCancelScanDialog = async () => {
-    if (isScanning) return;
-    if (tempScanImageUrl) {
-      await runSalesOrderRequest(cleanSalesOrderTempImage(tempScanImageUrl));
-    }
-    if (selectedScanImage) URL.revokeObjectURL(selectedScanImage);
-    setSelectedScanImage("");
-    setTempScanImageUrl(null);
-    setIsScanDialogOpen(false);
-    setScanResults([]);
-  };
-
-  const handleConfirmScanImport = async () => {
-    if (locked) return;
-    const validItems = scanResults
-      .filter((row) => row.matchedProductId && row.matchedProductId !== "NEW_PRODUCT")
-      .map((row) => ({
-        productId: row.matchedProductId,
-        variantIndex: 0,
-        quantity: row.quantity,
-        code: row.code,
-        name: row.rawScannedName,
-      }));
-
-    if (validItems.length === 0) {
-      toast.error("Vui lòng chọn ít nhất một sản phẩm hợp lệ");
-      return;
-    }
-
-    setBulkProcessing(true);
-    const mergeResult = await mergeItemsIntoOrder(validItems);
-    if (tempScanImageUrl) {
-      await updateOrderImages([...(order.images || []), tempScanImageUrl]);
-      setTempScanImageUrl(null);
-    }
-    await fetchOrder();
-    setBulkProcessing(false);
-    setIsScanDialogOpen(false);
-    setScanResults([]);
-    if (selectedScanImage) URL.revokeObjectURL(selectedScanImage);
-    setSelectedScanImage("");
-    toast.success(`Đã thêm ${mergeResult.added} dòng. Bỏ qua ${mergeResult.skipped.length} dòng.`);
-  };
-
   const handleManualUploadSelect = async (event) => {
     const files = Array.from(event.target.files || []);
     event.target.value = "";
@@ -989,18 +838,6 @@ const SalesOrderDetail = () => {
                 Tải file mẫu
               </Button>
             </>
-          )}
-          {canScanAi && (
-            <Button
-              variant="contained"
-              component="label"
-              startIcon={<AutoAwesomeIcon />}
-              disabled={locked || bulkProcessing}
-              sx={{ bgcolor: "#673ab7", "&:hover": { bgcolor: "#512da8" } }}
-            >
-              Quét hóa đơn (AI)
-              <VisuallyHiddenInput ref={scanInputRef} type="file" accept="image/*" onChange={handleScanInvoiceSelect} />
-            </Button>
           )}
           {canAddImage && (
             <Button variant="contained" component="label" startIcon={<CloudUploadIcon />} disabled={locked || bulkProcessing}>
@@ -1165,115 +1002,6 @@ const SalesOrderDetail = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAddDialog(false)}>Đóng</Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={isScanDialogOpen} onClose={handleCancelScanDialog} disableScrollLock maxWidth="lg" fullWidth>
-        <DialogTitle>Quét hóa đơn đơn bán</DialogTitle>
-        <DialogContent>
-          <Box display="flex" gap={2} flexDirection={{ xs: "column", md: "row" }}>
-            <Box sx={{ flex: 1, minHeight: 320, display: "flex", alignItems: "center", justifyContent: "center", bgcolor: "#f5f5f5" }}>
-              {selectedScanImage ? (
-                <img
-                  src={selectedScanImage}
-                  alt="Ảnh hóa đơn đang quét"
-                  style={{ maxWidth: "100%", maxHeight: 520, objectFit: "contain" }}
-                />
-              ) : (
-                <Typography color="text.secondary">Chưa có ảnh</Typography>
-              )}
-            </Box>
-            <Box sx={{ flex: 1.4 }}>
-              {isScanning ? (
-                <Box display="flex" flexDirection="column" alignItems="center" p={5} gap={2}>
-                  <CircularProgress />
-                  <Typography>AI đang phân tích hóa đơn...</Typography>
-                </Box>
-              ) : (
-                <TableContainer component={Paper} variant="outlined" sx={{ maxHeight: 520 }}>
-                  <Table stickyHeader size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Tên quét</TableCell>
-                        <TableCell align="center">SL</TableCell>
-                        <TableCell>Sản phẩm khớp</TableCell>
-                        <TableCell align="center">Tin cậy</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {scanResults.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={4} align="center">
-                            Chưa có kết quả
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        scanResults.map((row, index) => {
-                          const selectedProduct = allProducts.find((product) => product._id === row.matchedProductId) || null;
-                          return (
-                            <TableRow key={`${row.rawScannedName || row.code}-${index}`}>
-                              <TableCell>
-                                <Typography variant="body2">{row.rawScannedName || row.name || "N/A"}</Typography>
-                                {row.code && <Typography variant="caption">Mã: {row.code}</Typography>}
-                              </TableCell>
-                              <TableCell align="center" sx={{ width: 90 }}>
-                                <TextField
-                                  size="small"
-                                  type="number"
-                                  value={row.quantity || 1}
-                                  inputProps={{ min: 1 }}
-                                  onChange={(event) => {
-                                    const next = [...scanResults];
-                                    next[index] = { ...next[index], quantity: parseQuantity(event.target.value) || 1 };
-                                    setScanResults(next);
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell>
-                                <Autocomplete
-                                  size="small"
-                                  options={allProducts}
-                                  value={selectedProduct}
-                                  getOptionLabel={(option) =>
-                                    option ? `${option.name || ""}${option.code ? ` - ${option.code}` : ""}` : ""
-                                  }
-                                  onChange={(event, newValue) => {
-                                    const next = [...scanResults];
-                                    next[index] = { ...next[index], matchedProductId: newValue?._id || "" };
-                                    setScanResults(next);
-                                  }}
-                                  renderInput={(params) => <TextField {...params} label="Chọn sản phẩm" />}
-                                />
-                              </TableCell>
-                              <TableCell align="center">
-                                <Chip
-                                  size="small"
-                                  label={row.confidence || "low"}
-                                  color={row.confidence === "high" ? "success" : row.confidence === "medium" ? "warning" : "default"}
-                                />
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })
-                      )}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              )}
-            </Box>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelScanDialog} disabled={isScanning}>
-            Hủy
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleConfirmScanImport}
-            disabled={isScanning || scanResults.filter((row) => row.matchedProductId).length === 0}
-          >
-            Xác nhận nhập
-          </Button>
         </DialogActions>
       </Dialog>
 

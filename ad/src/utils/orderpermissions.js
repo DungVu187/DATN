@@ -19,10 +19,11 @@ export const isOwnDraft = (order, profile, isDraft) => {
     String(createdBy) === String(profileId) && isDraft(order);
 };
 
+// supportsScanAi: đơn bán không dùng quét hóa đơn AI, chỉ đơn nhập/xuất có
 const ORDER_MODULES = {
-  order: { isDraft: isSalesOrderDraft, relatedModule: null },
-  iporder: { isDraft: isInventoryOrderDraft, relatedModule: "eporder" },
-  eporder: { isDraft: isInventoryOrderDraft, relatedModule: "iporder" },
+  order: { isDraft: isSalesOrderDraft, relatedModule: null, supportsScanAi: false },
+  iporder: { isDraft: isInventoryOrderDraft, relatedModule: "eporder", supportsScanAi: true },
+  eporder: { isDraft: isInventoryOrderDraft, relatedModule: "iporder", supportsScanAi: true },
 };
 
 export const getOrderDetailAbilities = ({ module, can, profile, order }) => {
@@ -35,14 +36,14 @@ export const getOrderDetailAbilities = ({ module, can, profile, order }) => {
 
   return {
     canCreate,
-    // Quyền Sửa đầy đủ: đổi trạng thái, Excel, quét AI…
+    // Quyền Sửa đầy đủ: đổi trạng thái, Excel, quét AI (đơn nhập/xuất)…
     canEdit,
     // Sửa nội dung đơn (dòng hàng, tên, ghi chú, khách hàng, ảnh)
     canEditContent,
     canAddImage: canEditContent,
     canDelete: can(`${module}.delete`),
     canExcel: canEdit && can(`${module}.excel`),
-    canScanAi: canEdit && can(`${module}.scan_ai`),
+    canScanAi: config.supportsScanAi && canEdit && can(`${module}.scan_ai`),
     // Sao chép đơn = tạo đơn mới cùng module
     canCopy: canCreate,
     // "Xuất đơn" từ đơn nhập / "Nhập đơn" từ đơn xuất = tạo đơn ở module kia

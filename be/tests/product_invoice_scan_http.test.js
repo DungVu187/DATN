@@ -58,7 +58,7 @@ beforeAll(async () => {
     name: 'Invoice Scanner',
     role: 'staff',
     functions: ['order_management'],
-    permissions: ['order.scan_ai'],
+    permissions: ['iporder.scan_ai'],
   });
   scannerAgent = request.agent(app);
   const loginResponse = await scannerAgent

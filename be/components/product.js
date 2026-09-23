@@ -169,10 +169,10 @@ router.put('/:id/:variantIndex/update-import-price', [authenticateAdmin, checkPe
 // API lấy danh sách _id dựa trên mảng product.code
 router.post('/by-codes', authenticateOptionalProductViewer, fetchProductsByCodes);
 
-// API quét ảnh hóa đơn bằng AI
+// API quét ảnh hóa đơn bằng AI (chỉ đơn nhập / đơn xuất; đơn bán không dùng quét AI)
 router.post('/scan-invoice', [
     authenticateAdmin,
-    checkAnyPermission(['order.scan_ai', 'iporder.scan_ai', 'eporder.scan_ai']),
+    checkAnyPermission(['iporder.scan_ai', 'eporder.scan_ai']),
     uploadInvoiceScan
 ], scanProductInvoice);
 

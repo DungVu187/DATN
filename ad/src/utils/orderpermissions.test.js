@@ -94,6 +94,22 @@ describe.each([
   });
 });
 
+describe("quét hóa đơn AI chỉ có ở đơn nhập/xuất", () => {
+  const allowAll = () => true; // như superadmin: can() luôn true
+
+  it("đơn bán không bao giờ hiện quét AI, kể cả khi can() trả true", () => {
+    expect(getOrderDetailAbilities({
+      module: "order", can: allowAll, profile: me, order: { status: "Processing", state: "Processing" },
+    }).canScanAi).toBe(false);
+  });
+
+  it.each(["iporder", "eporder"])("%s vẫn quét AI khi có quyền Sửa + scan_ai", (module) => {
+    expect(getOrderDetailAbilities({
+      module, can: canFrom([`${module}.edit`, `${module}.scan_ai`]), profile: me, order: { status: false },
+    }).canScanAi).toBe(true);
+  });
+});
+
 describe("tạo đơn liên quan phải xét quyền của module đơn đích", () => {
   it("'Xuất đơn' từ đơn nhập cần eporder.create, không phải quyền đơn nhập", () => {
     const onlyImport = getOrderDetailAbilities({

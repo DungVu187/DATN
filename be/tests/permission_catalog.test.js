@@ -60,7 +60,11 @@ describe('GET /users/permission-catalog', () => {
     expect(res.body.success).toBe(true);
     expect(Array.isArray(res.body.catalog)).toBe(true);
     expect(res.body.catalog.length).toBeGreaterThan(0);
-    expect(countActions(res.body.catalog)).toBe(31);
+    expect(countActions(res.body.catalog)).toBe(30);
+    // Đơn bán không còn quét hóa đơn AI; đơn nhập/xuất vẫn giữ
+    expect(findAction(res.body.catalog, 'order.scan_ai')).toBeNull();
+    expect(findAction(res.body.catalog, 'iporder.scan_ai')).not.toBeNull();
+    expect(findAction(res.body.catalog, 'eporder.scan_ai')).not.toBeNull();
     expect(res.body.adminFixed).toEqual(['account.manage']);
     expect(findAction(res.body.catalog, 'order.excel')).toMatchObject({
       key: 'order.excel',
