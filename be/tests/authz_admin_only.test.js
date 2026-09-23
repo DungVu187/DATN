@@ -93,12 +93,20 @@ describe('Admin-only authorization regression tests', () => {
       .expect(403);
   });
 
-  it('protects activity logs with activitylog.view', async () => {
+  it('protects activity logs with activitylog.view for admin and staff', async () => {
     await ActivityLog.create({
       userName: 'Admin User',
       action: 'create_product',
       productName: 'Sample Product',
     });
+
+    await adminAgent
+      .get('/activity-logs')
+      .expect(403);
+
+    const admin = await User.findOne({ phone: '0910000001' });
+    admin.permissions.push('activitylog.view');
+    await admin.save();
 
     await adminAgent
       .get('/activity-logs')

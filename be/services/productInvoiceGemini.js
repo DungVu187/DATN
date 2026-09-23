@@ -1,11 +1,48 @@
+/**
+ * Danh sách model theo thứ tự ưu tiên: mạnh nhất trước, hạ dần khi model trên không dùng được.
+ *
+ * Bốn model Flash đầu cho chất lượng đọc tốt nhất nhưng hạn mức thấp (5 RPM / 20 RPD mỗi model).
+ * Ba model Lite phía sau là lưới an toàn: `3.5-flash-lite` và `3.1-flash-lite` có 15 RPM / 500 RPD
+ * nên vẫn quét được khi các model trên đã hết quota trong ngày.
+ * Hạn mức thực tế của tài khoản: https://ai.dev/rate-limit
+ */
 const DEFAULT_INVOICE_GEMINI_MODELS = Object.freeze([
+    'gemini-3.8-flash',
+    'gemini-3.7-flash',
+    'gemini-3.6-flash',
     'gemini-3.5-flash',
-    'gemini-2.5-flash',
+    'gemini-3.5-flash-lite',
     'gemini-3.1-flash-lite',
     'gemini-2.5-flash-lite',
-    'gemini-3-flash-preview',
 ]);
-const DEFAULT_INVOICE_GEMINI_TIMEOUT_MS = 25000;
+// Hoá đơn nhiều dòng cần lâu hơn 25s; trần cũ khiến model tốt bị cắt giữa lúc đang đọc đúng.
+const DEFAULT_INVOICE_GEMINI_TIMEOUT_MS = 45000;
+// Trần cho cả chuỗi model, để một lần quét không kéo dài vô hạn khi mọi model đều lỗi.
+const DEFAULT_INVOICE_GEMINI_BUDGET_MS = 90000;
+
+/** Cho phép đổi thứ tự model bằng INVOICE_GEMINI_MODELS mà không phải sửa code. */
+function resolveInvoiceModels(explicitModels) {
+    const provided = Array.isArray(explicitModels) ? explicitModels : [];
+    const normalizedProvided = provided.map((item) => String(item || '').trim()).filter(Boolean);
+    if (normalizedProvided.length > 0) return normalizedProvided;
+
+    const fromEnv = String(process.env.INVOICE_GEMINI_MODELS || '')
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
+    return fromEnv.length > 0 ? fromEnv : [...DEFAULT_INVOICE_GEMINI_MODELS];
+}
+
+/**
+ * Giới hạn suy luận nội bộ của model để không vượt trần thời gian.
+ * Đo thực tế: bỏ trống cấu hình này khiến gemini-3.5-flash tốn 30–38s cho một hoá đơn.
+ * Hai họ model dùng hai tham số khác nhau: 3.x nhận `thinkingLevel`, 2.5.x nhận `thinkingBudget`.
+ */
+function buildInvoiceThinkingConfig(modelName) {
+    return /^gemini-3/.test(String(modelName || ''))
+        ? { thinkingLevel: 'LOW' }
+        : { thinkingBudget: 0 };
+}
 
 async function callInvoiceGeminiModel({
     apiKey,
@@ -44,6 +81,9 @@ async function callInvoiceGeminiModel({
                         ],
                     },
                 ],
+                generationConfig: {
+                    thinkingConfig: buildInvoiceThinkingConfig(modelName),
+                },
             }),
         });
 
@@ -60,19 +100,35 @@ async function callInvoiceGeminiModel({
     }
 }
 
-async function requestInvoiceGeminiResponse({
+/**
+ * Đi lần lượt danh sách model cho tới khi handleResponse xử lý được phản hồi.
+ * handleResponse ném lỗi (ví dụ JSON hỏng) cũng được coi là model đó không dùng được
+ * và chuyển sang model kế tiếp, thay vì làm cả lần quét thất bại.
+ */
+async function runInvoiceGeminiLadder({
     apiKey,
     systemPrompt,
     mimeType,
     base64Image,
     fetchImpl = global.fetch,
-    models = DEFAULT_INVOICE_GEMINI_MODELS,
+    models,
     timeoutMs = DEFAULT_INVOICE_GEMINI_TIMEOUT_MS,
+    budgetMs = DEFAULT_INVOICE_GEMINI_BUDGET_MS,
     logger = console,
+    handleResponse,
 }) {
     let lastError = null;
+    const startedAt = Date.now();
+    const modelList = resolveInvoiceModels(models);
 
-    for (const modelName of models) {
+    for (const [modelIndex, modelName] of modelList.entries()) {
+        const remainingMs = budgetMs - (Date.now() - startedAt);
+        // Model đầu luôn được thử; các model sau chỉ chạy khi còn thời gian trong ngân sách.
+        if (modelIndex > 0 && remainingMs <= 0) {
+            logger.warn('[scan-invoice] Hết ngân sách thời gian, bỏ qua các model còn lại:', modelList.slice(modelIndex).join(', '));
+            break;
+        }
+
         try {
             const response = await callInvoiceGeminiModel({
                 apiKey,
@@ -81,11 +137,18 @@ async function requestInvoiceGeminiResponse({
                 mimeType,
                 base64Image,
                 fetchImpl,
-                timeoutMs,
+                timeoutMs: modelIndex === 0 ? timeoutMs : Math.min(timeoutMs, remainingMs),
                 logger,
             });
             if (response.ok) {
-                return response;
+                try {
+                    return await handleResponse(response);
+                } catch (parseError) {
+                    // Model trả HTTP 200 nhưng nội dung không dùng được: coi như model này lỗi.
+                    logger.warn(`[scan-invoice] Model ${modelName} trả về nội dung không đọc được:`, parseError.message);
+                    lastError = parseError;
+                    continue;
+                }
             }
 
             const errorText = await response.text();
@@ -111,17 +174,27 @@ function parseInvoiceGeminiData(geminiData) {
     return JSON.parse(textResult);
 }
 
+/** Giữ hợp đồng cũ: trả về Response thô của model đầu tiên phản hồi thành công. */
+async function requestInvoiceGeminiResponse(options) {
+    return runInvoiceGeminiLadder({ ...options, handleResponse: (response) => response });
+}
+
 async function extractInvoiceItemsWithGemini(options) {
-    const response = await requestInvoiceGeminiResponse(options);
-    const geminiData = await response.json();
-    return parseInvoiceGeminiData(geminiData);
+    return runInvoiceGeminiLadder({
+        ...options,
+        handleResponse: async (response) => parseInvoiceGeminiData(await response.json()),
+    });
 }
 
 module.exports = {
+    DEFAULT_INVOICE_GEMINI_BUDGET_MS,
     DEFAULT_INVOICE_GEMINI_MODELS,
     DEFAULT_INVOICE_GEMINI_TIMEOUT_MS,
+    buildInvoiceThinkingConfig,
     callInvoiceGeminiModel,
+    resolveInvoiceModels,
     extractInvoiceItemsWithGemini,
     parseInvoiceGeminiData,
     requestInvoiceGeminiResponse,
+    runInvoiceGeminiLadder,
 };

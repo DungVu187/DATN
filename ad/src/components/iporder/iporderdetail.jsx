@@ -59,6 +59,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { usePermissions } from "../../context/usepermissions";
+import { getOrderDetailAbilities } from "../../utils/orderpermissions";
 import {
   addImportOrderLine,
   cleanInventoryTempImage,
@@ -156,6 +157,7 @@ const SortableTableRow = ({
   handleDeleteProduct,
   handleProductStatusChange,
   canEdit,
+  canReceive,
 }) => {
   const {
     attributes,
@@ -309,7 +311,7 @@ const SortableTableRow = ({
               handleReceiveQuantity(index, value);
             }
           }}
-          disabled={!canEdit}
+          disabled={!canReceive}
           size="small"
           sx={{
             width: "50px",
@@ -348,7 +350,7 @@ const SortableTableRow = ({
           checked={product.status}
           color="success"
           onChange={() => handleProductStatusChange(index, product)}
-          disabled={!canEdit || product.status}
+          disabled={!canReceive || product.status}
         />
       </TableCell>
       <TableCell align="center">
@@ -370,15 +372,21 @@ const SortableTableRow = ({
 const ImportOrderDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { can } = usePermissions();
-  const canCreate = can("iporder.create");
-  const canEdit = can("iporder.edit");
-  const canDelete = can("iporder.delete");
-  const canExcel = canEdit && can("iporder.excel");
-  const canScanAi = canEdit && can("iporder.scan_ai");
-  const canAddImage = canCreate || canEdit;
-  const canCreateRelatedOrder = canCreate || canEdit;
+  const { can, profile } = usePermissions();
   const [order, setOrder] = useState(null);
+  // canEdit = được sửa nội dung (quyền Sửa, hoặc quyền Thêm với đơn nháp của mình);
+  // canEditFull = quyền Sửa đầy đủ cho thao tác nhập kho / đổi trạng thái
+  const {
+    canEdit: canEditFull,
+    canEditContent: canEdit,
+    canDelete,
+    canExcel,
+    canScanAi,
+    canAddImage,
+    canCopy,
+    canCreateTemplate,
+    canCreateRelatedOrder,
+  } = getOrderDetailAbilities({ module: "iporder", can, profile, order });
   const [enrichedOrder, setEnrichedOrder] = useState(null);
   const [tempProductList, setTempProductList] = useState([]);
   const [productDetails, setProductDetails] = useState([]);
@@ -1061,7 +1069,8 @@ const ImportOrderDetail = () => {
       
       setScannedImages(newImages);
 
-      if (imageUrlToDelete) {
+      // Xoá file trên server cần quyền Sửa; quyền Thêm chỉ gỡ ảnh khỏi đơn nháp của mình
+      if (imageUrlToDelete && canEditFull) {
         try {
           await readApiResponse(deleteImportOrderImage(imageUrlToDelete));
         } catch (delErr) {
@@ -2297,7 +2306,7 @@ const ImportOrderDetail = () => {
                 Lưu thay đổi
               </Button>
             )}
-            {(canEdit || canCreateRelatedOrder || canDelete) && (
+            {(canCopy || canCreateTemplate || canCreateRelatedOrder || canDelete) && (
               <IconButton
                 aria-label="Mở menu thao tác đơn hàng"
                 onClick={(event) => setMoreMenuAnchor(event.currentTarget)}
@@ -2319,7 +2328,7 @@ const ImportOrderDetail = () => {
             onClose={() => setMoreMenuAnchor(null)}
             disableScrollLock
           >
-            {canEdit && (
+            {canCopy && (
               <MenuItem
                 onClick={() => {
                   setMoreMenuAnchor(null);
@@ -2330,7 +2339,7 @@ const ImportOrderDetail = () => {
                 <ListItemText>Sao chép đơn</ListItemText>
               </MenuItem>
             )}
-            {canCreateRelatedOrder && (
+            {canCreateTemplate && (
               <MenuItem
                 onClick={() => {
                   setMoreMenuAnchor(null);
@@ -2678,6 +2687,7 @@ const ImportOrderDetail = () => {
                       handleDeleteProduct={handleDeleteProduct}
                       handleProductStatusChange={handleProductStatusChange}
                       canEdit={canEdit}
+                      canReceive={canEditFull}
                     />
                   ))
                 ) : (

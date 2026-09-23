@@ -1,0 +1,323 @@
+{
+  "groundTruth": [
+    {
+      "image": "xau.jpg",
+      "rows": 16,
+      "goodsTotal": 45299900,
+      "totalTrusted": false,
+      "note": "phiếu in nhàu/bẩn + ghi chú tay, có hoá đơn khác lộn ngược ở đầu khung"
+    },
+    {
+      "image": "xau1.jpg",
+      "rows": 6,
+      "goodsTotal": 267000,
+      "totalTrusted": true,
+      "note": "viết tay hoàn toàn; SL thập phân 2,2kg; đơn vị lẫn trong ô số lượng",
+      "checks": [
+        {
+          "stt": "3",
+          "field": "quantity",
+          "expected": 2.2,
+          "label": "SL 2,2 (không được thành 22)"
+        }
+      ]
+    },
+    {
+      "image": "xau2.jpg",
+      "rows": 5,
+      "goodsTotal": 1455000,
+      "totalTrusted": true,
+      "note": "viết tay; dòng 5 không có đơn giá nhưng có thành tiền"
+    },
+    {
+      "image": "xau3.jpg",
+      "rows": 6,
+      "goodsTotal": 623000,
+      "totalTrusted": true,
+      "note": "phiếu in nhưng tên hàng LỆCH HÀNG so với cột số"
+    },
+    {
+      "image": "xau4.jpg",
+      "rows": 3,
+      "goodsTotal": null,
+      "totalTrusted": false,
+      "note": "viết tay, KHÔNG có cột đơn giá/thành tiền"
+    }
+  ],
+  "grid": {
+    "gemini-3.8-flash": {
+      "xau.jpg": {
+        "error": "HTTP 429"
+      },
+      "xau1.jpg": {
+        "error": "HTTP 429"
+      },
+      "xau2.jpg": {
+        "error": "HTTP 429"
+      },
+      "xau3.jpg": {
+        "error": "HTTP 429"
+      },
+      "xau4.jpg": {
+        "error": "HTTP 429"
+      }
+    },
+    "gemini-3.7-flash": {
+      "xau.jpg": {
+        "error": "HTTP 503"
+      },
+      "xau1.jpg": {
+        "error": "HTTP 503"
+      },
+      "xau2.jpg": {
+        "rows": 5,
+        "rowsOk": true,
+        "sum": 1445000,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 4467
+      },
+      "xau3.jpg": {
+        "error": "HTTP 503"
+      },
+      "xau4.jpg": {
+        "error": "HTTP 429"
+      }
+    },
+    "gemini-3.6-flash": {
+      "xau.jpg": {
+        "rows": 16,
+        "rowsOk": true,
+        "sum": 45381100,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 21363
+      },
+      "xau1.jpg": {
+        "rows": 6,
+        "rowsOk": true,
+        "sum": 267000,
+        "totalOk": true,
+        "extraChecks": [
+          {
+            "label": "SL 2,2 (không được thành 22)",
+            "ok": true,
+            "got": 2.2
+          }
+        ],
+        "elapsedMs": 8931
+      },
+      "xau2.jpg": {
+        "rows": 5,
+        "rowsOk": true,
+        "sum": 1445000,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 9858
+      },
+      "xau3.jpg": {
+        "rows": 6,
+        "rowsOk": true,
+        "sum": 623000,
+        "totalOk": true,
+        "extraChecks": [],
+        "elapsedMs": 30483
+      },
+      "xau4.jpg": {
+        "rows": 3,
+        "rowsOk": true,
+        "sum": 0,
+        "totalOk": null,
+        "extraChecks": [],
+        "elapsedMs": 7407
+      }
+    },
+    "gemini-3.5-flash": {
+      "xau.jpg": {
+        "rows": 16,
+        "rowsOk": true,
+        "sum": 46333000,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 24482
+      },
+      "xau1.jpg": {
+        "rows": 6,
+        "rowsOk": true,
+        "sum": 267000,
+        "totalOk": true,
+        "extraChecks": [
+          {
+            "label": "SL 2,2 (không được thành 22)",
+            "ok": true,
+            "got": 2.2
+          }
+        ],
+        "elapsedMs": 6781
+      },
+      "xau2.jpg": {
+        "rows": 5,
+        "rowsOk": true,
+        "sum": 1445000,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 10033
+      },
+      "xau3.jpg": {
+        "rows": 6,
+        "rowsOk": true,
+        "sum": 623000,
+        "totalOk": true,
+        "extraChecks": [],
+        "elapsedMs": 8176
+      },
+      "xau4.jpg": {
+        "rows": 3,
+        "rowsOk": true,
+        "sum": 0,
+        "totalOk": null,
+        "extraChecks": [],
+        "elapsedMs": 8517
+      }
+    },
+    "gemini-3.5-flash-lite": {
+      "xau.jpg": {
+        "rows": 16,
+        "rowsOk": true,
+        "sum": 45381100,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 4914
+      },
+      "xau1.jpg": {
+        "rows": 6,
+        "rowsOk": true,
+        "sum": 267000,
+        "totalOk": true,
+        "extraChecks": [
+          {
+            "label": "SL 2,2 (không được thành 22)",
+            "ok": true,
+            "got": 2.2
+          }
+        ],
+        "elapsedMs": 3434
+      },
+      "xau2.jpg": {
+        "rows": 5,
+        "rowsOk": true,
+        "sum": 1445000,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 2877
+      },
+      "xau3.jpg": {
+        "rows": 6,
+        "rowsOk": true,
+        "sum": 623000,
+        "totalOk": true,
+        "extraChecks": [],
+        "elapsedMs": 2863
+      },
+      "xau4.jpg": {
+        "rows": 3,
+        "rowsOk": true,
+        "sum": 0,
+        "totalOk": null,
+        "extraChecks": [],
+        "elapsedMs": 2897
+      }
+    },
+    "gemini-3.1-flash-lite": {
+      "xau.jpg": {
+        "rows": 16,
+        "rowsOk": true,
+        "sum": 45381100,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 6749
+      },
+      "xau1.jpg": {
+        "rows": 6,
+        "rowsOk": true,
+        "sum": 267000,
+        "totalOk": true,
+        "extraChecks": [
+          {
+            "label": "SL 2,2 (không được thành 22)",
+            "ok": true,
+            "got": 2.2
+          }
+        ],
+        "elapsedMs": 3484
+      },
+      "xau2.jpg": {
+        "rows": 5,
+        "rowsOk": true,
+        "sum": 1455500,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 3676
+      },
+      "xau3.jpg": {
+        "rows": 6,
+        "rowsOk": true,
+        "sum": 623000,
+        "totalOk": true,
+        "extraChecks": [],
+        "elapsedMs": 5248
+      },
+      "xau4.jpg": {
+        "rows": 3,
+        "rowsOk": true,
+        "sum": 0,
+        "totalOk": null,
+        "extraChecks": [],
+        "elapsedMs": 3209
+      }
+    },
+    "gemini-2.5-flash-lite": {
+      "xau.jpg": {
+        "error": "parse/lỗi"
+      },
+      "xau1.jpg": {
+        "rows": 6,
+        "rowsOk": true,
+        "sum": 267000,
+        "totalOk": true,
+        "extraChecks": [
+          {
+            "label": "SL 2,2 (không được thành 22)",
+            "ok": true,
+            "got": 2.2
+          }
+        ],
+        "elapsedMs": 6207
+      },
+      "xau2.jpg": {
+        "rows": 5,
+        "rowsOk": true,
+        "sum": 1445000,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 7424
+      },
+      "xau3.jpg": {
+        "rows": 7,
+        "rowsOk": false,
+        "sum": 688000,
+        "totalOk": false,
+        "extraChecks": [],
+        "elapsedMs": 4772
+      },
+      "xau4.jpg": {
+        "rows": 3,
+        "rowsOk": true,
+        "sum": 0,
+        "totalOk": null,
+        "extraChecks": [],
+        "elapsedMs": 5480
+      }
+    }
+  }
+}

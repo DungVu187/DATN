@@ -5,6 +5,7 @@ const app = require('../index');
 const { Product } = require('../components/product');
 const { User } = require('../components/user');
 const { StorageHistory } = require('../components/storagehistory');
+const { defaultPermissionsFor } = require('./fixtures/adminPermissions');
 const Order = mongoose.model('Order');
 
 beforeAll(async () => {
@@ -24,7 +25,7 @@ afterEach(async () => {
   await StorageHistory.deleteMany({});
 });
 
-const createUser = async ({ phone, role = 'customer', functions = [], permissions = [] }) => {
+const createUser = async ({ phone, role = 'customer', functions = [], permissions = defaultPermissionsFor(role) }) => {
   const user = new User({
     phone,
     password: 'password123',
@@ -243,7 +244,8 @@ describe('Orders API Tests (Phase 5)', () => {
     const adminUser = new User({
       phone: '0987654328',
       password: 'password123',
-      role: 'admin'
+      role: 'admin',
+      permissions: defaultPermissionsFor('admin')
     });
     await adminUser.save();
 

@@ -108,7 +108,13 @@ const orderSchema = new mongoose.Schema(
       type: Date,
       default: null
     },
-    images: [{ type: String }]
+    images: [{ type: String }],
+    // Tài khoản quản trị tạo đơn (null với đơn khách tự đặt) — dùng cho quyền sửa đơn nháp của mình
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   },
   { timestamps: true, optimisticConcurrency: true }
 );

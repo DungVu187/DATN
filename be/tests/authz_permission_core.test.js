@@ -47,9 +47,11 @@ describe('Permission core authorization', () => {
       expect(hasPermission({ role: 'superadmin', permissions: [] }, 'any.permission')).toBe(true);
     });
 
-    it('keeps admin full access while ADMIN_FULL_ACCESS is true', () => {
-      expect(hasPermission({ role: 'admin', permissions: [] }, 'order.view')).toBe(true);
+    it('requires assigned business permissions for admin and retains fixed account management', () => {
+      expect(hasPermission({ role: 'admin', permissions: [] }, 'order.view')).toBe(false);
       expect(hasPermission({ role: 'admin', permissions: [] }, 'account.manage')).toBe(true);
+      expect(hasPermission({ role: 'admin', permissions: ['order.view'] }, 'order.view')).toBe(true);
+      expect(hasPermission({ role: 'admin', permissions: ['order.view'] }, 'order.delete')).toBe(false);
     });
 
     it('checks staff permissions directly', () => {
@@ -177,7 +179,7 @@ describe('Permission core authorization', () => {
   });
 
   describe('order route permission regression', () => {
-    it('uses order.view for GET /orders staff access', async () => {
+    it('uses order.view for GET /orders admin and staff access', async () => {
       await createUser({
         phone: '0920000006',
         role: 'admin',
@@ -199,7 +201,7 @@ describe('Permission core authorization', () => {
 
       await adminAgent
         .get('/orders')
-        .expect(200);
+        .expect(403);
 
       await staffAgent
         .get('/orders')

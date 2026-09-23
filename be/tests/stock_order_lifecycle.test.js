@@ -11,6 +11,7 @@ const { User } = require("../components/user");
 const { Product } = require("../components/product");
 const { Order } = require("../components/order");
 const { StorageHistory } = require("../components/storagehistory");
+const { defaultPermissionsFor } = require("./fixtures/adminPermissions");
 const Counter = mongoose.model("Counter");
 
 const CUSTOMER_PHONE = "0961000001";
@@ -50,6 +51,7 @@ const createUserAndAgent = async ({ phone, role }) => {
     password: "password123",
     name: `${role} Stock Test`,
     role,
+    permissions: defaultPermissionsFor(role),
   });
   await user.save();
 

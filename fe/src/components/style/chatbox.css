@@ -142,3 +142,7 @@
   .chatbox-launcher, .chatbox-suggestion-list button, .chatbox-quick-chips button { transition: none; }
   .chat-typing span { animation: none; opacity: .7; }
 }
+
+.chatbox-clear-button { border: 0; border-radius: 7px; padding: 6px 8px; background: transparent; color: var(--chat-muted); cursor: pointer; font: inherit; font-size: 11px; font-weight: 700; }
+.chatbox-clear-button:hover:not(:disabled) { background: #eaf2fb; color: var(--chat-blue); }
+.chatbox-clear-button:disabled { cursor: not-allowed; opacity: .45; }

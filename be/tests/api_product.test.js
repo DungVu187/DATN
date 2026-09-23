@@ -8,6 +8,7 @@ const app = require('../index');
 const { Product } = require('../components/product');
 const { User } = require('../components/user');
 const { StorageHistory } = require('../components/storagehistory');
+const { ADMIN_TEST_PERMISSIONS } = require('./fixtures/adminPermissions');
 const uploadedDocumentPaths = [];
 const uploadedImagePaths = [];
 
@@ -142,7 +143,8 @@ describe('Products API Tests (Phase 4)', () => {
     const adminUser = new User({
       phone: '0987654323',
       password: 'password123',
-      role: 'admin'
+      role: 'admin',
+      permissions: [...ADMIN_TEST_PERMISSIONS]
     });
     await adminUser.save();
 
@@ -234,7 +236,8 @@ describe('Products API Tests (Phase 4)', () => {
     const adminUser = new User({
       phone: '0987654325',
       password: 'password123',
-      role: 'admin'
+      role: 'admin',
+      permissions: [...ADMIN_TEST_PERMISSIONS]
     });
     await adminUser.save();
 
@@ -267,7 +270,8 @@ describe('Products API Tests (Phase 4)', () => {
     const adminUser = new User({
       phone: '0987654326',
       password: 'password123',
-      role: 'admin'
+      role: 'admin',
+      permissions: [...ADMIN_TEST_PERMISSIONS]
     });
     await adminUser.save();
 
@@ -612,7 +616,8 @@ describe('Product code normalized duplicate validation', () => {
     const adminUser = new User({
       phone: '0987654328',
       password: 'password123',
-      role: 'admin'
+      role: 'admin',
+      permissions: [...ADMIN_TEST_PERMISSIONS]
     });
     await adminUser.save();
 

@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+﻿import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 const proxyTarget = "http://localhost:5000";
@@ -9,6 +9,12 @@ const proxyPaths = [
   "/chips",
   "/carts",
   "/manages",
+  "/iporders",
+  "/eporders",
+  "/histories",
+  "/activity-logs",
+  "/dashboard",
+  "/payments",
   "/images",
   "/documents",
   "/section-images",
@@ -26,10 +32,11 @@ export default defineConfig({
     host: true,
     port: 3000,
     strictPort: true,
+    allowedHosts: ["ecom.irelia.online"],
     proxy,
   },
   build: {
-    outDir: "dist",
+    outDir: "build",
     emptyOutDir: true,
   },
   test: {
@@ -38,3 +45,5 @@ export default defineConfig({
     setupFiles: "./src/setupTests.js",
   },
 });
+
+

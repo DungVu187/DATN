@@ -58,6 +58,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { usePermissions } from "../../context/usepermissions";
+import { getOrderDetailAbilities } from "../../utils/orderpermissions";
 import {
   addExportOrderLine,
   cleanInventoryTempImage,
@@ -156,6 +157,7 @@ const SortableTableRow = ({
   handleDeleteProduct,
   handleProductStatusChange,
   canEdit,
+  canReceive,
 }) => {
   const {
     attributes,
@@ -318,7 +320,7 @@ const SortableTableRow = ({
             }
           }}
           size="small"
-          disabled={product.status || !canEdit}
+          disabled={product.status || !canReceive}
           sx={{
             width: "62px",
             "& .MuiOutlinedInput-root": {
@@ -355,7 +357,7 @@ const SortableTableRow = ({
           checked={product.status}
           color="success"
           onChange={() => handleProductStatusChange(index, product)}
-          disabled={!canEdit || product.status}
+          disabled={!canReceive || product.status}
         />
       </TableCell>
       <TableCell align="center">
@@ -377,15 +379,21 @@ const SortableTableRow = ({
 const ExportOrderDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { can } = usePermissions();
-  const canCreate = can("eporder.create");
-  const canEdit = can("eporder.edit");
-  const canDelete = can("eporder.delete");
-  const canExcel = canEdit && can("eporder.excel");
-  const canScanAi = canEdit && can("eporder.scan_ai");
-  const canAddImage = canCreate || canEdit;
-  const canCreateRelatedOrder = canCreate || canEdit;
+  const { can, profile } = usePermissions();
   const [order, setOrder] = useState(null);
+  // canEdit = được sửa nội dung (quyền Sửa, hoặc quyền Thêm với đơn nháp của mình);
+  // canEditFull = quyền Sửa đầy đủ cho thao tác xuất kho / đổi trạng thái
+  const {
+    canEdit: canEditFull,
+    canEditContent: canEdit,
+    canDelete,
+    canExcel,
+    canScanAi,
+    canAddImage,
+    canCopy,
+    canCreateTemplate,
+    canCreateRelatedOrder,
+  } = getOrderDetailAbilities({ module: "eporder", can, profile, order });
   const [enrichedOrder, setEnrichedOrder] = useState(null);
   const [tempProductList, setTempProductList] = useState([]);
   const [productDetails, setProductDetails] = useState([]);
@@ -1026,7 +1034,8 @@ const ExportOrderDetail = () => {
       
       setScannedImages(newImages);
 
-      if (imageUrlToDelete) {
+      // Xoá file trên server cần quyền Sửa; quyền Thêm chỉ gỡ ảnh khỏi đơn nháp của mình
+      if (imageUrlToDelete && canEditFull) {
         try {
           await handleApiResponse(deleteExportOrderImage(imageUrlToDelete));
         } catch (delErr) {
@@ -2311,7 +2320,7 @@ const ExportOrderDetail = () => {
                 Lưu thay đổi
               </Button>
             )}
-            {(canEdit || canCreateRelatedOrder || canDelete) && (
+            {(canCopy || canCreateTemplate || canCreateRelatedOrder || canDelete) && (
               <IconButton
                 aria-label="Mở menu thao tác đơn hàng"
                 onClick={(event) => setMoreMenuAnchor(event.currentTarget)}
@@ -2333,7 +2342,7 @@ const ExportOrderDetail = () => {
             onClose={() => setMoreMenuAnchor(null)}
             disableScrollLock
           >
-            {canEdit && (
+            {canCopy && (
               <MenuItem
                 onClick={() => {
                   setMoreMenuAnchor(null);
@@ -2344,7 +2353,7 @@ const ExportOrderDetail = () => {
                 <ListItemText>Sao chép đơn</ListItemText>
               </MenuItem>
             )}
-            {canCreateRelatedOrder && (
+            {canCreateTemplate && (
               <MenuItem
                 onClick={() => {
                   setMoreMenuAnchor(null);
@@ -2704,6 +2713,7 @@ const ExportOrderDetail = () => {
                       handleDeleteProduct={handleDeleteProduct}
                       handleProductStatusChange={handleProductStatusChange}
                       canEdit={canEdit}
+                      canReceive={canEditFull}
                     />
                   ))
                 ) : (

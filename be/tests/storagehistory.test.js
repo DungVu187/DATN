@@ -6,6 +6,7 @@ const { Product } = require('../components/product');
 const { StorageHistory } = require('../components/storagehistory');
 const { IpOrder } = require('../components/iporder');
 const { EpOrder } = require('../components/eporder');
+const { ADMIN_TEST_PERMISSIONS } = require('./fixtures/adminPermissions');
 
 beforeAll(async () => {
   await mongoose.connect('mongodb://localhost:27017/EcomTest');
@@ -29,7 +30,8 @@ const createAdminAgent = async () => {
     phone: '0944000001',
     password: 'password123',
     name: 'History Admin',
-    role: 'admin'
+    role: 'admin',
+    permissions: [...ADMIN_TEST_PERMISSIONS]
   });
   await user.save();
 

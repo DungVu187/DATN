@@ -1,0 +1,90 @@
+﻿
+Q: Tìm PLC Siemens
+  types=["PLC"] brands=["Siemens"] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: PLC | PLC S7-1200 CPU 1214C DC/DC/RLY || PLC | Module PLC SM1223 16DI/16DO DC/RLY || PLC | Module PLC SM1223 8DI/8DO DC/RLY
+
+Q: Bán cảm biến tiệm cận không?
+  types=["Cảm biến"] brands=[] codes=[] phrases=["tiem can"] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Cảm biến | Cảm biến tiệm cận PR12-4DN || Cảm biến | Cảm biến tiệm cận PRL18-8DN
+
+Q: relay trung gian
+  types=["Relay Trung Gian"] brands=[] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Relay Trung Gian | Relay 8 chân IDEC RN2S-NL-D24 24VDC 5A (8 chân dẹp) || Relay Trung Gian | Relay 14 chân IDEC RN4S-NL-D24 24VDC 5A (14 chân dẹp) || Relay Trung Gian | Relay 8 chân IDEC RN2S-NL-A220 220VAC 5A (8 chân dẹp)
+
+Q: rơ le trung gian
+  types=["Relay Trung Gian"] brands=[] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Relay Trung Gian | Relay 8 chân IDEC RN2S-NL-D24 24VDC 5A (8 chân dẹp) || Relay Trung Gian | Relay 14 chân IDEC RN4S-NL-D24 24VDC 5A (14 chân dẹp) || Relay Trung Gian | Relay 8 chân IDEC RN2S-NL-A220 220VAC 5A (8 chân dẹp)
+
+Q: Nên chọn loại nào cho tủ điện 3 pha?
+  types=[] brands=[] codes=[] phrases=["loai nao cho tu dien 3 pha"] tech=["3pha"]
+  relevance=null relaxed=false missingCodes=[]
+  top: (rỗng)
+
+Q: FX3U-32MT
+  types=[] brands=[] codes=["fx3u-32mt"] phrases=["fx3u 32mt"] tech=[]
+  relevance=null relaxed=false missingCodes=["fx3u-32mt"]
+  top: (rỗng)
+
+Q: Xin chào, tìm PLC Siemens
+  types=["PLC"] brands=["Siemens"] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: PLC | PLC S7-1200 CPU 1214C DC/DC/RLY || PLC | Module PLC SM1223 16DI/16DO DC/RLY || PLC | Module PLC SM1223 8DI/8DO DC/RLY
+
+Q: Có nút nhấn không?
+  types=["Nút Nhấn"] brands=[] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Nút Nhấn | Nút xanh không đèn nhấn nhả Idec 1 NO || Nút Nhấn | Nút xanh có đèn nhấn nhả Idec 1 NO || Nút Nhấn | Nút đỏ không đèn nhấn nhả Idec 1 NC
+
+Q: Có nguồn 24V không?
+  types=["Nguồn"] brands=[] codes=[] phrases=["24v"] tech=["24v"]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Nguồn | Bộ nguồn 24VDC 6.5A || Nguồn | Nguồn 24VDC 5A DELTA gắn ray
+
+Q: Van điện từ Airtac
+  types=["Van điện từ"] brands=["Airtac"] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Van điện từ | Van khí 4V310-10 220v || Van điện từ | Đế bắt van 4V310-10 || Van điện từ | Van khí nén 4V320-10-A220V
+
+Q: Xy lanh khí nén
+  types=["Xy lanh khí nén"] brands=[] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Xy lanh khí nén | Xy lanh khí nén 100x250 Airtac || Xy lanh khí nén | Xy lanh khí nén 100x200 Airtac || Xy lanh khí nén | Xy lanh khí nén 100x350 Parker
+
+Q: xi lanh khi nen
+  types=["Xy lanh khí nén"] brands=[] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Xy lanh khí nén | Xy lanh khí nén 100x250 Airtac || Xy lanh khí nén | Xy lanh khí nén 100x200 Airtac || Xy lanh khí nén | Xy lanh khí nén 100x350 Parker
+
+Q: Cảm biến Autonics
+  types=["Cảm biến"] brands=["Autonics"] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Cảm biến | Cảm biến tiệm cận PR12-4DN || Cảm biến | Cảm biến tiệm cận PRL18-8DN
+
+Q: Giá bitcoin hôm nay?
+  types=[] brands=[] codes=[] phrases=["bitcoin hom"] tech=[]
+  relevance=null relaxed=false missingCodes=[]
+  top: (rỗng)
+
+Q: Nguồn tin bóng đá hôm nay?
+  types=[] brands=[] codes=[] phrases=["nguon tin bong da hom"] tech=[]
+  relevance=null relaxed=false missingCodes=[]
+  top: (rỗng)
+
+Q: Có aptomat Schneider không
+  types=["Aptomat"] brands=["Schneider"] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Aptomat | MCB Schneider A9F74206 6A 6kA 2P || Aptomat | MCB Schneider A9F74210 10A 6kA 2P || Aptomat | MCB Schneider A9F74216 16A 6kA 2P
+
+Q: cầu đấu dây
+  types=["Cầu Đấu"] brands=[] codes=[] phrases=[] tech=[]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Cầu Đấu | Cầu mắt 15A || Cầu Đấu | Cầu đấu 60A 3 mắt || Cầu Đấu | Cầu đấu 60A 4 mắt
+
+Q: biến tần 1.5kW
+  types=["Biến tần"] brands=[] codes=[] phrases=["1 5kw"] tech=["1.5kw","5kw"]
+  relevance=2 relaxed=false missingCodes=[]
+  top: Biến tần | Biến tần Schneider ATV320U15N4C 1.5kW 3 Pha 380-500V

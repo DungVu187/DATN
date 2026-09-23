@@ -1,0 +1,410 @@
+[
+  {
+    "question": "Tìm PLC Siemens",
+    "intent": "product_search",
+    "searchEntity": "plc siemens",
+    "retrieved": [
+      {
+        "name": "PLC S7-1200 CPU 1214C DC/DC/RLY",
+        "code": "6ES7214-1HG40-0XB0",
+        "type": "PLC",
+        "brand": "Siemens"
+      },
+      {
+        "name": "Module PLC SM1222 16DO RLY",
+        "code": "6ES7222-1HH32-0XB0",
+        "type": "PLC",
+        "brand": "Siemens"
+      },
+      {
+        "name": "Module PLC SM1231 8AI RTD",
+        "code": "6ES7231-5PF32-0XB0",
+        "type": "PLC",
+        "brand": "Siemens"
+      },
+      {
+        "name": "PLC S7-1200 CPU 1215C AC/DC/RLY",
+        "code": "6ES7215-1BG40-0XB0",
+        "type": "PLC",
+        "brand": "Siemens"
+      },
+      {
+        "name": "Module PLC CM1241 RS 422/485",
+        "code": "6ES7241-1CH32-0XB0",
+        "type": "PLC",
+        "brand": "Siemens"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "Bán cảm biến tiệm cận không?",
+    "intent": "out_of_scope",
+    "searchEntity": "ban cam bien tiem",
+    "retrieved": [
+      {
+        "name": "biến dòng vuông",
+        "code": "NFO-40 400/5A",
+        "type": "Cuộn hút",
+        "brand": "Taiwan"
+      },
+      {
+        "name": "Biến áp cách ly 500VA",
+        "code": "GGK-500VA",
+        "type": "Biến áp cách ly",
+        "brand": "Giga"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "relay trung gian",
+    "intent": "product_search",
+    "searchEntity": "relay trung gian",
+    "retrieved": [
+      {
+        "name": "Relay 14 chân Schneider RXM4LB2BD (8 chân dẹp nhỏ) REXO Series",
+        "code": "RXM4LB2BD",
+        "type": "Relay Trung Gian",
+        "brand": "Schneider"
+      },
+      {
+        "name": "Relay 8 chân Schneider RXM2LB2BD (8 chân dẹp nhỏ) REXO Series",
+        "code": "RXM2LB2BD",
+        "type": "Relay Trung Gian",
+        "brand": "Schneider"
+      },
+      {
+        "name": "Đế relay 14 chân Schneider RXZE1M4C (8 chân dẹp nhỏ) REXO Series",
+        "code": "RXZE1M4C",
+        "type": "Relay Trung Gian",
+        "brand": "Schneider"
+      },
+      {
+        "name": "Đế relay 8 chân Schneider RXZE1M2C (8 chân dẹp nhỏ) REXO Series",
+        "code": "RXZE1M2C",
+        "type": "Relay Trung Gian",
+        "brand": "Schneider"
+      },
+      {
+        "name": "Relay nhiệt TH-N220RH 180A (140-220A)",
+        "code": "TH-N220RH 180A",
+        "type": "Relay Nhiệt",
+        "brand": "Mitsubishi"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "rơ le trung gian",
+    "intent": "out_of_scope",
+    "searchEntity": "ro le trung gian",
+    "retrieved": [
+      {
+        "name": "Bộ nguồn 24VDC 6.5A",
+        "code": "S8FS-C15024",
+        "type": "Nguồn",
+        "brand": "Omron"
+      },
+      {
+        "name": "Relay bảo vệ mất pha K8DS-PH1 200-480V",
+        "code": "",
+        "type": "Bảo Vệ Mất, Ngược Pha",
+        "brand": "Omron"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "Nên chọn loại nào cho tủ điện 3 pha?",
+    "intent": "out_of_scope",
+    "searchEntity": "nen chon dien 3 pha",
+    "retrieved": [
+      {
+        "name": "Đèn báo pha xanh",
+        "code": "GW1P-1EQM3G",
+        "type": "Đèn",
+        "brand": "Giga"
+      },
+      {
+        "name": "Biến tần Schneider ATV320U15N4C 1.5kW 3 Pha 380-500V",
+        "code": "ATV320U15N4C",
+        "type": "Biến tần",
+        "brand": "Schneider"
+      },
+      {
+        "name": "Biến tần Schneider ATV320D11N4B 11kW 3 Pha 380V",
+        "code": "ATV320D11N4B",
+        "type": "Biến tần",
+        "brand": "Schneider"
+      },
+      {
+        "name": "Đèn báo pha vàng",
+        "code": "GW1P-1EQM3Y",
+        "type": "Đèn",
+        "brand": "Giga"
+      },
+      {
+        "name": "Đèn báo pha đỏ",
+        "code": "GW1P-1EQM3R",
+        "type": "Đèn",
+        "brand": "Giga"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "FX3U-32MT",
+    "intent": "out_of_scope",
+    "searchEntity": "fx3u-32mt",
+    "retrieved": [],
+    "retrievalError": null
+  },
+  {
+    "question": "Xin chào, tìm PLC Siemens",
+    "intent": "greeting",
+    "searchEntity": "xin chao plc siemens",
+    "retrieved": [
+      {
+        "name": "Van khí nén DN300 (xả xi)",
+        "code": "DN300",
+        "type": "Van khí nén",
+        "brand": "Chaofan"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "Còn bao nhiêu cái?",
+    "intent": "price_query",
+    "searchEntity": "cai",
+    "retrieved": [],
+    "retrievalError": null
+  },
+  {
+    "question": "Giá bao nhiêu?",
+    "intent": "price_query",
+    "searchEntity": "",
+    "retrieved": [],
+    "retrievalError": null
+  },
+  {
+    "question": "Cái này bảo hành mấy năm?",
+    "intent": "warranty_query",
+    "searchEntity": "cai nay may nam",
+    "retrieved": [],
+    "retrievalError": null
+  },
+  {
+    "question": "Có nút nhấn không?",
+    "intent": "out_of_scope",
+    "searchEntity": "nut",
+    "retrieved": [],
+    "retrievalError": null
+  },
+  {
+    "question": "Có nguồn 24V không?",
+    "intent": "out_of_scope",
+    "searchEntity": "nguon 24v",
+    "retrieved": [
+      {
+        "name": "Nguồn 24VDC 5A DELTA gắn ray",
+        "code": "DRL-24V120W1EN",
+        "type": "Nguồn",
+        "brand": "Delta"
+      },
+      {
+        "name": "Bộ nguồn 24VDC 6.5A",
+        "code": "S8FS-C15024",
+        "type": "Nguồn",
+        "brand": "Omron"
+      },
+      {
+        "name": "Encoder Autonics E40S6-2000-3-T-24 2000 P/R 12-24V 6mm",
+        "code": "E40S6-2000-3-T-24",
+        "type": "PLC",
+        "brand": "Autonics"
+      },
+      {
+        "name": "Relay 14 chân IDEC RN4S-NL-D24 24VDC 5A (14 chân dẹp)",
+        "code": "RN4S-NL-D24",
+        "type": "Relay Trung Gian",
+        "brand": "Idec"
+      },
+      {
+        "name": "Relay 8 chân IDEC RN2S-NL-D24 24VDC 5A (8 chân dẹp)",
+        "code": "RN2S-NL-D24",
+        "type": "Relay Trung Gian",
+        "brand": "Idec"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "Van điện từ Airtac",
+    "intent": "out_of_scope",
+    "searchEntity": "dien airtac",
+    "retrieved": [
+      {
+        "name": "Xy lanh khí nén 63x250 Airtac",
+        "code": "SC63x250S",
+        "type": "Xy lanh khí nén",
+        "brand": "Airtac"
+      },
+      {
+        "name": "Van điện khí 4V210-08-A220",
+        "code": "4V210-08-A220",
+        "type": "Van điện từ",
+        "brand": "Airtac"
+      },
+      {
+        "name": "Xy lanh khí nén 100x200 Airtac",
+        "code": "SC100x200",
+        "type": "Xy lanh khí nén",
+        "brand": "Airtac"
+      },
+      {
+        "name": "Xy lanh khí nén 100x250 Airtac",
+        "code": "SC100x250S",
+        "type": "Xy lanh khí nén",
+        "brand": "Airtac"
+      },
+      {
+        "name": "Van sục khí silo",
+        "code": "Van sục khí silo",
+        "type": "Van khí nén",
+        "brand": "Airtac"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "Xy lanh khí nén",
+    "intent": "out_of_scope",
+    "searchEntity": "xy lanh khi nen",
+    "retrieved": [
+      {
+        "name": "Xy lanh khí nén 63x250 Airtac",
+        "code": "SC63x250S",
+        "type": "Xy lanh khí nén",
+        "brand": "Airtac"
+      },
+      {
+        "name": "Xy lanh khí nén 100x350 Parker",
+        "code": "GDC100x350",
+        "type": "Xy lanh khí nén",
+        "brand": "Parker"
+      },
+      {
+        "name": "Xy lanh khí nén 100x200 Airtac",
+        "code": "SC100x200",
+        "type": "Xy lanh khí nén",
+        "brand": "Airtac"
+      },
+      {
+        "name": "Xy lanh khí nén 100x250 Airtac",
+        "code": "SC100x250S",
+        "type": "Xy lanh khí nén",
+        "brand": "Airtac"
+      },
+      {
+        "name": "Đầu kéo xy lanh Y63",
+        "code": "Y63",
+        "type": "Phụ kiện khí nén",
+        "brand": "Airtac"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "xi lanh khi nen",
+    "intent": "out_of_scope",
+    "searchEntity": "xi lanh khi nen",
+    "retrieved": [
+      {
+        "name": "Xy lanh khí nén 63x250 Airtac",
+        "code": "SC63x250S",
+        "type": "Xy lanh khí nén",
+        "brand": "Airtac"
+      },
+      {
+        "name": "Xy lanh khí nén 100x350 Parker",
+        "code": "GDC100x350",
+        "type": "Xy lanh khí nén",
+        "brand": "Parker"
+      },
+      {
+        "name": "Xy lanh khí nén 100x200 Airtac",
+        "code": "SC100x200",
+        "type": "Xy lanh khí nén",
+        "brand": "Airtac"
+      },
+      {
+        "name": "Xy lanh khí nén 100x250 Airtac",
+        "code": "SC100x250S",
+        "type": "Xy lanh khí nén",
+        "brand": "Airtac"
+      },
+      {
+        "name": "Cảm biến xi lanh CL-D-A54",
+        "code": "CLD-A54",
+        "type": "Phụ kiện khí nén",
+        "brand": "Parker"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "Cảm biến Autonics",
+    "intent": "out_of_scope",
+    "searchEntity": "cam bien autonics",
+    "retrieved": [
+      {
+        "name": "biến dòng vuông",
+        "code": "NFO-40 400/5A",
+        "type": "Cuộn hút",
+        "brand": "Taiwan"
+      },
+      {
+        "name": "Biến áp cách ly 500VA",
+        "code": "GGK-500VA",
+        "type": "Biến áp cách ly",
+        "brand": "Giga"
+      }
+    ],
+    "retrievalError": null
+  },
+  {
+    "question": "Giá bitcoin hôm nay?",
+    "intent": "price_query",
+    "searchEntity": "bitcoin hom nay",
+    "retrieved": [],
+    "retrievalError": null
+  },
+  {
+    "question": "Nguồn tin bóng đá hôm nay?",
+    "intent": "out_of_scope",
+    "searchEntity": "nguon tin bong da hom nay",
+    "retrieved": [
+      {
+        "name": "cầu dao tự động",
+        "code": "BH-D6 2P 16A type C N",
+        "type": "PLC",
+        "brand": "Mitsubishi"
+      },
+      {
+        "name": "cầu dao tự động dạng khối",
+        "code": "NF250-CV 3P 250A",
+        "type": "PLC",
+        "brand": "Mitsubishi"
+      },
+      {
+        "name": "Cảm biến xi lanh CL-D-A54",
+        "code": "CLD-A54",
+        "type": "Phụ kiện khí nén",
+        "brand": "Parker"
+      }
+    ],
+    "retrievalError": null
+  }
+]

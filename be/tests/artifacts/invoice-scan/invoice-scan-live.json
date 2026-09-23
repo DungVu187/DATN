@@ -1,0 +1,1088 @@
+[
+  {
+    "imageName": "01.jpg",
+    "kb": 1155,
+    "elapsedMs": 5547,
+    "items": [
+      {
+        "stt": "1",
+        "rawScannedName": "Xy lanh khí SC100X200S",
+        "code": "SC100X200S",
+        "brand": null,
+        "quantity": 5,
+        "price": 855000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 342000,
+        "note": null
+      },
+      {
+        "stt": "2",
+        "rawScannedName": "Xy lanh khí nén SC100x250S",
+        "code": "SC100x250S",
+        "brand": null,
+        "quantity": 12,
+        "price": 960000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 921600,
+        "note": null
+      },
+      {
+        "stt": "3",
+        "rawScannedName": "Đế CA100",
+        "code": "CA100",
+        "brand": null,
+        "quantity": 17,
+        "price": 170000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 231200,
+        "note": null
+      },
+      {
+        "stt": "4",
+        "rawScannedName": "Khớp quay Y80 - Y100 (TQ)",
+        "code": "Y80 - Y100",
+        "brand": null,
+        "quantity": 17,
+        "price": 110000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 149600,
+        "note": null
+      },
+      {
+        "stt": "5",
+        "rawScannedName": "Van khí 4V310-10-A220 (Airtac)",
+        "code": "4V310-10-A220",
+        "brand": "Airtac",
+        "quantity": 24,
+        "price": 385000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 739200,
+        "note": "Giao thiếu mục 5: 2c"
+      },
+      {
+        "stt": "6",
+        "rawScannedName": "Đầu bịt đồng 3/8\"",
+        "code": "3/8\"",
+        "brand": null,
+        "quantity": 15,
+        "price": 10000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 12000,
+        "note": null
+      },
+      {
+        "stt": "7",
+        "rawScannedName": "Bộ lọc khí GAFC400-15-SW",
+        "code": "GAFC400-15-SW",
+        "brand": null,
+        "quantity": 2,
+        "price": 1048000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 167680,
+        "note": null
+      },
+      {
+        "stt": "8",
+        "rawScannedName": "Đầu nối bằng đồng STB02",
+        "code": "STB02",
+        "brand": null,
+        "quantity": 10,
+        "price": 11000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 8800,
+        "note": null
+      },
+      {
+        "stt": "9",
+        "rawScannedName": "Đầu nối YPE12",
+        "code": "YPE12",
+        "brand": null,
+        "quantity": 30,
+        "price": 18000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 43200,
+        "note": null
+      },
+      {
+        "stt": "10",
+        "rawScannedName": "Van 2LA150-15A ( Airtac)",
+        "code": "2LA150-15A",
+        "brand": "Airtac",
+        "quantity": 4,
+        "price": 958000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 306560,
+        "note": "mục 10: 2c"
+      },
+      {
+        "stt": "11",
+        "rawScannedName": "Ống mềm F12mmx8mmx100m",
+        "code": "F12mmx8mmx100m",
+        "brand": null,
+        "quantity": 200,
+        "price": 22500,
+        "unit": "mét",
+        "vat": "8%",
+        "taxAmount": 360000,
+        "note": null
+      },
+      {
+        "stt": "12",
+        "rawScannedName": "Đầu nối GPC1204",
+        "code": "GPC1204",
+        "brand": null,
+        "quantity": 50,
+        "price": 32500,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 130000,
+        "note": null
+      },
+      {
+        "stt": "13",
+        "rawScannedName": "Đầu nối GPC1203",
+        "code": "GPC1203",
+        "brand": null,
+        "quantity": 40,
+        "price": 24000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 76800,
+        "note": null
+      },
+      {
+        "stt": "14",
+        "rawScannedName": "Khớp nối GPL1203",
+        "code": "GPL1203",
+        "brand": null,
+        "quantity": 30,
+        "price": 25000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 60000,
+        "note": null
+      },
+      {
+        "stt": "15",
+        "rawScannedName": "Đầu nối YPC1202",
+        "code": "YPC1202",
+        "brand": null,
+        "quantity": 15,
+        "price": 19000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 22800,
+        "note": null
+      },
+      {
+        "stt": "16",
+        "rawScannedName": "Bộ lọc khí GAFR400-15-SW",
+        "code": "GAFR400-15-SW",
+        "brand": null,
+        "quantity": 1,
+        "price": 626000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 50080,
+        "note": null
+      }
+    ],
+    "trace": [
+      {
+        "model": "gemini-3.5-flash-lite",
+        "result": "phản hồi 5.54s"
+      }
+    ]
+  },
+  {
+    "imageName": "1.jpg",
+    "kb": 631,
+    "elapsedMs": 3442,
+    "items": [
+      {
+        "stt": "1",
+        "rawScannedName": "Mô đun",
+        "code": "6ES7223-1PL32-0XB0",
+        "brand": "SIEMENS-FADE",
+        "quantity": 2,
+        "price": 4164000,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 666240,
+        "note": null
+      },
+      {
+        "stt": "2",
+        "rawScannedName": "Cầu dao tự động dạng khối",
+        "code": "NF400-CW 3P 400A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 1,
+        "price": 3618900,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 289512,
+        "note": null
+      },
+      {
+        "stt": "3",
+        "rawScannedName": "Cầu dao tự động dạng khối",
+        "code": "NF125-CV 3P 125A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 2,
+        "price": 884250,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 141480,
+        "note": null
+      },
+      {
+        "stt": "4",
+        "rawScannedName": "Công tắc tơ dạng khối",
+        "code": "S-T65 AC200V 2A2B",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 5,
+        "price": 1197450,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 478980,
+        "note": null
+      },
+      {
+        "stt": "5",
+        "rawScannedName": "Rơ le nhiệt",
+        "code": "TH-T65 54A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 2,
+        "price": 356850,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 57096,
+        "note": null
+      },
+      {
+        "stt": "6",
+        "rawScannedName": "Rơ le nhiệt",
+        "code": "TH-T50 35A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 1,
+        "price": 270900,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 21672,
+        "note": null
+      },
+      {
+        "stt": "7",
+        "rawScannedName": "Rơ le nhiệt",
+        "code": "TH-T50 29A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 4,
+        "price": 270900,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 86688,
+        "note": null
+      },
+      {
+        "stt": "8",
+        "rawScannedName": "Công tắc tơ dạng khối",
+        "code": "S-T35 AC200V 2A2B",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 1,
+        "price": 567450,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 45396,
+        "note": null
+      }
+    ],
+    "trace": [
+      {
+        "model": "gemini-3.5-flash-lite",
+        "result": "phản hồi 3.44s"
+      }
+    ]
+  },
+  {
+    "imageName": "111.jpg",
+    "kb": 448,
+    "elapsedMs": 6422,
+    "items": [
+      {
+        "stt": "2",
+        "rawScannedName": "Biến dòng vuông",
+        "code": "NFO-40 500/5A",
+        "brand": "TAIWAN METERS",
+        "quantity": 1,
+        "price": 129150,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 10332,
+        "note": null
+      },
+      {
+        "stt": "5",
+        "rawScannedName": "Biến dòng vuông",
+        "code": "NFO-40 250/5A",
+        "brand": "TAIWAN METERS",
+        "quantity": 1,
+        "price": 103050,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 8244,
+        "note": null
+      },
+      {
+        "stt": "8",
+        "rawScannedName": "Công tắc xoay",
+        "code": "GW1S-3E20",
+        "brand": "GG_NNDB",
+        "quantity": 4,
+        "price": 42770,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 13686,
+        "note": null
+      },
+      {
+        "stt": "10",
+        "rawScannedName": "Công tắc xoay",
+        "code": "GW1S-2E10",
+        "brand": "GG_NNDB",
+        "quantity": 2,
+        "price": 29610,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 4738,
+        "note": null
+      },
+      {
+        "stt": "15",
+        "rawScannedName": "Nút nhấn",
+        "code": "GW1L-MF2E10QM3G",
+        "brand": "GG_NNDB",
+        "quantity": 15,
+        "price": 53110,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 63732,
+        "note": null
+      },
+      {
+        "stt": "16",
+        "rawScannedName": "Nút nhấn",
+        "code": "GW1L-AF2E10QM3R",
+        "brand": "GG_NNDB",
+        "quantity": 9,
+        "price": 70030,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 50422,
+        "note": null
+      },
+      {
+        "stt": "21",
+        "rawScannedName": "Nút nhấn",
+        "code": "GW1B-V4E01R",
+        "brand": "GG_NNDB",
+        "quantity": 1,
+        "price": 36660,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 2933,
+        "note": null
+      },
+      {
+        "stt": "22",
+        "rawScannedName": "Nút nhấn",
+        "code": "GW1B-M1E10G",
+        "brand": "GG_NNDB",
+        "quantity": 8,
+        "price": 22560,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 14438,
+        "note": null
+      },
+      {
+        "stt": "27",
+        "rawScannedName": "Nút nhấn",
+        "code": "GW1B-M1E01R",
+        "brand": "GG_NNDB",
+        "quantity": 3,
+        "price": 22560,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 5414,
+        "note": null
+      },
+      {
+        "stt": "28",
+        "rawScannedName": "Rơ le bảo vệ dòng điện",
+        "code": "EVR-3P44",
+        "brand": "SCHNEIDER-SAMWHA",
+        "quantity": 1,
+        "price": 1450000,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 116000,
+        "note": null
+      },
+      {
+        "stt": "34",
+        "rawScannedName": "Rơ le trung gian",
+        "code": "RN2S-NL-D24",
+        "brand": "IDEC",
+        "quantity": 52,
+        "price": 60000,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 249600,
+        "note": null
+      },
+      {
+        "stt": "39",
+        "rawScannedName": "Rơ le trung gian",
+        "code": "RN4S-NL-D24",
+        "brand": "IDEC",
+        "quantity": 1,
+        "price": 67200,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 5376,
+        "note": null
+      },
+      {
+        "stt": "40",
+        "rawScannedName": "Đế rơ le",
+        "code": "SN2S-05D",
+        "brand": "IDEC",
+        "quantity": 52,
+        "price": 31680,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 131789,
+        "note": null
+      },
+      {
+        "stt": "45",
+        "rawScannedName": "Đế rơ le",
+        "code": "SN4S-05D",
+        "brand": "IDEC",
+        "quantity": 1,
+        "price": 33120,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 2650,
+        "note": null
+      },
+      {
+        "stt": "46",
+        "rawScannedName": "Đế",
+        "code": "SR2P-06B",
+        "brand": "IDEC",
+        "quantity": 2,
+        "price": 43680,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 6989,
+        "note": null
+      },
+      {
+        "stt": "51",
+        "rawScannedName": "Công tắc tơ dạng khối",
+        "code": "S-T10 AC200V 1A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 14,
+        "price": 206550,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 231336,
+        "note": null
+      },
+      {
+        "stt": "52",
+        "rawScannedName": "Công tắc tơ dạng khối",
+        "code": "S-T35 AC200V 2A2B",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 1,
+        "price": 567450,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 45396,
+        "note": null
+      },
+      {
+        "stt": "56",
+        "rawScannedName": "Đồng hồ đo điện áp, dòng điện và tần số",
+        "code": "VAF36A",
+        "brand": "SELEC",
+        "quantity": 1,
+        "price": 716320,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 57306,
+        "note": null
+      },
+      {
+        "stt": "61",
+        "rawScannedName": "Công tắc tơ dạng khối",
+        "code": "S-T20 AC200V 1A1B",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 2,
+        "price": 369450,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 59112,
+        "note": null
+      },
+      {
+        "stt": "63",
+        "rawScannedName": "Công tắc tơ dạng khối",
+        "code": "S-T65 AC200V 2A2B",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 9,
+        "price": 1197450,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 862164,
+        "note": null
+      },
+      {
+        "stt": "67",
+        "rawScannedName": "Quạt hút lọc bụi",
+        "code": "FKL6622.230",
+        "brand": "LEIPOLE",
+        "quantity": 2,
+        "price": 262300,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 41968,
+        "note": null
+      }
+    ],
+    "trace": [
+      {
+        "model": "gemini-3.5-flash-lite",
+        "result": "phản hồi 6.42s"
+      }
+    ]
+  },
+  {
+    "imageName": "11111.jpg",
+    "kb": 256,
+    "elapsedMs": 4662,
+    "items": [
+      {
+        "stt": "68",
+        "rawScannedName": "Đồng hồ đo dòng điện",
+        "code": "MA12",
+        "brand": "SELEC",
+        "quantity": 1,
+        "price": 173400,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 13872,
+        "note": null
+      },
+      {
+        "stt": "73",
+        "rawScannedName": "Mô đun",
+        "code": "6ES7223-1PL32-0XB0",
+        "brand": "SIEMENS-FA",
+        "quantity": 2,
+        "price": 4164000,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 666240,
+        "note": null
+      },
+      {
+        "stt": "76",
+        "rawScannedName": "Đèn báo Ø22",
+        "code": "YW1P-1EQM3G",
+        "brand": "IDEC",
+        "quantity": 1,
+        "price": 49920,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 3994,
+        "note": null
+      },
+      {
+        "stt": "78",
+        "rawScannedName": "Đèn báo Ø22",
+        "code": "YW1P-1EQM3Y",
+        "brand": "IDEC",
+        "quantity": 1,
+        "price": 43200,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 3456,
+        "note": null
+      },
+      {
+        "stt": "82",
+        "rawScannedName": "Đèn báo Ø22",
+        "code": "YW1P-1EQM3R",
+        "brand": "IDEC",
+        "quantity": 1,
+        "price": 43200,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 3456,
+        "note": null
+      },
+      {
+        "stt": "83",
+        "rawScannedName": "Rơ le nhiệt",
+        "code": "TH-T65 54A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 2,
+        "price": 356850,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 57096,
+        "note": null
+      },
+      {
+        "stt": "88",
+        "rawScannedName": "Rơ le nhiệt",
+        "code": "TH-T50 35A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 1,
+        "price": 270900,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 21672,
+        "note": null
+      },
+      {
+        "stt": "89",
+        "rawScannedName": "Rơ le nhiệt",
+        "code": "TH-T50 29A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 4,
+        "price": 270900,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 86688,
+        "note": null
+      },
+      {
+        "stt": "94",
+        "rawScannedName": "Rơ le nhiệt",
+        "code": "TH-T18 15A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 1,
+        "price": 216900,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 17352,
+        "note": null
+      },
+      {
+        "stt": "95",
+        "rawScannedName": "Rơ le nhiệt",
+        "code": "TH-T18 9A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 1,
+        "price": 191700,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 15336,
+        "note": null
+      },
+      {
+        "stt": "100",
+        "rawScannedName": "Rơ le nhiệt",
+        "code": "TH-T18 6.6A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 1,
+        "price": 191700,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 15336,
+        "note": null
+      },
+      {
+        "stt": "101",
+        "rawScannedName": "Cầu dao tự động dạng khối",
+        "code": "NF400-CW 3P 400A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 1,
+        "price": 3618900,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 289512,
+        "note": null
+      },
+      {
+        "stt": "106",
+        "rawScannedName": "Cầu dao tự động dạng khối",
+        "code": "NF125-CV 3P 125A",
+        "brand": "MITSUBISHI-DC",
+        "quantity": 2,
+        "price": 884250,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 141480,
+        "note": null
+      }
+    ],
+    "trace": [
+      {
+        "model": "gemini-3.5-flash-lite",
+        "result": "phản hồi 4.66s"
+      }
+    ]
+  },
+  {
+    "imageName": "2.jpg",
+    "kb": 600,
+    "elapsedMs": 6128,
+    "items": [
+      {
+        "stt": "9",
+        "rawScannedName": "S-T20 AC200V 1A1B Công tơ tơ dạng khối MITSUBISHI-DC Japan",
+        "code": "S-T20 AC200V 1A1B",
+        "brand": "MITSUBISHI",
+        "quantity": 2,
+        "price": 369450,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 59112,
+        "note": null
+      },
+      {
+        "stt": "10",
+        "rawScannedName": "TH-T18 15A Rơ le nhiệt MITSUBISHI-DC Japan",
+        "code": "TH-T18 15A",
+        "brand": "MITSUBISHI",
+        "quantity": 1,
+        "price": 216900,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 17352,
+        "note": null
+      },
+      {
+        "stt": "11",
+        "rawScannedName": "TH-T18 9A Rơ le nhiệt MITSUBISHI-DC Japan",
+        "code": "TH-T18 9A",
+        "brand": "MITSUBISHI",
+        "quantity": 1,
+        "price": 191700,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 15336,
+        "note": null
+      },
+      {
+        "stt": "12",
+        "rawScannedName": "S-T10 AC200V 1A Công tơ tơ dạng khối MITSUBISHI-DC Japan",
+        "code": "S-T10 AC200V 1A",
+        "brand": "MITSUBISHI",
+        "quantity": 14,
+        "price": 206550,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 231336,
+        "note": null
+      },
+      {
+        "stt": "13",
+        "rawScannedName": "TH-T18 6.6A Rơ le nhiệt MITSUBISHI-DC Japan",
+        "code": "TH-T18 6.6A",
+        "brand": "MITSUBISHI",
+        "quantity": 1,
+        "price": 191700,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 15336,
+        "note": null
+      },
+      {
+        "stt": "14",
+        "rawScannedName": "GW1L-MF2E10QM3G Nút nhấn GG_NNDB",
+        "code": "GW1L-MF2E10QM3G",
+        "brand": "GG_NNDB",
+        "quantity": 15,
+        "price": 53110,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 63732,
+        "note": null
+      },
+      {
+        "stt": "15",
+        "rawScannedName": "GW1L-AF2E10QM3R Nút nhấn GG_NNDB",
+        "code": "GW1L-AF2E10QM3R",
+        "brand": "GG_NNDB",
+        "quantity": 9,
+        "price": 70030,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 50422,
+        "note": null
+      },
+      {
+        "stt": "16",
+        "rawScannedName": "GW1B-M1E01R Nút nhấn GG_NNDB",
+        "code": "GW1B-M1E01R",
+        "brand": "GG_NNDB",
+        "quantity": 3,
+        "price": 22560,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 5414,
+        "note": null
+      },
+      {
+        "stt": "17",
+        "rawScannedName": "GW1B-M1E10G Nút nhấn GG_NNDB",
+        "code": "GW1B-M1E10G",
+        "brand": "GG_NNDB",
+        "quantity": 8,
+        "price": 22560,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 14438,
+        "note": null
+      },
+      {
+        "stt": "18",
+        "rawScannedName": "RN4S-NL-D24 Rơ le trung gian IDEC China",
+        "code": "RN4S-NL-D24",
+        "brand": "IDEC",
+        "quantity": 1,
+        "price": 67200,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 5376,
+        "note": null
+      },
+      {
+        "stt": "19",
+        "rawScannedName": "RN2S-NL-D24 Rơ le trung gian IDEC China",
+        "code": "RN2S-NL-D24",
+        "brand": "IDEC",
+        "quantity": 52,
+        "price": 60000,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 249600,
+        "note": null
+      },
+      {
+        "stt": "20",
+        "rawScannedName": "SN2S-05D Đế rơ le IDEC China",
+        "code": "SN2S-05D",
+        "brand": "IDEC",
+        "quantity": 52,
+        "price": 31680,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 131789,
+        "note": null
+      },
+      {
+        "stt": "21",
+        "rawScannedName": "SN4S-05D Đế rơ le IDEC China",
+        "code": "SN4S-05D",
+        "brand": "IDEC",
+        "quantity": 1,
+        "price": 33120,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 2650,
+        "note": null
+      },
+      {
+        "stt": "22",
+        "rawScannedName": "SR2P-06B Đế IDEC",
+        "code": "SR2P-06B",
+        "brand": "IDEC",
+        "quantity": 2,
+        "price": 43680,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 6989,
+        "note": null
+      },
+      {
+        "stt": "23",
+        "rawScannedName": "EVR-3P44 Rơ le bảo vệ dòng điện SCHNEIDER-SAMWHA Korea",
+        "code": "EVR-3P44",
+        "brand": "SCHNEIDER-SAMWHA",
+        "quantity": 1,
+        "price": 1450000,
+        "unit": "cái",
+        "vat": "8%",
+        "taxAmount": 116000,
+        "note": null
+      },
+      {
+        "stt": "24",
+        "rawScannedName": "NFO-40 500/5A Biến dòng vuông TAIWAN METERS",
+        "code": "NFO-40 500/5A",
+        "brand": "TAIWAN METERS",
+        "quantity": 1,
+        "price": 129150,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 10332,
+        "note": null
+      },
+      {
+        "stt": "25",
+        "rawScannedName": "NFO-40 250/5A Biến dòng vuông TAIWAN METERS",
+        "code": "NFO-40 250/5A",
+        "brand": "TAIWAN METERS",
+        "quantity": 1,
+        "price": 103050,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 8244,
+        "note": null
+      },
+      {
+        "stt": "26",
+        "rawScannedName": "VAF36A Đồng hồ đo điện áp, dòng điện và tần số SELEC India",
+        "code": "VAF36A",
+        "brand": "SELEC",
+        "quantity": 1,
+        "price": 716320,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 57306,
+        "note": null
+      },
+      {
+        "stt": "27",
+        "rawScannedName": "MA12 Đồng hồ đo dòng điện SELEC India",
+        "code": "MA12",
+        "brand": "SELEC",
+        "quantity": 1,
+        "price": 173400,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 13872,
+        "note": null
+      }
+    ],
+    "trace": [
+      {
+        "model": "gemini-3.5-flash-lite",
+        "result": "phản hồi 6.13s"
+      }
+    ]
+  },
+  {
+    "imageName": "3.jpg",
+    "kb": 414,
+    "elapsedMs": 3016,
+    "items": [
+      {
+        "stt": "28",
+        "rawScannedName": "Quạt hút lọc bụi China",
+        "code": "FKL6622.230",
+        "brand": "LEIPOLE",
+        "quantity": 2,
+        "price": 262300,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 41968,
+        "note": null
+      },
+      {
+        "stt": "29",
+        "rawScannedName": "Công tắc xoay",
+        "code": "GW1S-2E10",
+        "brand": "GG_NNDB",
+        "quantity": 2,
+        "price": 29610,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 4738,
+        "note": null
+      },
+      {
+        "stt": "30",
+        "rawScannedName": "Công tắc xoay",
+        "code": "GW1S-3E20",
+        "brand": "GG_NNDB",
+        "quantity": 4,
+        "price": 42770,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 13686,
+        "note": null
+      },
+      {
+        "stt": "31",
+        "rawScannedName": "Nút nhấn",
+        "code": "GW1B-V4E01R",
+        "brand": "GG_NNDB",
+        "quantity": 1,
+        "price": 36660,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 2933,
+        "note": null
+      },
+      {
+        "stt": "32",
+        "rawScannedName": "Đèn báo Ø22 China",
+        "code": "YW1P-1EQM3R",
+        "brand": "IDEC",
+        "quantity": 1,
+        "price": 43200,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 3456,
+        "note": null
+      },
+      {
+        "stt": "33",
+        "rawScannedName": "Đèn báo Ø22 China",
+        "code": "YW1P-1EQM3Y",
+        "brand": "IDEC",
+        "quantity": 1,
+        "price": 43200,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 3456,
+        "note": null
+      },
+      {
+        "stt": "34",
+        "rawScannedName": "Đèn báo Ø22 China",
+        "code": "YW1P-1EQM3G",
+        "brand": "IDEC",
+        "quantity": 1,
+        "price": 49920,
+        "unit": "Cái",
+        "vat": "8%",
+        "taxAmount": 3994,
+        "note": null
+      }
+    ],
+    "trace": [
+      {
+        "model": "gemini-3.5-flash-lite",
+        "result": "phản hồi 3.02s"
+      }
+    ]
+  }
+]

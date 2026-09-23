@@ -33,6 +33,8 @@ const epOrderSchema = new mongoose.Schema(
     total: { type: String, default: "0" },
     status: { type: Boolean, default: 0 },
     completedAt: { type: Date, default: null },
+    // Tài khoản tạo đơn — dùng cho quyền sửa đơn nháp của mình
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
   },
   { timestamps: true, optimisticConcurrency: true }
 );

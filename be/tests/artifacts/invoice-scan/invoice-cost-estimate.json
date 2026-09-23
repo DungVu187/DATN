@@ -1,0 +1,184 @@
+{
+  "pricingSource": "https://ai.google.dev/gemini-api/docs/pricing",
+  "readAt": "2026-09-07",
+  "tokenSample": "23 hoá đơn tại C:\\Users\\dungv\\Downloads\\anhhoadon\\anhhoadon",
+  "usdToVnd": 26250,
+  "tokenUsage": {
+    "gemini-3.x": {
+      "inputTokens": 5123,
+      "outputTokens": 1446
+    },
+    "gemini-3.1-flash-lite": {
+      "inputTokens": 5125,
+      "outputTokens": 1580
+    },
+    "gemini-2.5": {
+      "inputTokens": 4312,
+      "outputTokens": 1430
+    }
+  },
+  "models": [
+    {
+      "name": "gemini-3.8-flash",
+      "usage": "gemini-3.x",
+      "inUsd": 0.75,
+      "outUsd": 3.75,
+      "freeRpd": 20,
+      "note": "giá KM tới 31/12/2026",
+      "inputTokens": 5123,
+      "outputTokens": 1446,
+      "perScanUsd": 0.00926475,
+      "perScanVnd": 243.1996875,
+      "batches": {
+        "50": 12159.984375,
+        "100": 24319.96875,
+        "200": 48639.9375,
+        "500": 121599.84375000001
+      }
+    },
+    {
+      "name": "gemini-3.7-flash",
+      "usage": "gemini-3.x",
+      "inUsd": 0.75,
+      "outUsd": 3.75,
+      "freeRpd": 20,
+      "note": "giá KM tới 31/12/2026",
+      "inputTokens": 5123,
+      "outputTokens": 1446,
+      "perScanUsd": 0.00926475,
+      "perScanVnd": 243.1996875,
+      "batches": {
+        "50": 12159.984375,
+        "100": 24319.96875,
+        "200": 48639.9375,
+        "500": 121599.84375000001
+      }
+    },
+    {
+      "name": "gemini-3.6-flash",
+      "usage": "gemini-3.x",
+      "inUsd": 0.75,
+      "outUsd": 3.75,
+      "freeRpd": 20,
+      "note": "giá KM tới 31/12/2026",
+      "inputTokens": 5123,
+      "outputTokens": 1446,
+      "perScanUsd": 0.00926475,
+      "perScanVnd": 243.1996875,
+      "batches": {
+        "50": 12159.984375,
+        "100": 24319.96875,
+        "200": 48639.9375,
+        "500": 121599.84375000001
+      }
+    },
+    {
+      "name": "gemini-3.8/3.7/3.6-flash",
+      "usage": "gemini-3.x",
+      "inUsd": 1.5,
+      "outUsd": 7.5,
+      "freeRpd": 20,
+      "note": "từ 01/01/2027",
+      "inputTokens": 5123,
+      "outputTokens": 1446,
+      "perScanUsd": 0.0185295,
+      "perScanVnd": 486.399375,
+      "batches": {
+        "50": 24319.96875,
+        "100": 48639.9375,
+        "200": 97279.875,
+        "500": 243199.68750000003
+      }
+    },
+    {
+      "name": "gemini-3.5-flash",
+      "usage": "gemini-3.x",
+      "inUsd": 1.5,
+      "outUsd": 9,
+      "freeRpd": 20,
+      "note": "",
+      "inputTokens": 5123,
+      "outputTokens": 1446,
+      "perScanUsd": 0.0206985,
+      "perScanVnd": 543.335625,
+      "batches": {
+        "50": 27166.781250000004,
+        "100": 54333.56250000001,
+        "200": 108667.12500000001,
+        "500": 271667.81250000006
+      }
+    },
+    {
+      "name": "gemini-3.5-flash-lite",
+      "usage": "gemini-3.x",
+      "inUsd": 0.3,
+      "outUsd": 2.5,
+      "freeRpd": 500,
+      "note": "",
+      "inputTokens": 5123,
+      "outputTokens": 1446,
+      "perScanUsd": 0.0051519,
+      "perScanVnd": 135.23737500000001,
+      "batches": {
+        "50": 6761.868750000001,
+        "100": 13523.737500000001,
+        "200": 27047.475000000002,
+        "500": 67618.6875
+      }
+    },
+    {
+      "name": "gemini-3.1-flash-lite",
+      "usage": "gemini-3.1-flash-lite",
+      "inUsd": 0.25,
+      "outUsd": 1.5,
+      "freeRpd": 500,
+      "note": "",
+      "inputTokens": 5125,
+      "outputTokens": 1580,
+      "perScanUsd": 0.00365125,
+      "perScanVnd": 95.8453125,
+      "batches": {
+        "50": 4792.265625,
+        "100": 9584.53125,
+        "200": 19169.0625,
+        "500": 47922.65625
+      }
+    },
+    {
+      "name": "gemini-2.5-flash",
+      "usage": "gemini-2.5",
+      "inUsd": 0.3,
+      "outUsd": 2.5,
+      "freeRpd": 20,
+      "note": "",
+      "inputTokens": 4312,
+      "outputTokens": 1430,
+      "perScanUsd": 0.0048686,
+      "perScanVnd": 127.80075,
+      "batches": {
+        "50": 6390.037499999999,
+        "100": 12780.074999999999,
+        "200": 25560.149999999998,
+        "500": 63900.375
+      }
+    },
+    {
+      "name": "gemini-2.5-flash-lite",
+      "usage": "gemini-2.5",
+      "inUsd": 0.1,
+      "outUsd": 0.4,
+      "freeRpd": 20,
+      "note": "",
+      "inputTokens": 4312,
+      "outputTokens": 1430,
+      "perScanUsd": 0.0010032,
+      "perScanVnd": 26.334000000000003,
+      "batches": {
+        "50": 1316.7,
+        "100": 2633.4,
+        "200": 5266.8,
+        "500": 13167.000000000002
+      }
+    }
+  ]
+}

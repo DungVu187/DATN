@@ -4,6 +4,7 @@ const app = require('../index');
 const { User } = require('../components/user');
 const { IpOrder } = require('../components/iporder');
 const { EpOrder } = require('../components/eporder');
+const { ADMIN_TEST_PERMISSIONS } = require('./fixtures/adminPermissions');
 
 beforeAll(async () => {
   await mongoose.connect('mongodb://localhost:27017/EcomTest');
@@ -26,6 +27,7 @@ const createAdminAgent = async () => {
     password: 'password123',
     name: 'Inventory Line Status Admin',
     role: 'admin',
+    permissions: [...ADMIN_TEST_PERMISSIONS],
   });
   const agent = request.agent(app);
   const loginRes = await agent

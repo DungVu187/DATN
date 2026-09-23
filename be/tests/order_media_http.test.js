@@ -65,16 +65,16 @@ afterAll(async () => {
 });
 
 describe('Order image upload/delete HTTP characterization', () => {
-  it('requires order.edit before upload and delete handlers', async () => {
+  it('requires order.create or order.edit to upload and order.edit to delete files', async () => {
     const upload = await viewerAgent.post('/orders/upload-image');
     const remove = await viewerAgent
       .delete('/orders/delete-image')
       .query({ imageUrl: '/invoice-images/sample.webp' });
 
-    for (const response of [upload, remove]) {
-      expect(response.status).toBe(403);
-      expect(response.body.message).toBe('Access denied, missing permission: order.edit');
-    }
+    expect(upload.status).toBe(403);
+    expect(upload.body.message).toBe('Access denied, missing one of permissions: order.create, order.edit');
+    expect(remove.status).toBe(403);
+    expect(remove.body.message).toBe('Access denied, missing permission: order.edit');
   });
 
   it('returns the legacy 400 response when no invoice file is attached', async () => {

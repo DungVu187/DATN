@@ -2,8 +2,6 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../models/user");
 const { getAdminFixedPermissions } = require("../config/permissions");
 
-const ADMIN_FULL_ACCESS = true; // B6 sẽ lật thành false khi hoàn tất đổi tên quyền + backfill quyền admin.
-
 const getCookieOptions = (req, maxAge = 43200000) => {
   // req.secure đúng nhờ trust proxy=1 + Nginx X-Forwarded-Proto khi chạy HTTPS;
   // LAN/HTTP thì false. FE/BE cùng miền nên sameSite 'lax' là đủ và an toàn.
@@ -26,7 +24,6 @@ function hasPermission(user, requiredPermission) {
   if (!user) return false;
   if (user.role === "superadmin") return true;
   if (user.role === "admin") {
-    if (ADMIN_FULL_ACCESS) return true;
     if (getAdminFixedPermissions().includes(requiredPermission)) return true;
     return Array.isArray(user.permissions) && user.permissions.includes(requiredPermission);
   }

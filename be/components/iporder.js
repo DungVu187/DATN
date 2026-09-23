@@ -1,6 +1,19 @@
 const express = require("express");
 const { IpOrder } = require("../models/iporder");
-const { authenticateAdmin, checkPermission } = require("../middlewares/auth");
+const { authenticateAdmin, checkPermission, checkAnyPermission } = require("../middlewares/auth");
+const { checkEditOrOwnDraft, isInventoryOrderDraft } = require("../middlewares/ownDraft");
+
+// Sửa nội dung đơn: quyền Sửa, hoặc quyền Thêm với đơn nháp do chính mình tạo.
+// Các thao tác đổi trạng thái (nhập kho) vẫn chỉ dành cho quyền Sửa.
+const editOwnDraft = [
+  authenticateAdmin,
+  checkEditOrOwnDraft({
+    editPermission: "iporder.edit",
+    createPermission: "iporder.create",
+    Model: IpOrder,
+    isDraft: isInventoryOrderDraft,
+  }),
+];
 const {
   listIpOrderProducts,
   listIpOrders,
@@ -47,17 +60,17 @@ router.post(
 
 router.post(
   "/orders/:id/products",
-  [authenticateAdmin, checkPermission("iporder.edit")],
+  editOwnDraft,
   addIpOrderLine
 );
 
 router.delete(
   "/orders/:id/products/:productIndex",
-  [authenticateAdmin, checkPermission("iporder.edit")],
+  editOwnDraft,
   deleteIpOrderLine
 );
 
-router.put("/orders/:id", [authenticateAdmin, checkPermission("iporder.edit")], updateIpOrderMetadata);
+router.put("/orders/:id", editOwnDraft, updateIpOrderMetadata);
 
 router.delete(
   "/orders/:id",
@@ -93,27 +106,28 @@ router.get("/orders/:id", [authenticateAdmin, checkPermission("iporder.view")], 
 
 router.put(
   "/orders/:id/products/:productIndex",
-  [authenticateAdmin, checkPermission("iporder.edit")],
+  editOwnDraft,
   updateIpOrderLine
 );
 
 router.put(
   "/orders/:id/name",
-  [authenticateAdmin, checkPermission("iporder.edit")],
+  editOwnDraft,
   updateIpOrderName
 );
 
 router.put(
   "/orders/:id/reorder",
-  [authenticateAdmin, checkPermission("iporder.edit")],
+  editOwnDraft,
   reorderIpOrderLines
 );
 
 router.get("/products", [authenticateAdmin, checkPermission("iporder.view")], listIpOrderProducts);
 
+// Chỉ tải file lên; việc gắn ảnh vào đơn vẫn qua PUT /orders/:id (kiểm tra đơn nháp của mình)
 router.post(
   "/upload-image",
-  [authenticateAdmin, checkPermission("iporder.edit"), uploadInventoryOrderInvoice.single("invoice")],
+  [authenticateAdmin, checkAnyPermission(["iporder.create", "iporder.edit"]), uploadInventoryOrderInvoice.single("invoice")],
   uploadInventoryOrderImage
 );
 

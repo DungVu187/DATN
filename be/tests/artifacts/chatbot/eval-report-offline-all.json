@@ -1,0 +1,75 @@
+{
+  "generatedAt": "2026-09-12T17:52:45.055Z",
+  "datasetVersion": "2026-09-13.1",
+  "catalogSnapshot": {
+    "db": "EcomTest",
+    "typeCount": 14,
+    "brandCount": 8,
+    "capturedAt": "2026-09-12T17:52:44.364Z"
+  },
+  "mode": "offline",
+  "split": "all",
+  "singleTurn": {
+    "total": 111,
+    "passed": 111,
+    "accuracy": 1,
+    "byGroup": {
+      "code_alias": {
+        "total": 18,
+        "passed": 18,
+        "accuracy": 1
+      },
+      "needs_multi": {
+        "total": 20,
+        "passed": 20,
+        "accuracy": 1
+      },
+      "out_of_scope": {
+        "total": 15,
+        "passed": 15,
+        "accuracy": 1
+      },
+      "safety_policy": {
+        "total": 22,
+        "passed": 22,
+        "accuracy": 1
+      },
+      "catalog_type": {
+        "total": 28,
+        "passed": 28,
+        "accuracy": 1
+      },
+      "catalog_brand": {
+        "total": 8,
+        "passed": 8,
+        "accuracy": 1
+      }
+    },
+    "bySplit": {
+      "dev": {
+        "total": 87,
+        "passed": 87,
+        "accuracy": 1
+      },
+      "holdout": {
+        "total": 24,
+        "passed": 24,
+        "accuracy": 1
+      }
+    },
+    "retrieval": {
+      "evaluated": 63,
+      "hitAt3": 1,
+      "precisionAtK": 1,
+      "averageK": 1.37,
+      "forbiddenHits": 0
+    },
+    "failures": []
+  },
+  "multiTurn": {
+    "total": 8,
+    "passed": 8,
+    "accuracy": 1,
+    "failures": []
+  }
+}

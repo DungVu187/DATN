@@ -4,6 +4,7 @@ const app = require('../index');
 const { Product } = require('../components/product');
 const { User } = require('../components/user');
 const { Order } = require('../components/order');
+const { ADMIN_TEST_PERMISSIONS } = require('./fixtures/adminPermissions');
 
 let Counter;
 
@@ -31,6 +32,7 @@ const createAdminAgent = async () => {
     password: 'password123',
     name: 'Admin Test',
     role: 'admin',
+    permissions: [...ADMIN_TEST_PERMISSIONS],
   }).save();
 
   const agent = request.agent(app);
@@ -135,7 +137,7 @@ describe('Sales order detail admin API', () => {
     expect(response.body.order.cartItems).toHaveLength(1);
   });
 
-  it('POST /orders/:id/items chan staff co order.create nhung thieu order.edit', async () => {
+  it('POST /orders/:id/items cho staff chi co order.create soan tiep don nhap cua chinh minh', async () => {
     const staffAgent = await createStaffAgent({ permissions: ['order.create'] });
     const product = await createProduct({ quantityForSale: 10, price: '100.000' });
     const order = await createDraftOrder(staffAgent);
@@ -144,8 +146,22 @@ describe('Sales order detail admin API', () => {
       .post(`/orders/${order._id}/items`)
       .send({ productId: product._id.toString(), variantIndex: 0, quantity: 1 });
 
+    expect(response.status).toBe(200);
+    expect(response.body.order.cartItems).toHaveLength(1);
+  });
+
+  it('POST /orders/:id/items chan staff chi co order.create sua don nhap cua nguoi khac', async () => {
+    const adminAgent = await createAdminAgent();
+    const staffAgent = await createStaffAgent({ permissions: ['order.create'] });
+    const product = await createProduct({ quantityForSale: 10, price: '100.000' });
+    const order = await createDraftOrder(adminAgent);
+
+    const response = await staffAgent
+      .post(`/orders/${order._id}/items`)
+      .send({ productId: product._id.toString(), variantIndex: 0, quantity: 1 });
+
     expect(response.status).toBe(403);
-    expect(response.body.message).toBe('Access denied, missing permission: order.edit');
+    expect(response.body.message).toBe('Bạn chỉ có quyền Thêm nên chỉ được sửa đơn nháp do chính mình tạo.');
   });
 
   it('PUT /orders/:id/items/:index tang va giam so luong dieu chinh ton theo delta', async () => {

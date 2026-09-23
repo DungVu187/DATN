@@ -1,7 +1,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const { authenticateUser } = require('../middlewares/auth');
-const { clearChat, recordCustomerBehavior, sendChatMessage } = require('../controllers/chat');
+const { clearChat, getChatHistory, recordCustomerBehavior, sendChatMessage } = require('../controllers/chat');
 
 const router = express.Router();
 
@@ -33,6 +33,7 @@ const authenticateOptionalUser = (req, res, next) => {
 };
 
 router.post('/send', chatLimiter, authenticateOptionalUser, sendChatMessage);
+router.get('/history', chatLimiter, authenticateOptionalUser, getChatHistory);
 router.delete('/clear', chatLimiter, authenticateOptionalUser, clearChat);
 router.post('/events', eventLimiter, authenticateOptionalUser, recordCustomerBehavior);
 

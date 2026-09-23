@@ -5,6 +5,7 @@ const { User } = require('../components/user');
 const { Product } = require('../components/product');
 const { IpOrder } = require('../components/iporder');
 const { StorageHistory } = require('../components/storagehistory');
+const { defaultPermissionsFor } = require('./fixtures/adminPermissions');
 
 beforeAll(async () => {
   await mongoose.connect('mongodb://localhost:27017/EcomTest');
@@ -25,7 +26,7 @@ afterEach(async () => {
 const createAdminAgent = async ({
   phone = '0922000001',
   role = 'admin',
-  permissions = [],
+  permissions = defaultPermissionsFor(role),
   functions = []
 } = {}) => {
   const user = new User({
@@ -321,7 +322,8 @@ describe('IpOrder API', () => {
     expect((await IpOrder.findById(protectedOrder._id)).productList).toHaveLength(1);
   });
 
-  it('returns 403 for staff with iporder.create but missing iporder.edit on edit route', async () => {
+  it('lets staff with only iporder.create edit their own draft but not other orders', async () => {
+    const otherOrder = await createIpOrder({ orderName: 'Other draft' });
     const agent = await createAdminAgent({
       phone: '0922000007',
       role: 'staff',
@@ -333,12 +335,16 @@ describe('IpOrder API', () => {
       .send({ orderName: 'Create only', productList: [] });
     expect(createRes.status).toBe(201);
 
-    const editRes = await agent
+    const ownEditRes = await agent
       .put(`/iporders/orders/${createRes.body._id}/name`)
-      .send({ orderName: 'Should fail' });
+      .send({ orderName: 'Own draft renamed' });
+    expect(ownEditRes.status).toBe(200);
 
-    expect(editRes.status).toBe(403);
-    expect(editRes.body.message).toBe('Access denied, missing permission: iporder.edit');
+    const otherEditRes = await agent
+      .put(`/iporders/orders/${otherOrder._id}/name`)
+      .send({ orderName: 'Should fail' });
+    expect(otherEditRes.status).toBe(403);
+    expect(otherEditRes.body.message).toBe('Bạn chỉ có quyền Thêm nên chỉ được sửa đơn nháp do chính mình tạo.');
   });
 
   it('allows staff with iporder.delete and blocks staff missing iporder.delete on delete route', async () => {
@@ -367,7 +373,7 @@ describe('IpOrder API', () => {
     expect(await IpOrder.findById(protectedOrder._id)).toBeDefined();
   });
 
-  it('requires iporder.edit for invoice image routes', async () => {
+  it('requires iporder.create or iporder.edit to upload and iporder.edit to delete invoice images', async () => {
     const agent = await createAdminAgent({
       phone: '0922000010',
       role: 'staff',
@@ -377,7 +383,7 @@ describe('IpOrder API', () => {
 
     const uploadRes = await agent.post('/iporders/upload-image');
     expect(uploadRes.status).toBe(403);
-    expect(uploadRes.body.message).toBe('Access denied, missing permission: iporder.edit');
+    expect(uploadRes.body.message).toBe('Access denied, missing one of permissions: iporder.create, iporder.edit');
 
     const deleteRes = await agent
       .delete('/iporders/delete-image')

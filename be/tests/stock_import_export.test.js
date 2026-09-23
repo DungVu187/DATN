@@ -6,6 +6,7 @@ const { Product } = require("../components/product");
 const { IpOrder } = require("../components/iporder");
 const { EpOrder } = require("../components/eporder");
 const { StorageHistory } = require("../components/storagehistory");
+const { ADMIN_TEST_PERMISSIONS } = require("./fixtures/adminPermissions");
 
 const ADMIN_PHONE = "0962000001";
 
@@ -25,6 +26,7 @@ const createAdminAgent = async () => {
     password: "password123",
     name: "Stock Import Export Admin",
     role: "admin",
+    permissions: [...ADMIN_TEST_PERMISSIONS],
   });
   await admin.save();
 

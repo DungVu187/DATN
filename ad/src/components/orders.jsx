@@ -34,6 +34,7 @@ import {
   getOrderNavigationFilterPatch,
 } from "./orderFilters";
 import { useOrderContext } from "../context/useordercontext";
+import { usePermissions } from "../context/usepermissions";
 import { io } from "socket.io-client";
 import {
   createAdminSalesOrderDraft,
@@ -63,6 +64,8 @@ const Orders = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
+  const { can } = usePermissions();
+  const canCreate = can("order.create");
   const [filters, setFilters] = useState(() => createInitialOrderFilters(location.state));
   const { setOrderChanged } = useOrderContext();
 
@@ -353,17 +356,19 @@ const Orders = () => {
             alignItems: { xs: "stretch", sm: "flex-start" }
           }}
         >
-          <Button
-            variant="contained"
-            onClick={createAdminDraftOrder}
-            sx={{
-              height: 40,
-              minWidth: { xs: "100%", sm: 170 },
-              flexShrink: 0,
-            }}
-          >
-            Tạo đơn hàng mới
-          </Button>
+          {canCreate && (
+            <Button
+              variant="contained"
+              onClick={createAdminDraftOrder}
+              sx={{
+                height: 40,
+                minWidth: { xs: "100%", sm: 170 },
+                flexShrink: 0,
+              }}
+            >
+              Tạo đơn hàng mới
+            </Button>
+          )}
 
           <Autocomplete
             freeSolo

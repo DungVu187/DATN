@@ -4,6 +4,7 @@ const app = require('../index');
 const { Order } = require('../models/order');
 const { Product } = require('../models/product');
 const { User } = require('../models/user');
+const { defaultPermissionsFor } = require('./fixtures/adminPermissions');
 
 const originalAddress = process.env.ADDRESS;
 
@@ -32,7 +33,7 @@ afterEach(async () => {
   await User.deleteMany({});
 });
 
-async function createUser({ phone, role = 'customer', permissions = [], name }) {
+async function createUser({ phone, role = 'customer', permissions = defaultPermissionsFor(role), name }) {
   return User.create({
     phone,
     password: 'password123',

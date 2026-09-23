@@ -50,7 +50,7 @@ describe("PermissionContext", () => {
   });
 
   describe("Admin", () => {
-    it("temporarily grants all permissions (F1 ADMIN_FULL_ACCESS sync)", async () => {
+    it("denies unassigned business permissions and retains fixed account management", async () => {
       mockFetchProfile({ role: "admin", permissions: [] });
 
       const { result } = renderHook(() => usePermissions(), { wrapper });
@@ -61,7 +61,24 @@ describe("PermissionContext", () => {
       expect(result.current.isAdmin).toBe(true);
       expect(result.current.isSuperadmin).toBe(false);
       expect(result.current.isAdminOrSuperadmin).toBe(true);
-      expect(result.current.can("storefront.manage")).toBe(true);
+      expect(result.current.can("storefront.manage")).toBe(false);
+      expect(result.current.can("account.manage")).toBe(true);
+      expect(result.current.canAny(["product.view", "order.edit"])).toBe(false);
+      expect(result.current.canAll(["account.manage", "order.edit"])).toBe(false);
+    });
+
+    it("only enables business permissions that have been assigned", async () => {
+      mockFetchProfile({ role: "admin", permissions: ["product.view", "order.edit"] });
+
+      const { result } = renderHook(() => usePermissions(), { wrapper });
+
+      await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+      expect(result.current.can("product.view")).toBe(true);
+      expect(result.current.can("product.delete")).toBe(false);
+      expect(result.current.canAny(["product.delete", "order.edit"])).toBe(true);
+      expect(result.current.canAll(["product.view", "order.edit"])).toBe(true);
+      expect(result.current.canAll(["product.view", "product.delete"])).toBe(false);
     });
   });
 

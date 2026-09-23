@@ -2,6 +2,7 @@ import { describe, expect, test, vi } from "vitest";
 import { apiFetch } from "./httpClient";
 import {
   clearChatHistory,
+  getChatHistory,
   sendChatMessage,
   sendCustomerBehaviorEvents,
 } from "./chatApi";
@@ -39,14 +40,18 @@ describe("chatApi", () => {
       query: "PLC",
     }];
 
-    await clearChatHistory("session-1");
+    await clearChatHistory("session-1", "visitor-1");
+    await getChatHistory("session-1", "visitor-1");
     await sendCustomerBehaviorEvents(events);
 
     expect(apiFetch).toHaveBeenNthCalledWith(1, "/chat/clear", {
       method: "DELETE",
-      json: { sessionId: "session-1" },
+      json: { chatSessionId: "session-1", visitorId: "visitor-1" },
     });
-    expect(apiFetch).toHaveBeenNthCalledWith(2, "/chat/events", {
+    expect(apiFetch).toHaveBeenNthCalledWith(2, "/chat/history?chatSessionId=session-1&visitorId=visitor-1", {
+      method: "GET",
+    });
+    expect(apiFetch).toHaveBeenNthCalledWith(3, "/chat/events", {
       method: "POST",
       json: { events },
     });

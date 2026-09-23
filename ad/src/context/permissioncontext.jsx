@@ -45,9 +45,7 @@ export const PermissionProvider = ({ children }) => {
     (permission) => {
       if (!profile) return false;
       if (isSuperadmin) return true;
-      // F1: admin temporarily full access to match backend ADMIN_FULL_ACCESS=true.
-      // Will be tightened after B6.
-      if (isAdmin) return true;
+      if (isAdmin && permission === "account.manage") return true;
       return Array.isArray(profile.permissions) &&
         profile.permissions.includes(permission);
     },

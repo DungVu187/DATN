@@ -30,6 +30,7 @@ import TuneIcon from "@mui/icons-material/Tune";
 import moment from "moment";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { usePermissions } from "../../context/usepermissions";
 import {
   completeImportOrder,
   createImportOrder,
@@ -71,6 +72,8 @@ const IpOrders = () => {
   const [debouncedOrderName, setDebouncedOrderName] = useState("");
   const [debouncedUserName, setDebouncedUserName] = useState("");
   const navigate = useNavigate();
+  const { can } = usePermissions();
+  const canCreate = can("iporder.create");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -429,14 +432,16 @@ const IpOrders = () => {
             alignItems: "center"
           }}
         >
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenCreateDialog}
-            sx={{ height: 40, minWidth: 130, flexShrink: 0 }}
-          >
-            Tạo đơn mới
-          </Button>
+          {canCreate && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOpenCreateDialog}
+              sx={{ height: 40, minWidth: 130, flexShrink: 0 }}
+            >
+              Tạo đơn mới
+            </Button>
+          )}
           <Button
             variant="contained"
             color="secondary"
@@ -565,17 +570,19 @@ const IpOrders = () => {
           <Box p={2.5} display="flex" flexDirection="column" gap={2}>
             <Typography variant="subtitle2" fontWeight="bold">CHỨC NĂNG</Typography>
             <Box display="flex" gap={1.5}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  setShowMobileFilters(false);
-                  handleOpenCreateDialog();
-                }}
-                fullWidth
-              >
-                Tạo đơn mới
-              </Button>
+              {canCreate && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    setShowMobileFilters(false);
+                    handleOpenCreateDialog();
+                  }}
+                  fullWidth
+                >
+                  Tạo đơn mới
+                </Button>
+              )}
               <Button
                 variant="contained"
                 color="secondary"

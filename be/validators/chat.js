@@ -78,8 +78,9 @@ function validateChatSendPayload(body) {
         history: normalizeHistory(body.history),
     };
 
+    const chatSessionId = requiredText(body.chatSessionId, 'chatSessionId', MAX_SESSION_ID_LENGTH);
     const sessionId = optionalText(body.sessionId, 'sessionId', MAX_SESSION_ID_LENGTH);
-    const visitorId = optionalText(body.visitorId, 'visitorId', MAX_VISITOR_ID_LENGTH);
+    const visitorId = requiredText(body.visitorId, 'visitorId', MAX_VISITOR_ID_LENGTH);
     const currentPath = optionalText(body.currentPath, 'currentPath', MAX_PATH_LENGTH);
     const currentProductId = optionalText(body.currentProductId, 'currentProductId', 24);
 
@@ -87,19 +88,25 @@ function validateChatSendPayload(body) {
         fail('currentProductId không phải ObjectId hợp lệ.');
     }
 
+    payload.chatSessionId = chatSessionId;
     if (sessionId !== undefined) payload.sessionId = sessionId;
-    if (visitorId !== undefined) payload.visitorId = visitorId;
+    payload.visitorId = visitorId;
     if (currentPath !== undefined) payload.currentPath = currentPath;
     if (currentProductId !== undefined) payload.currentProductId = currentProductId;
 
     return payload;
 }
 
+function validateChatHistoryPayload(value) {
+    assertObject(value);
+    return {
+        chatSessionId: requiredText(value.chatSessionId, 'chatSessionId', MAX_SESSION_ID_LENGTH),
+        visitorId: requiredText(value.visitorId, 'visitorId', MAX_VISITOR_ID_LENGTH),
+    };
+}
+
 function validateChatClearPayload(body) {
-    if (body === undefined || body === null) return {};
-    assertObject(body);
-    const sessionId = optionalText(body.sessionId, 'sessionId', MAX_SESSION_ID_LENGTH);
-    return sessionId === undefined ? {} : { sessionId };
+    return validateChatHistoryPayload(body);
 }
 
 module.exports = {
@@ -107,5 +114,6 @@ module.exports = {
     MAX_CHAT_HISTORY_ITEMS,
     MAX_CHAT_MESSAGE_LENGTH,
     validateChatClearPayload,
+    validateChatHistoryPayload,
     validateChatSendPayload,
 };

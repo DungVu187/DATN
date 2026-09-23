@@ -2,16 +2,11 @@ const express = require('express');
 const { authenticateUser } = require('../middlewares/auth');
 const { getOrderPaymentStatus, receiveSepayWebhook } = require('../controllers/payments');
 
-const requireCustomer = (req, res, next) => {
-  if (req.user?.role !== 'customer') {
-    return res.status(403).json({ message: 'Customer account required.' });
-  }
-  return next();
-};
-
 const router = express.Router();
 
-router.get('/orders/:orderId/status', [authenticateUser, requireCustomer], getOrderPaymentStatus);
+// Mọi tài khoản đã đăng nhập (kể cả admin/staff tự đặt đơn) đều xem được QR;
+// quyền truy cập từng đơn do canAccessOrder trong controller kiểm soát.
+router.get('/orders/:orderId/status', authenticateUser, getOrderPaymentStatus);
 router.post('/sepay/webhook', receiveSepayWebhook);
 
 module.exports = { router };

@@ -4,6 +4,7 @@ const app = require('../index');
 const { ActivityLog } = require('../models/activitylog');
 const { Product } = require('../models/product');
 const { User } = require('../models/user');
+const { defaultPermissionsFor } = require('./fixtures/adminPermissions');
 
 jest.setTimeout(30000);
 
@@ -42,7 +43,7 @@ const cleanupFixtures = async ({ includeUsers = false } = {}) => {
   ]);
 };
 
-const createAuthenticatedAgent = async ({ phone, name, role, permissions = [] }) => {
+const createAuthenticatedAgent = async ({ phone, name, role, permissions = defaultPermissionsFor(role) }) => {
   await User.create({
     phone,
     password: 'password123',

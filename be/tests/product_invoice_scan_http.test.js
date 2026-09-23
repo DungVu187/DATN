@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const app = require('../index');
 const { Product } = require('../models/product');
 const { User } = require('../models/user');
+const { DEFAULT_INVOICE_GEMINI_MODELS } = require('../services/productInvoiceGemini');
 
 const DATABASE_URL = 'mongodb://localhost:27017/EcomTest';
 const SCANNER_PHONE = '0975000034';
@@ -152,7 +153,7 @@ describe('Product invoice scan HTTP integration', () => {
 
     expect(fetchSpy).toHaveBeenCalledTimes(1);
     const [requestUrl, requestOptions] = fetchSpy.mock.calls[0];
-    expect(requestUrl).toContain('/models/gemini-3.5-flash:generateContent');
+    expect(requestUrl).toContain('/models/gemini-3.8-flash:generateContent');
     const requestBody = JSON.parse(requestOptions.body);
     expect(crypto.createHash('sha256')
       .update(requestBody.contents[0].parts[0].text, 'utf8')
@@ -189,7 +190,8 @@ describe('Product invoice scan HTTP integration', () => {
   it('rolls back the stored invoice when Gemini response parsing fails', async () => {
     const filesBefore = await listGeneratedInvoiceFiles();
     jest.spyOn(console, 'error').mockImplementation(() => {});
-    const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+    // Mọi model đều trả nội dung rỗng để kiểm tra nhánh thất bại sau khi đã thử hết bậc thang.
+    const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
       json: async () => ({ candidates: [] }),
     });
@@ -211,7 +213,8 @@ describe('Product invoice scan HTTP integration', () => {
       message: 'Đã xảy ra lỗi khi phân tích hóa đơn bằng AI: Lỗi server',
       error: 'Lỗi server',
     });
-    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    // Nội dung không đọc được cũng được thử lại bằng model kế tiếp trước khi báo lỗi.
+    expect(fetchSpy).toHaveBeenCalledTimes(DEFAULT_INVOICE_GEMINI_MODELS.length);
     expect(newlyCreatedFiles).toEqual([]);
   });
 

@@ -1,7 +1,19 @@
 const express = require("express");
 const { Order } = require("../models/order");
-const { authenticateUser, authenticateAdmin, checkPermission } = require("../middlewares/auth");
+const { authenticateUser, authenticateAdmin, checkPermission, checkAnyPermission } = require("../middlewares/auth");
+const { checkEditOrOwnDraft, isSalesOrderDraft } = require("../middlewares/ownDraft");
 require("dotenv").config();
+
+// Sửa nội dung đơn: quyền Sửa, hoặc quyền Thêm với đơn nháp do chính mình tạo
+const editOwnDraft = [
+  authenticateAdmin,
+  checkEditOrOwnDraft({
+    editPermission: 'order.edit',
+    createPermission: 'order.create',
+    Model: Order,
+    isDraft: isSalesOrderDraft,
+  }),
+];
 const {
   getCustomerSuggestions,
   getProcessingOrderCount,
@@ -55,20 +67,21 @@ router.post("/admin-draft", [authenticateAdmin, checkPermission('order.create')]
 
 router.get("/admin-detail/:id", [authenticateAdmin, checkPermission('order.view')], getAdminOrderDetail);
 
-router.post("/:id/items", [authenticateAdmin, checkPermission('order.edit')], addOrderItem);
+router.post("/:id/items", editOwnDraft, addOrderItem);
 
-router.put("/:id/items/:index", [authenticateAdmin, checkPermission('order.edit')], updateOrderItemQuantity);
+router.put("/:id/items/:index", editOwnDraft, updateOrderItemQuantity);
 
-router.delete("/:id/items/:index", [authenticateAdmin, checkPermission('order.edit')], deleteOrderItem);
+router.delete("/:id/items/:index", editOwnDraft, deleteOrderItem);
 
-router.put("/:id/reorder", [authenticateAdmin, checkPermission('order.edit')], reorderOrderItems);
+router.put("/:id/reorder", editOwnDraft, reorderOrderItems);
 
-router.put("/:id/customer", [authenticateAdmin, checkPermission('order.edit')], updateOrderCustomer);
-router.put("/:id/images", [authenticateAdmin, checkPermission('order.edit')], updateOrderImages);
+router.put("/:id/customer", editOwnDraft, updateOrderCustomer);
+router.put("/:id/images", editOwnDraft, updateOrderImages);
 
+// Chỉ tải file lên; việc gắn ảnh vào đơn vẫn qua PUT /:id/images (kiểm tra đơn nháp của mình)
 router.post(
   "/upload-image",
-  [authenticateAdmin, checkPermission('order.edit'), handleInvoiceUpload],
+  [authenticateAdmin, checkAnyPermission(['order.create', 'order.edit']), handleInvoiceUpload],
   uploadOrderImage,
 );
 

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const app = require('../index');
 const { Product } = require('../models/product');
 const { User } = require('../models/user');
+const { defaultPermissionsFor } = require('./fixtures/adminPermissions');
 
 const DATABASE_URL = 'mongodb://localhost:27017/EcomProductReadOperationsTest';
 const PASSWORD = 'password123';
@@ -46,7 +47,7 @@ const createProduct = async (label, overrides = {}) => {
   });
 };
 
-const createAuthenticatedAgent = async ({ phone, name, role, permissions = [] }) => {
+const createAuthenticatedAgent = async ({ phone, name, role, permissions = defaultPermissionsFor(role) }) => {
   await User.create({
     phone,
     password: PASSWORD,

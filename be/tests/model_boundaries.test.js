@@ -265,8 +265,8 @@ describe("backend model boundaries", () => {
   it("keeps IPOrder metadata update outside the facade", () => {
     const routeSource = readBackendFile("components/iporder.js");
     const controllerSource = readBackendFile("controllers/ipOrderMetadata.js");
-    const route = 'router.put("/orders/:id", [authenticateAdmin, checkPermission("iporder.edit")], updateIpOrderMetadata);';
-    const nameRoute = 'router.put(\n  "/orders/:id/name",\n  [authenticateAdmin, checkPermission("iporder.edit")],\n  updateIpOrderName\n);';
+    const route = 'router.put("/orders/:id", editOwnDraft, updateIpOrderMetadata);';
+    const nameRoute = 'router.put(\n  "/orders/:id/name",\n  editOwnDraft,\n  updateIpOrderName\n);';
 
     expect(routeSource).toContain("require('../controllers/ipOrderMetadata')");
     expect(routeSource).toContain(route);
@@ -288,8 +288,8 @@ describe("backend model boundaries", () => {
     const routeSource = readBackendFile("components/eporder.js");
     const controllerSource = readBackendFile("controllers/epOrderMetadata.js");
     const pricingSource = readBackendFile("services/epOrderPricing.js");
-    const route = 'router.put("/orders/:id", [authenticateAdmin, checkPermission("eporder.edit")], updateEpOrderMetadata);';
-    const nameRoute = 'router.put(\n  "/orders/:id/name",\n  [authenticateAdmin, checkPermission("eporder.edit")],\n  updateEpOrderName\n);';
+    const route = 'router.put("/orders/:id", editOwnDraft, updateEpOrderMetadata);';
+    const nameRoute = 'router.put(\n  "/orders/:id/name",\n  editOwnDraft,\n  updateEpOrderName\n);';
 
     expect(routeSource).toContain("require('../controllers/epOrderMetadata')");
     expect(routeSource).toContain(route);
@@ -320,10 +320,10 @@ describe("backend model boundaries", () => {
     const epRouteSource = readBackendFile("components/eporder.js");
     const ipControllerSource = readBackendFile("controllers/ipOrderLineOperations.js");
     const epControllerSource = readBackendFile("controllers/epOrderLineOperations.js");
-    const ipRoute = 'router.delete(\n  "/orders/:id/products/:productIndex",\n  [authenticateAdmin, checkPermission("iporder.edit")],\n  deleteIpOrderLine\n);';
-    const epRoute = 'router.delete(\n  "/orders/:id/products/:productIndex",\n  [authenticateAdmin, checkPermission("eporder.edit")],\n  deleteEpOrderLine\n);';
-    const ipReorderRoute = 'router.put(\n  "/orders/:id/reorder",\n  [authenticateAdmin, checkPermission("iporder.edit")],\n  reorderIpOrderLines\n);';
-    const epReorderRoute = 'router.put(\n  "/orders/:id/reorder",\n  [authenticateAdmin, checkPermission("eporder.edit")],\n  reorderEpOrderLines\n);';
+    const ipRoute = 'router.delete(\n  "/orders/:id/products/:productIndex",\n  editOwnDraft,\n  deleteIpOrderLine\n);';
+    const epRoute = 'router.delete(\n  "/orders/:id/products/:productIndex",\n  editOwnDraft,\n  deleteEpOrderLine\n);';
+    const ipReorderRoute = 'router.put(\n  "/orders/:id/reorder",\n  editOwnDraft,\n  reorderIpOrderLines\n);';
+    const epReorderRoute = 'router.put(\n  "/orders/:id/reorder",\n  editOwnDraft,\n  reorderEpOrderLines\n);';
 
     expect(ipRouteSource).toContain("require('../controllers/ipOrderLineOperations')");
     expect(epRouteSource).toContain("require('../controllers/epOrderLineOperations')");
@@ -360,10 +360,10 @@ describe("backend model boundaries", () => {
     const epControllerSource = readBackendFile("controllers/epOrderMutations.js");
     const ipCreateRoute = 'router.post(\n  "/orders",\n  [authenticateAdmin, checkPermission("iporder.create")],\n  createIpOrder\n);';
     const epCreateRoute = 'router.post(\n  "/orders",\n  [authenticateAdmin, checkPermission("eporder.create")],\n  createEpOrder\n);';
-    const ipAddRoute = 'router.post(\n  "/orders/:id/products",\n  [authenticateAdmin, checkPermission("iporder.edit")],\n  addIpOrderLine\n);';
-    const epAddRoute = 'router.post(\n  "/orders/:id/products",\n  [authenticateAdmin, checkPermission("eporder.edit")],\n  addEpOrderLine\n);';
-    const ipUpdateRoute = 'router.put(\n  "/orders/:id/products/:productIndex",\n  [authenticateAdmin, checkPermission("iporder.edit")],\n  updateIpOrderLine\n);';
-    const epUpdateRoute = 'router.put(\n  "/orders/:id/products/:productIndex",\n  [authenticateAdmin, checkPermission("eporder.edit")],\n  updateEpOrderLine\n);';
+    const ipAddRoute = 'router.post(\n  "/orders/:id/products",\n  editOwnDraft,\n  addIpOrderLine\n);';
+    const epAddRoute = 'router.post(\n  "/orders/:id/products",\n  editOwnDraft,\n  addEpOrderLine\n);';
+    const ipUpdateRoute = 'router.put(\n  "/orders/:id/products/:productIndex",\n  editOwnDraft,\n  updateIpOrderLine\n);';
+    const epUpdateRoute = 'router.put(\n  "/orders/:id/products/:productIndex",\n  editOwnDraft,\n  updateEpOrderLine\n);';
 
     expect(ipRouteSource).toContain("require('../controllers/ipOrderMutations')");
     expect(epRouteSource).toContain("require('../controllers/epOrderMutations')");
@@ -791,7 +791,7 @@ describe("backend model boundaries", () => {
   it("keeps Order customer metadata update outside the route facade", () => {
     const orderRouteSource = readBackendFile("components/order.js");
     const controllerSource = readBackendFile("controllers/orderMetadata.js");
-    const routeDeclaration = 'router.put("/:id/customer", [authenticateAdmin, checkPermission(\'order.edit\')], updateOrderCustomer);';
+    const routeDeclaration = 'router.put("/:id/customer", editOwnDraft, updateOrderCustomer);';
     const routeIndex = orderRouteSource.indexOf('router.put("/:id/customer"');
     const nextRouteIndex = orderRouteSource.indexOf('router.put("/:id/images"');
 
@@ -816,7 +816,7 @@ describe("backend model boundaries", () => {
   it("keeps Order images metadata update outside the route facade", () => {
     const orderRouteSource = readBackendFile("components/order.js");
     const controllerSource = readBackendFile("controllers/orderMetadata.js");
-    const routeDeclaration = 'router.put("/:id/images", [authenticateAdmin, checkPermission(\'order.edit\')], updateOrderImages);';
+    const routeDeclaration = 'router.put("/:id/images", editOwnDraft, updateOrderImages);';
     const routeIndex = orderRouteSource.indexOf('router.put("/:id/images"');
     const nextRouteIndex = orderRouteSource.indexOf('router.post(', routeIndex);
 
@@ -841,7 +841,7 @@ describe("backend model boundaries", () => {
     const orderRouteSource = readBackendFile("components/order.js");
     const controllerSource = readBackendFile("controllers/orderMedia.js");
     const serviceSource = readBackendFile("services/orderMedia.js");
-    const uploadRoutePattern = /router\.post\(\s*["']\/upload-image["'],\s*\[\s*authenticateAdmin,\s*checkPermission\(["']order\.edit["']\),\s*handleInvoiceUpload\s*\],\s*uploadOrderImage,?\s*\);/;
+    const uploadRoutePattern = /router\.post\(\s*["']\/upload-image["'],\s*\[\s*authenticateAdmin,\s*checkAnyPermission\(\[["']order\.create["'],\s*["']order\.edit["']\]\),\s*handleInvoiceUpload\s*\],\s*uploadOrderImage,?\s*\);/;
     const deleteRoute = 'router.delete("/delete-image", [authenticateAdmin, checkPermission(\'order.edit\')], deleteOrderImage);';
     const uploadIndex = orderRouteSource.search(/router\.post\(\s*["']\/upload-image["']/);
     const deleteIndex = orderRouteSource.indexOf(deleteRoute);
@@ -911,7 +911,7 @@ describe("backend model boundaries", () => {
     const reorderSource = readBackendFile("services/orderReorder.js");
     const policySource = readBackendFile("services/orderPolicy.js");
     const routeErrorsSource = readBackendFile("utils/orderRouteErrors.js");
-    const reorderRoutePattern = /router\.put\(["']\/:id\/reorder["'],\s*\[\s*authenticateAdmin,\s*checkPermission\(["']order\.edit["']\)\s*\],\s*reorderOrderItems\s*\);/g;
+    const reorderRoutePattern = /router\.put\(["']\/:id\/reorder["'],\s*editOwnDraft,\s*reorderOrderItems\s*\);/g;
     const reorderRouteIndex = orderRouteSource.search(/router\.put\(["']\/:id\/reorder["']/);
     const nextRouteIndex = orderRouteSource.search(/router\.put\(["']\/:id\/customer["']/);
 
@@ -959,7 +959,7 @@ describe("backend model boundaries", () => {
   it("keeps Order add-item orchestration outside the route facade", () => {
     const orderRouteSource = readBackendFile("components/order.js");
     const controllerSource = readBackendFile("controllers/orderItemOperations.js");
-    const addRouteDeclaration = 'router.post("/:id/items", [authenticateAdmin, checkPermission(\'order.edit\')], addOrderItem);';
+    const addRouteDeclaration = 'router.post("/:id/items", editOwnDraft, addOrderItem);';
     const addRouteIndex = orderRouteSource.indexOf('router.post("/:id/items"');
     const nextItemRouteIndex = orderRouteSource.indexOf('router.put("/:id/items/:index"');
 
@@ -996,7 +996,7 @@ describe("backend model boundaries", () => {
   it("keeps Order quantity-update orchestration outside the route facade", () => {
     const orderRouteSource = readBackendFile("components/order.js");
     const controllerSource = readBackendFile("controllers/orderItemOperations.js");
-    const updateRouteDeclaration = 'router.put("/:id/items/:index", [authenticateAdmin, checkPermission(\'order.edit\')], updateOrderItemQuantity);';
+    const updateRouteDeclaration = 'router.put("/:id/items/:index", editOwnDraft, updateOrderItemQuantity);';
     const updateRouteIndex = orderRouteSource.indexOf('router.put("/:id/items/:index"');
     const nextItemRouteIndex = orderRouteSource.indexOf('router.delete("/:id/items/:index"');
 
@@ -1035,7 +1035,7 @@ describe("backend model boundaries", () => {
   it("keeps Order item-delete orchestration outside the route facade", () => {
     const orderRouteSource = readBackendFile("components/order.js");
     const controllerSource = readBackendFile("controllers/orderItemOperations.js");
-    const deleteRouteDeclaration = 'router.delete("/:id/items/:index", [authenticateAdmin, checkPermission(\'order.edit\')], deleteOrderItem);';
+    const deleteRouteDeclaration = 'router.delete("/:id/items/:index", editOwnDraft, deleteOrderItem);';
     const deleteRouteIndex = orderRouteSource.indexOf('router.delete("/:id/items/:index"');
     const nextItemRouteIndex = orderRouteSource.indexOf('router.put("/:id/reorder"');
 

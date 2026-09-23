@@ -4,6 +4,7 @@ const app = require('../index');
 const { User } = require('../components/user');
 const { Product } = require('../components/product');
 const { EpOrder } = require('../components/eporder');
+const { defaultPermissionsFor } = require('./fixtures/adminPermissions');
 
 beforeAll(async () => {
   await mongoose.connect('mongodb://localhost:27017/EcomTest');
@@ -26,7 +27,7 @@ const createUser = async ({
   role = 'customer',
   password = 'password123',
   functions = [],
-  permissions = []
+  permissions = defaultPermissionsFor(role)
 }) => {
   const user = new User({
     phone,

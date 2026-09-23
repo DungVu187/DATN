@@ -5,6 +5,7 @@ const { Order } = require('../models/order');
 const { Product } = require('../models/product');
 const { StorageHistory } = require('../models/storagehistory');
 const { User } = require('../models/user');
+const { defaultPermissionsFor } = require('./fixtures/adminPermissions');
 
 const DATABASE_URL = 'mongodb://localhost:27017/EcomTest';
 const PASSWORD = 'password123';
@@ -15,7 +16,7 @@ function nextPhone() {
   return '0' + String(phoneSequence);
 }
 
-async function createAgent({ role, permissions = [] }) {
+async function createAgent({ role, permissions = defaultPermissionsFor(role) }) {
   const phone = nextPhone();
   await User.create({
     phone,

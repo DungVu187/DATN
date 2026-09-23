@@ -1,5 +1,10 @@
-const getApiBaseUrl = () =>
-  (import.meta.env.VITE_BACK_END || "").replace(/\/+$/, "");
+﻿const getApiBaseUrl = () => {
+  const configuredUrl = (import.meta.env.VITE_BACK_END || "").trim();
+  if (configuredUrl) return configuredUrl.replace(/\/+$/, "");
+
+  const isLocalHost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  return (isLocalHost ? "http://localhost:5000" : "https://api.irelia.online").replace(/\/+$/, "");
+};
 
 export const resolveApiUrl = (path) => {
   if (typeof path !== "string" || path.length === 0) {
@@ -35,3 +40,4 @@ export const apiFetch = async (path, options = {}) => {
     credentials: "include",
   });
 };
+

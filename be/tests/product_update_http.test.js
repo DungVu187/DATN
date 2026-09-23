@@ -4,6 +4,7 @@ const app = require('../index');
 const { ActivityLog } = require('../models/activitylog');
 const { Product } = require('../models/product');
 const { User } = require('../models/user');
+const { defaultPermissionsFor } = require('./fixtures/adminPermissions');
 
 const DATABASE_URL = 'mongodb://localhost:27017/EcomTest';
 const ADMIN_PHONE = '0972800001';
@@ -69,7 +70,7 @@ const cleanupTestData = async ({ includeUsers = false } = {}) => {
   ]);
 };
 
-const createAuthenticatedAgent = async ({ phone, name, role, permissions = [] }) => {
+const createAuthenticatedAgent = async ({ phone, name, role, permissions = defaultPermissionsFor(role) }) => {
   await User.create({
     phone,
     password: 'password123',

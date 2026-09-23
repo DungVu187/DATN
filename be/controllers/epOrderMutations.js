@@ -189,6 +189,7 @@ async function createEpOrder(req, res) {
       note: typeof note === "string" ? note : "",
       userName,
       productList: normalizedProductList,
+      createdBy: req.user?._id || null,
     });
 
     if (normalizedProductList.length > 0) {

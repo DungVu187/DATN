@@ -169,6 +169,7 @@ async function createIpOrder(req, res) {
       note: typeof note === "string" ? note : "",
       userName,
       productList: sanitizedProductList,
+      createdBy: req.user?._id || null,
     });
 
     if (sanitizedProductList.length > 0) {

@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -27,7 +27,7 @@ const { router: paymentRoutes } = require('./components/payment');
 const { router: chatRoutes } = require('./components/chat');
 const { startSepayOrderExpiryJob } = require('./services/sepayOrderExpiry');
 
-// Tạo app + http server + socket.io
+// Táº¡o app + http server + socket.io
 const app = express();
 app.set('trust proxy', 1);
 const http = require('http');
@@ -36,9 +36,10 @@ const { Server } = require('socket.io');
 
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  process.env.ADDRESS, // Lấy động URL Cloudflare Tunnel từ file .env
+  process.env.ADDRESS, // Láº¥y Ä‘á»™ng URL Cloudflare Tunnel tá»« file .env
   'https://Nova.com.vn',
   'https://irelia.online',
+  'https://ecom.irelia.online',
   'http://irelia.online',
   'http://localhost:3000',
   'http://localhost:5173',
@@ -51,15 +52,15 @@ const checkOrigin = (origin, callback) => {
     process.env.NODE_ENV === 'development' ||
     !origin ||
     allowedOrigins.includes(origin) ||
-    (process.env.NODE_ENV !== 'production' && origin.startsWith('http://192.168.')) // Cho phép IP LAN khi không ở production
+    (process.env.NODE_ENV !== 'production' && origin.startsWith('http://192.168.')) // Cho phÃ©p IP LAN khi khÃ´ng á»Ÿ production
   ) {
     callback(null, true);
   } else {
-    callback(null, false); // Trả về false thay vì ném lỗi gây crash 500
+    callback(null, false); // Tráº£ vá» false thay vÃ¬ nÃ©m lá»—i gÃ¢y crash 500
   }
 };
 
-// Khởi tạo Socket.IO
+// Khá»Ÿi táº¡o Socket.IO
 const io = new Server(server, {
   cors: {
     origin: checkOrigin,
@@ -112,7 +113,7 @@ io.on('connection', (socket) => {
 });
 
 
-// Lưu io vào app để các route khác (chỉ `order.js`) dùng được
+// LÆ°u io vÃ o app Ä‘á»ƒ cÃ¡c route khÃ¡c (chá»‰ `order.js`) dÃ¹ng Ä‘Æ°á»£c
 app.set('io', io);
 
 // Middleware
@@ -132,7 +133,7 @@ app.use(helmet({
   contentSecurityPolicy: false
 }));
 
-// Tiêu đề Cross-Origin-Resource-Policy
+// TiÃªu Ä‘á» Cross-Origin-Resource-Policy
 app.use((req, res, next) => {
   res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   next();
@@ -141,7 +142,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
-app.use('/orders', orderRoutes); // <== chỉ route này có thể dùng io.emit()
+app.use('/orders', orderRoutes); // <== chá»‰ route nÃ y cÃ³ thá»ƒ dÃ¹ng io.emit()
 app.use('/chips', chipRoutes);
 app.use('/chips/types', chipTypeRoutes);
 app.use('/carts', cartRoutes);
@@ -244,3 +245,4 @@ if (process.env.NODE_ENV !== 'test') {
 
 module.exports = app;
 module.exports.startServer = startServer;
+

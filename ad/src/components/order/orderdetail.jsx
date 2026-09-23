@@ -48,6 +48,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { usePermissions } from "../../context/usepermissions";
+import { getOrderDetailAbilities } from "../../utils/orderpermissions";
 import {
   addSalesOrderItem,
   cancelSalesOrder,
@@ -325,17 +326,22 @@ const SortableTableRow = ({
 const SalesOrderDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { can } = usePermissions();
-  const canCreate = can("order.create");
-  const canEdit = can("order.edit");
+  const { can, profile } = usePermissions();
   const canCancel = can("order.delete");
-  const canExcel = canEdit && can("order.excel");
-  const canScanAi = canEdit && can("order.scan_ai");
-  const canAddImage = canCreate || canEdit;
   const excelInputRef = useRef(null);
   const scanInputRef = useRef(null);
   const manualImageInputRef = useRef(null);
   const [order, setOrder] = useState(null);
+  // canEdit = được sửa nội dung (quyền Sửa, hoặc quyền Thêm với đơn nháp của mình);
+  // canEditFull = quyền Sửa đầy đủ (xoá file ảnh trên server, Excel, quét AI…)
+  const {
+    canEdit: canEditFull,
+    canEditContent: canEdit,
+    canExcel,
+    canScanAi,
+    canAddImage,
+    canCopy,
+  } = getOrderDetailAbilities({ module: "order", can, profile, order });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [tempQuantity, setTempQuantity] = useState({});
@@ -888,7 +894,8 @@ const SalesOrderDetail = () => {
     const nextImages = orderImages.filter((_, index) => index !== indexToDelete);
     const saved = await updateOrderImages(nextImages);
     if (saved && imageUrl) {
-      await runSalesOrderRequest(deleteSalesOrderImage(imageUrl));
+      // Xoá file trên server cần quyền Sửa; quyền Thêm chỉ gỡ ảnh khỏi đơn nháp của mình
+      if (canEditFull) await runSalesOrderRequest(deleteSalesOrderImage(imageUrl));
       toast.success("Đã xóa ảnh hóa đơn");
     }
   };
@@ -959,7 +966,7 @@ const SalesOrderDetail = () => {
               Thêm sản phẩm
             </Button>
           )}
-          {canEdit && (
+          {canCopy && (
             <Button variant="contained" color="primary" onClick={handleCopyOrder} disabled={bulkProcessing}>
               Sao chép đơn
             </Button>
@@ -1077,7 +1084,7 @@ const SalesOrderDetail = () => {
                     cursor: "pointer",
                   }}
                 />
-                {!locked && (
+                {!locked && canAddImage && (
                   <IconButton
                     size="small"
                     color="error"

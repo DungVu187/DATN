@@ -1,0 +1,68 @@
+﻿node : Chat advice degraded to local reply: MISSING_API_KEY
+At line:1 char:366
++ ... comWeb\be'; node .\scripts\evalChatbot.js --split=holdout 2>&1 | Out- ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Chat advice deg...MISSING_API_KEY:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Chat advice degraded to local reply: MISSING_API_KEY
+{
+  "datasetVersion": "2026-09-07.1",
+  "mode": "offline",
+  "split": "holdout",
+  "singleTurn": {
+    "total": 22,
+    "passed": 21,
+    "accuracy": 0.9545,
+    "bySplit": {
+      "holdout": {
+        "total": 22,
+        "passed": 21,
+        "accuracy": 0.9545
+      }
+    },
+    "byGroup": {
+      "code_alias": {
+        "total": 6,
+        "passed": 6,
+        "accuracy": 1
+      },
+      "needs_multi": {
+        "total": 6,
+        "passed": 5,
+        "accuracy": 0.8333
+      },
+      "out_of_scope": {
+        "total": 4,
+        "passed": 4,
+        "accuracy": 1
+      },
+      "safety_policy": {
+        "total": 4,
+        "passed": 4,
+        "accuracy": 1
+      },
+      "catalog_brand": {
+        "total": 2,
+        "passed": 2,
+        "accuracy": 1
+      }
+    },
+    "retrieval": {
+      "evaluated": 11,
+      "hitAt3": 1,
+      "precisionAtK": 1,
+      "averageK": 1.36,
+      "forbiddenHits": 0
+    }
+  },
+  "multiTurn": {
+    "total": 2,
+    "passed": 2,
+    "accuracy": 1
+  },
+  "reportPath": "D:\\Đồ án tốt nghiệp\\NovaEcomWeb\\be\\tests\\artifacts\\chatbot\\eval-report-offline-holdout.json"
+}
+
+Ca trượt (1):
+  [need-15] Cần contactor cho tải 7.5kW thì chọn dòng nào? → task=search (mong đợi advice)

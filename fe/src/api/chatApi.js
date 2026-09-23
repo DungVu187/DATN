@@ -5,10 +5,21 @@ export const sendChatMessage = (payload) => apiFetch('/chat/send', {
   json: payload,
 });
 
-export const clearChatHistory = (sessionId) => apiFetch('/chat/clear', {
+export const clearChatHistory = (chatSessionId, visitorId) => apiFetch('/chat/clear', {
   method: 'DELETE',
-  json: sessionId ? { sessionId } : {},
+  json: {
+    chatSessionId,
+    ...(visitorId ? { visitorId } : {}),
+  },
 });
+
+export const getChatHistory = (chatSessionId, visitorId) => {
+  const params = new URLSearchParams({ chatSessionId });
+  if (visitorId) params.set('visitorId', visitorId);
+  return apiFetch('/chat/history?' + params.toString(), {
+    method: 'GET',
+  });
+};
 
 export const sendCustomerBehaviorEvents = (events) => apiFetch('/chat/events', {
   method: 'POST',

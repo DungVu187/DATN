@@ -5,6 +5,7 @@ const { User } = require("../components/user");
 const { Product } = require("../components/product");
 const { StorageHistory } = require("../components/storagehistory");
 const { ActivityLog } = require("../components/activitylog");
+const { ADMIN_TEST_PERMISSIONS } = require("./fixtures/adminPermissions");
 
 const ADMIN_PHONE = "0963000001";
 
@@ -23,6 +24,7 @@ const createAdminAgent = async () => {
     password: "password123",
     name: "Manual Stock Admin",
     role: "admin",
+    permissions: [...ADMIN_TEST_PERMISSIONS],
   });
   await admin.save();
 

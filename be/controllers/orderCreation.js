@@ -58,6 +58,7 @@ async function createAdminDraftOrder(req, res) {
       cartItems: [],
       total: 0,
       status: 'Processing',
+      createdBy: req.user?._id || null,
     }).save();
 
     res.status(201).json({ success: true, order: savedOrder });

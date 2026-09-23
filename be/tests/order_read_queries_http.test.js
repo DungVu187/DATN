@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const app = require('../index');
 const { Order } = require('../models/order');
 const { User } = require('../models/user');
+const { defaultPermissionsFor } = require('./fixtures/adminPermissions');
 
 beforeAll(async () => {
   await mongoose.connect('mongodb://localhost:27017/EcomTest');
@@ -18,7 +19,7 @@ afterEach(async () => {
   await User.deleteMany({});
 });
 
-async function createUser({ phone, role = 'customer', permissions = [], name }) {
+async function createUser({ phone, role = 'customer', permissions = defaultPermissionsFor(role), name }) {
   return User.create({
     phone,
     password: 'password123',

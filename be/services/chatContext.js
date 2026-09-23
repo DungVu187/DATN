@@ -3,14 +3,15 @@ const { Product } = require('../models/product');
 const { Manage } = require('../models/manage');
 const { CustomerBehavior } = require('../models/customerbehavior');
 const { createDefaultPolicies } = require('../config/policydefaults');
-const { listProducts } = require('./productListing');
 const { isContactOnlyVariant } = require('./productPricing');
 const { removeVietnameseTones } = require('../utils/textNormalization');
+const { PRODUCT_SELECT, RELEVANCE, retrieveProducts } = require('./chatRetrieval');
 
 const MAX_MAIN_PRODUCTS = 5;
 const MAX_SIMILAR_PRODUCTS = 3;
 const MAX_RECENT_BEHAVIORS = 8;
 const MAX_POLICY_CONTENT_LENGTH = 2500;
+const MAX_QUESTION_LENGTH = 2000;
 
 const POLICY_KEYWORDS = {
     purchase: ['mua hang', 'dat hang', 'huy don', 'thanh toan', 'don hang'],
@@ -21,32 +22,12 @@ const POLICY_KEYWORDS = {
 
 const normalizeText = (value, maxLength = 500) => String(value || '').trim().slice(0, maxLength);
 
-const SEARCH_FILLER_WORDS = new Set([
-    'toi', 'can', 'muon', 'tim', 'cho', 'hoi', 'biet', 'xem', 'giup',
-    'minh', 'mot', 'loai', 'san', 'pham', 'hang', 'nao', 'co', 'khong',
-    'con', 'het', 'gia', 'bao', 'nhieu', 'ton', 'kho', 'thong', 'so',
-    'ky', 'thuat', 'tuong', 'tu', 'thay', 'the', 'giao', 'nhan',
-    'van', 'chuyen', 'bao', 'hanh', 'doi', 'tra', 'cua', 'toi',
-]);
-
-function getSearchEntity(message) {
-    const normalized = removeVietnameseTones(String(message || ''))
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, ' ')
-        .split(/\s+/)
-        .filter(Boolean)
-        .filter((token) => !SEARCH_FILLER_WORDS.has(token));
-    return normalized.join(' ').slice(0, 300);
-}
-
 const toObjectId = (value) => {
     const normalized = normalizeText(value, 24);
     return mongoose.Types.ObjectId.isValid(normalized)
         ? new mongoose.Types.ObjectId(normalized)
         : null;
 };
-
-const hasMeaningfulValue = (value) => typeof value === 'string' && value.trim() !== '';
 
 function getVariantAvailability(variant) {
     const quantityForSale = Number(variant?.quantityForSale || 0);
@@ -67,6 +48,10 @@ function getProductAvailability(variants) {
     return 'out_of_stock';
 }
 
+/**
+ * Allowlist công khai duy nhất trước khi dữ liệu đi vào context, prompt hay API.
+ * Giữ nguyên thứ tự biến thể gốc để frontend không thêm nhầm hàng.
+ */
 function toPublicProduct(product) {
     if (!product) return null;
 
@@ -137,69 +122,94 @@ function normalizePolicy(policy) {
     };
 }
 
+async function loadStorePolicies() {
+    const manageData = await Manage.findOne().select('policies').lean();
+    return manageData?.policies?.length === 4
+        ? manageData.policies
+        : createDefaultPolicies();
+}
+
 async function getRelevantPolicies(message) {
     const requestedKeys = getPolicyKeysForMessage(message);
     if (requestedKeys.length === 0) return [];
 
-    const manageData = await Manage.findOne().select('policies').lean();
-    const policies = manageData?.policies?.length === 4
-        ? manageData.policies
-        : createDefaultPolicies();
-
+    const policies = await loadStorePolicies();
     return requestedKeys
         .map((key) => policies.find((policy) => policy.key === key))
         .filter(Boolean)
         .map(normalizePolicy);
 }
 
+/**
+ * Chính sách cho chế độ hỏi đáp chung: đúng nhóm nếu nhận ra được, còn không thì đưa cả bốn.
+ * "Có xuất hóa đơn VAT không" không chứa từ khóa chính sách nào, nhưng câu trả lời nằm ở đó.
+ */
+async function getSupportPolicies(message) {
+    const relevant = await getRelevantPolicies(message);
+    if (relevant.length > 0) return relevant;
+    return (await loadStorePolicies()).map(normalizePolicy);
+}
+
+/** Thông tin liên hệ đang hiện công khai ở chân trang; không đọc thêm trường nội bộ nào. */
+async function getStoreInfo() {
+    const manageData = await Manage.findOne().select('footerContent').lean();
+    const footer = manageData?.footerContent || {};
+    const info = {
+        name: 'NOVA',
+        address: normalizeText(footer.address, 300),
+        phone: normalizeText(footer.phone, 50),
+        email: normalizeText(footer.email, 150),
+    };
+    return Object.fromEntries(Object.entries(info).filter(([, value]) => value));
+}
+
+/** Mỗi lượt đều nạp lại sản phẩm với display:true, giá và tồn kho mới nhất. */
+async function hydrateProductsByIds(productIds = []) {
+    const objectIds = productIds.map(toObjectId).filter(Boolean);
+    if (objectIds.length === 0) return { products: [], missingIds: [] };
+
+    const found = await Product.find({ _id: { $in: objectIds }, display: true })
+        .select(PRODUCT_SELECT)
+        .lean();
+    const byId = new Map(found.map((product) => [String(product._id), product]));
+    const ordered = productIds.map((id) => byId.get(String(id))).filter(Boolean);
+    const missingIds = productIds.filter((id) => !byId.has(String(id)));
+    return { products: ordered, missingIds };
+}
+
 async function getCurrentProduct(currentProductId) {
     const objectId = toObjectId(currentProductId);
     if (!objectId) return null;
-
-    return Product.findOne({ _id: objectId, display: true })
-        .select('name code brand type section value description features specifications warranty averageReviews reviewCount variant')
-        .lean();
+    return Product.findOne({ _id: objectId, display: true }).select(PRODUCT_SELECT).lean();
 }
 
-async function searchProducts(message, userId) {
-    if (!hasMeaningfulValue(message)) return [];
-    const searchEntity = getSearchEntity(message);
-
-    const result = await listProducts({
-        query: {
-            search: searchEntity || normalizeText(message, 300),
-            limit: MAX_MAIN_PRODUCTS,
-            sortBy: 'purchaseCount',
-            sortOrder: 'desc',
-        },
-        userId: userId || null,
-    });
-
-    return result.products || [];
-}
-
-function scoreSimilarProduct(anchor, candidate, recentProductIds = new Set()) {
+/**
+ * Điểm gợi ý sản phẩm liên quan.
+ * Đọc availability đã tính trên biến thể công khai, không đọc lại candidate.variant sau khi map.
+ */
+function scoreSimilarProduct(anchor, candidate) {
     let score = 0;
-    if (anchor.type && candidate.type === anchor.type) score += 3;
-    if (anchor.brand && candidate.brand === anchor.brand) score += 2;
+    if (anchor.type && candidate.type === anchor.type) score += 5;
     if (anchor.section && candidate.section === anchor.section) score += 2;
+    // Cùng hãng chỉ là tín hiệu phụ, không chứng minh thay thế được.
+    if (anchor.brand && candidate.brand === anchor.brand) score += 1;
 
     const anchorTokens = new Set(removeVietnameseTones(anchor.name || '').toLowerCase().split(/\s+/).filter(Boolean));
     const candidateTokens = removeVietnameseTones(candidate.name || '').toLowerCase().split(/\s+/).filter(Boolean);
-    if (candidateTokens.some((token) => anchorTokens.has(token))) score += 2;
-    if (recentProductIds.has(String(candidate.productId || candidate._id || ''))) score += 1;
-    if (getProductAvailability(candidate.variant) === 'available') score += 4;
+    if (candidateTokens.some((token) => token.length > 2 && anchorTokens.has(token))) score += 2;
+    // Tồn kho là tiêu chí phụ, xét sau khi đã cùng nhóm.
+    if (candidate.availability === 'available') score += 1;
 
     return score;
 }
 
-async function findSimilarProducts(anchor, excludedIds, recentProductIds) {
+/** Ưu tiên đúng nhóm; chỉ mở sang section khi sản phẩm gốc không có type. */
+async function findSimilarProducts(anchor, excludedIds = new Set()) {
     if (!anchor) return [];
 
     const conditions = [
         anchor.type ? { type: anchor.type } : null,
-        anchor.brand ? { brand: anchor.brand } : null,
-        anchor.section ? { section: anchor.section } : null,
+        !anchor.type && anchor.section ? { section: anchor.section } : null,
     ].filter(Boolean);
     if (conditions.length === 0) return [];
 
@@ -208,14 +218,11 @@ async function findSimilarProducts(anchor, excludedIds, recentProductIds) {
         _id: { $nin: Array.from(excludedIds).map(toObjectId).filter(Boolean) },
         $or: conditions,
     };
-    const candidates = await Product.find(filter)
-        .select('name code brand type section value description features specifications warranty averageReviews reviewCount variant')
-        .limit(60)
-        .lean();
+    const candidates = await Product.find(filter).select(PRODUCT_SELECT).limit(60).lean();
 
     return candidates
         .map(toPublicProduct)
-        .sort((first, second) => scoreSimilarProduct(anchor, second, recentProductIds) - scoreSimilarProduct(anchor, first, recentProductIds))
+        .sort((first, second) => scoreSimilarProduct(anchor, second) - scoreSimilarProduct(anchor, first))
         .slice(0, MAX_SIMILAR_PRODUCTS);
 }
 
@@ -266,31 +273,57 @@ async function getRecentBehavior({ userId, visitorId, sessionId }) {
     });
 }
 
+/**
+ * Dựng ngữ cảnh cho một lượt chat.
+ * Sản phẩm khách đang hỏi luôn thắng dữ liệu tìm kiếm; hành vi xem hàng không tham gia tư vấn.
+ */
 async function buildChatContext({
     message = '',
-    userId,
-    visitorId,
-    sessionId,
+    analysis = null,
+    catalog = null,
+    referencedProductIds = [],
     currentProductId,
     currentPath,
+    includeSimilar = true,
 } = {}) {
-    const normalizedMessage = normalizeText(message, 1000);
-    const [currentProduct, searchResult, policies, recentBehavior] = await Promise.all([
+    const normalizedMessage = normalizeText(message, MAX_QUESTION_LENGTH);
+
+    const [referenced, currentProduct, policies] = await Promise.all([
+        hydrateProductsByIds(referencedProductIds),
         getCurrentProduct(currentProductId),
-        searchProducts(normalizedMessage, userId),
         getRelevantPolicies(normalizedMessage),
-        getRecentBehavior({ userId, visitorId, sessionId }),
     ]);
 
+    let retrieval = null;
+    let retrievalError = null;
+    const needsSearch = referenced.products.length === 0
+        && analysis
+        && ['search', 'advice', 'compare', 'details'].includes(analysis.task);
+
+    if (needsSearch) {
+        try {
+            retrieval = await retrieveProducts({ message: normalizedMessage, catalog, limit: MAX_MAIN_PRODUCTS });
+        } catch (error) {
+            // Lỗi tra cứu không được suy ra là hết hàng hay ngoài phạm vi.
+            console.error('Error retrieving chat products:', error);
+            retrievalError = error;
+        }
+    }
+
     const publicCurrentProduct = toPublicProduct(currentProduct);
-    const mainProducts = dedupeProducts([
-        publicCurrentProduct,
-        ...searchResult.map(toPublicProduct),
-    ]).slice(0, MAX_MAIN_PRODUCTS);
-    const anchor = publicCurrentProduct || mainProducts[0] || null;
+    const referencedPublic = referenced.products.map(toPublicProduct);
+    const retrievedPublic = (retrieval?.products || []).map(toPublicProduct);
+
+    const mainProducts = dedupeProducts(
+        referencedPublic.length > 0 ? referencedPublic : retrievedPublic
+    ).slice(0, MAX_MAIN_PRODUCTS);
+
+    const anchor = mainProducts[0] || publicCurrentProduct || null;
     const excludedIds = new Set(mainProducts.map((product) => product.productId));
-    const recentProductIds = new Set(recentBehavior.map((behavior) => behavior.productId).filter(Boolean));
-    const similarProducts = await findSimilarProducts(anchor, excludedIds, recentProductIds);
+    if (publicCurrentProduct) excludedIds.add(publicCurrentProduct.productId);
+    const similarProducts = includeSimilar && anchor
+        ? await findSimilarProducts(anchor, excludedIds)
+        : [];
 
     return {
         question: normalizedMessage,
@@ -299,19 +332,39 @@ async function buildChatContext({
         products: mainProducts,
         similarProducts,
         policies,
-        recentBehavior,
+        retrieval: retrieval
+            ? {
+                relevance: retrieval.relevance,
+                relaxed: retrieval.relaxed,
+                queried: retrieval.queried,
+                missingCodes: retrieval.missingCodes,
+                unverifiedPhrases: retrieval.unverifiedPhrases,
+                weakMatch: retrieval.weakMatch === true,
+                nearCodeProducts: retrieval.nearCodeProducts.map((item) => ({
+                    requestedCode: item.requestedCode,
+                    product: toPublicProduct(item.product),
+                })),
+            }
+            : null,
+        retrievalFailed: Boolean(retrievalError),
+        missingReferencedIds: referenced.missingIds,
+        catalogStale: catalog?.stale === true,
     };
 }
 
 module.exports = {
     MAX_MAIN_PRODUCTS,
-    MAX_SIMILAR_PRODUCTS,
     MAX_RECENT_BEHAVIORS,
+    MAX_SIMILAR_PRODUCTS,
+    RELEVANCE,
     buildChatContext,
     findSimilarProducts,
     getProductAvailability,
-    getSearchEntity,
-    getRelevantPolicies,
     getRecentBehavior,
+    getRelevantPolicies,
+    getStoreInfo,
+    getSupportPolicies,
+    hydrateProductsByIds,
+    scoreSimilarProduct,
     toPublicProduct,
 };

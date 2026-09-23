@@ -4,6 +4,7 @@ const app = require('../index');
 const { Product } = require('../models/product');
 const { User } = require('../models/user');
 const { ActivityLog } = require('../models/activitylog');
+const { ADMIN_TEST_PERMISSIONS } = require('./fixtures/adminPermissions');
 
 const TEST_DB_URL = 'mongodb://localhost:27017/EcomTest';
 const ADMIN_PHONE = '0917000999';
@@ -91,6 +92,7 @@ beforeAll(async () => {
     password: 'password123',
     name: ADMIN_NAME,
     role: 'admin',
+    permissions: [...ADMIN_TEST_PERMISSIONS],
   });
 
   adminAgent = request.agent(app);

@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../index');
 const { User } = require('../components/user');
+const { ADMIN_TEST_PERMISSIONS } = require('./fixtures/adminPermissions');
 
 const invoiceDirectory = path.join(__dirname, '../upload/invoices');
 const createdImageUrls = [];
@@ -34,6 +35,7 @@ const createAdminAgent = async () => {
     password: 'password123',
     name: 'Inventory Media Admin',
     role: 'admin',
+    permissions: [...ADMIN_TEST_PERMISSIONS],
   });
   const agent = request.agent(app);
   const loginRes = await agent
