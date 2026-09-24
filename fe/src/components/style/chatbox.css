@@ -8,28 +8,91 @@
   right: 22px;
   bottom: 22px;
   z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   font-family: inherit;
+  --chat-ease: cubic-bezier(.22, 1, .36, 1);
 }
 
+/* Nút tròn nổi: icon chat <-> icon đóng xoay mờ qua lại */
 .chatbox-launcher {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  min-height: 48px;
-  padding: 0 17px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  padding: 0;
   border: 0;
-  border-radius: 24px;
-  background: var(--chat-blue);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #2f8bff 0%, var(--chat-blue) 55%, #0f5fc4 100%);
   color: #fff;
-  box-shadow: 0 10px 26px rgba(20, 115, 230, .25);
+  box-shadow: 0 10px 24px rgba(20, 115, 230, .32), inset 0 1px 0 rgba(255, 255, 255, .25);
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 700;
-  transition: transform .2s ease, box-shadow .2s ease;
+  transition: transform .35s var(--chat-ease), box-shadow .35s var(--chat-ease);
 }
 
-.chatbox-launcher:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(20, 115, 230, .32); }
-.chatbox-launcher:active { transform: translateY(0) scale(.98); }
+.chatbox-launcher:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 16px 32px rgba(20, 115, 230, .38), inset 0 1px 0 rgba(255, 255, 255, .25); }
+.chatbox-launcher:active { transform: scale(.94); }
+.chatbox-launcher:focus-visible { outline: 3px solid rgba(20, 115, 230, .35); outline-offset: 3px; }
+
+.chatbox-launcher-icon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: opacity .3s var(--chat-ease), transform .45s var(--chat-ease);
+}
+
+.chatbox-launcher-icon svg { font-size: 27px; }
+.chatbox-launcher-icon.is-close { opacity: 0; transform: rotate(-90deg) scale(.5); }
+.chatbox-root.is-open .chatbox-launcher-icon.is-chat { opacity: 0; transform: rotate(90deg) scale(.5); }
+.chatbox-root.is-open .chatbox-launcher-icon.is-close { opacity: 1; transform: rotate(0) scale(1); }
+
+/* Vòng sóng nhẹ quanh nút khi đang đóng để gợi ý bấm */
+.chatbox-launcher::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(20, 115, 230, .4);
+  animation: chatbox-ring 2.8s ease-out infinite;
+  pointer-events: none;
+}
+
+.chatbox-root.is-open .chatbox-launcher::after { animation: none; }
+
+@keyframes chatbox-ring {
+  0% { box-shadow: 0 0 0 0 rgba(20, 115, 230, .38); }
+  70%, 100% { box-shadow: 0 0 0 14px rgba(20, 115, 230, 0); }
+}
+
+.chatbox-launcher-tooltip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  padding: 7px 12px;
+  border-radius: 9px;
+  background: var(--chat-ink);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(16, 42, 67, .18);
+  opacity: 0;
+  transform: translate(6px, -50%);
+  transition: opacity .25s ease, transform .3s var(--chat-ease);
+  pointer-events: none;
+}
+
+.chatbox-launcher:hover .chatbox-launcher-tooltip,
+.chatbox-launcher:focus-visible .chatbox-launcher-tooltip { opacity: 1; transform: translate(0, -50%); }
+
+/* Khung chat bật lên từ phía nút */
+@keyframes chatbox-panel-in {
+  from { opacity: 0; transform: translateY(16px) scale(.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 .chatbox-panel {
   width: min(410px, calc(100vw - 32px));
@@ -42,6 +105,8 @@
   border-radius: 17px;
   background: #fff;
   box-shadow: 0 20px 60px rgba(16, 42, 67, .2);
+  transform-origin: bottom right;
+  animation: chatbox-panel-in .38s var(--chat-ease) both;
 }
 
 .chatbox-header {
@@ -134,12 +199,15 @@
 @media (max-width: 600px) {
   .chatbox-root { right: 12px; bottom: 14px; }
   .chatbox-panel { width: calc(100vw - 24px); height: min(640px, calc(100dvh - 92px)); margin-bottom: 9px; }
-  .chatbox-launcher { min-height: 44px; padding: 0 14px; }
+  .chatbox-launcher { width: 52px; height: 52px; }
+  .chatbox-launcher-icon svg { font-size: 25px; }
+  .chatbox-launcher-tooltip { display: none; }
   .chatbox-messages { padding-inline: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chatbox-launcher, .chatbox-suggestion-list button, .chatbox-quick-chips button { transition: none; }
+  .chatbox-launcher, .chatbox-launcher-icon, .chatbox-launcher-tooltip, .chatbox-suggestion-list button, .chatbox-quick-chips button { transition: none; }
+  .chatbox-launcher::after, .chatbox-panel { animation: none; }
   .chat-typing span { animation: none; opacity: .7; }
 }
 

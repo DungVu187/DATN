@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
-import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+import ChatRoundedIcon from '@mui/icons-material/ChatRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
@@ -393,8 +393,10 @@ function Chatbox() {
       )}
 
       <button type="button" className="chatbox-launcher" onClick={() => setOpen((current) => !current)} aria-label={open ? 'Đóng trợ lý NOVA' : 'Mở trợ lý NOVA'}>
-        {open ? <CloseRoundedIcon /> : <ChatBubbleOutlineOutlinedIcon />}
-        {!open && <span className="chatbox-launcher-label">Hỏi trợ lý</span>}
+        {/* Giữ cả hai icon để chuyển qua lại bằng hiệu ứng xoay/mờ thay vì đổi đột ngột */}
+        <span className="chatbox-launcher-icon is-chat" aria-hidden="true"><ChatRoundedIcon /></span>
+        <span className="chatbox-launcher-icon is-close" aria-hidden="true"><CloseRoundedIcon /></span>
+        {!open && <span className="chatbox-launcher-tooltip" aria-hidden="true">Hỏi trợ lý NOVA</span>}
       </button>
     </aside>
   );

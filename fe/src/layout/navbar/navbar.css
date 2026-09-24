@@ -1,8 +1,9 @@
 .store-header { position: fixed; inset: 0 0 auto; z-index: 999; background: #fff; color: #172b4d; box-shadow: 0 2px 12px rgba(16,42,67,.08); }
 .store-header-shell { width: min(1440px, calc(100% - 40px)); margin: 0 auto; }
 .store-main-nav { min-height: 72px; }
-.store-main-nav-content { height: 72px; display: grid; grid-template-columns: 38px 174px minmax(260px, 1fr) auto; gap: 18px; align-items: center; }
-.store-menu-button { width: 38px; height: 38px; border: 0; border-radius: 7px; background: transparent; color: #102a43; font-size: 20px; cursor: pointer; }
+.store-main-nav-content { height: 72px; display: grid; grid-template-columns: 174px minmax(260px, 1fr) auto; gap: 18px; align-items: center; }
+/* Máy tính đã có logo, ô tìm kiếm và menu tài khoản nên ẩn nút mở menu; chỉ hiện trên điện thoại */
+.store-menu-button { display: none; width: 38px; height: 38px; border: 0; border-radius: 7px; background: transparent; color: #102a43; font-size: 20px; cursor: pointer; }
 .store-menu-button:hover { background: #eef5ff; color: #1473e6; }
 .store-logo { min-width: 0; display: flex; align-items: center; text-decoration: none; }
 .store-logo img { width: 164px; height: 48px; display: block; object-fit: contain; object-position: left center; transition: transform .22s cubic-bezier(.2,.8,.2,1); }
@@ -44,7 +45,7 @@
 .store-drawer-footer a { color: #1473e6; text-decoration: none; font-weight: 700; font-size: 13px; }
 
 @media (max-width: 1180px) {
-  .store-main-nav-content { grid-template-columns: 38px 146px minmax(220px, 1fr) auto; gap: 12px; }
+  .store-main-nav-content { grid-template-columns: 146px minmax(220px, 1fr) auto; gap: 12px; }
   .store-logo img { width: 142px; }
   .store-nav-actions { gap: 13px; }
   .store-nav-actions span:not(.store-cart-icon) { display: none; }
@@ -62,6 +63,7 @@
     gap: 9px;
   }
   .store-menu-button {
+    display: block;
     width: 42px;
     height: 42px;
     border-radius: 12px;
