@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --runInBand --detectOpenHandles --forceExit --testTimeout=15000",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "simulate:stock": "node scripts/simulate_product_stock.js",
+    "simulate:price": "node scripts/simulate_product_price.js"
   },
   "author": "",
   "license": "ISC",
