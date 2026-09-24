@@ -359,6 +359,8 @@ export const CUSTOMER_TEXT = {
   "frame_label": "Khung",
   "in_stock": "Còn hàng",
   "remaining_products": "Còn {count} sản phẩm",
+  "decrease_quantity": "Giảm số lượng",
+  "increase_quantity": "Tăng số lượng",
   "pdf_document": "Tài liệu PDF",
   "technical_document": "Tài liệu kỹ thuật",
   "remove_from_cart": "Xóa khỏi giỏ hàng",

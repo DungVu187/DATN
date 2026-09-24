@@ -27,7 +27,11 @@ const ShopContextProvider = ({ children }) => {
           }, 1000);
           throw new Error("Unauthorized");
         }
-        throw new Error("Failed to update cart");
+        // Lỗi nghiệp vụ (vượt tồn kho, số lượng sai...) thì hiện đúng thông báo backend trả về
+        const errorData = await response.json().catch(() => ({}));
+        const requestError = new Error("Failed to update cart");
+        requestError.userMessage = typeof errorData?.message === "string" ? errorData.message : "";
+        throw requestError;
       }
       const data = await response.json();
       setCartItems(data.cart || []);
@@ -35,7 +39,7 @@ const ShopContextProvider = ({ children }) => {
     } catch (error) {
       console.error(`Error with ${path}:`, error);
       if (error.message !== "Unauthorized") {
-        toast.error(text("generic_error_retry"));
+        toast.error(error.userMessage || text("generic_error_retry"));
       }
       throw error;
     }

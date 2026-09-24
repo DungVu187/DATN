@@ -97,6 +97,59 @@ describe('Cart API', () => {
     expect(userInDb.cart).toHaveLength(0);
   });
 
+  it('rejects invalid quantities and quantities above available stock', async () => {
+    const { agent, user } = await createCustomerAgent();
+    const product = await Product.create({
+      type: 'PLC',
+      name: 'Cart Stock Product',
+      brand: 'Test Brand',
+      section: 'Automation',
+      value: 'PLC',
+      warranty: '12 tháng',
+      display: true,
+      variant: [
+        { price: '100000', quantityForSale: 5, quantityInStorage: 5 },
+        { price: '120000', quantityForSale: 0, quantityInStorage: 0 },
+      ],
+    });
+    const productId = product._id.toString();
+
+    for (const quantity of [-1, 0, 1.5, 'abc', '']) {
+      const invalid = await agent.post('/carts/addToCart').send({ productId, variantIndex: 0, quantity });
+      expect(invalid.status).toBe(400);
+      expect(invalid.body.message).toBe('Số lượng phải là số nguyên lớn hơn 0.');
+    }
+
+    const overStock = await agent.post('/carts/addToCart').send({ productId, variantIndex: 0, quantity: 6 });
+    expect(overStock.status).toBe(409);
+    expect(overStock.body.message).toBe('Chỉ còn 5 sản phẩm.');
+
+    const outOfStock = await agent.post('/carts/addToCart').send({ productId, variantIndex: 1, quantity: 1 });
+    expect(outOfStock.status).toBe(409);
+
+    const fitsStock = await agent.post('/carts/addToCart').send({ productId, variantIndex: 0, quantity: '3' });
+    expect(fitsStock.status).toBe(200);
+
+    // Cộng dồn với số đã có trong giỏ cũng không được vượt tồn kho
+    const accumulated = await agent.post('/carts/addToCart').send({ productId, variantIndex: 0, quantity: 3 });
+    expect(accumulated.status).toBe(409);
+    expect(accumulated.body.message).toBe('Chỉ còn 5 sản phẩm, giỏ hàng của bạn đã có 3.');
+
+    for (const quantity of [-1, 0, 1.5, 'abc']) {
+      const invalidUpdate = await agent.put('/carts/updateCartItem').send({ productId, variantIndex: 0, quantity });
+      expect(invalidUpdate.status).toBe(400);
+    }
+    const updateOverStock = await agent.put('/carts/updateCartItem').send({ productId, variantIndex: 0, quantity: 99999 });
+    expect(updateOverStock.status).toBe(409);
+
+    const updateOk = await agent.put('/carts/updateCartItem').send({ productId, variantIndex: 0, quantity: 5 });
+    expect(updateOk.status).toBe(200);
+
+    const userInDb = await User.findById(user._id);
+    expect(userInDb.cart).toHaveLength(1);
+    expect(userInDb.cart[0].quantity).toBe(5);
+  });
+
   it('allows customers to add any visible product and marks hidden products unavailable', async () => {
     const allowedProduct = await Product.create({
       type: 'PLC',

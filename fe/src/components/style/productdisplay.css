@@ -130,7 +130,8 @@
 .product-detail-quantity { height: 32px; display: grid; grid-template-columns: repeat(3, 36px); overflow: hidden; border: 1px solid #d8e1ea; border-radius: 6px; }
 .product-detail-quantity button, .product-detail-quantity span { display: grid; place-items: center; border: 0; background: #fff; color: #52667a; font-size: 13px; }
 .product-detail-quantity button { cursor: pointer; }
-.product-detail-quantity button:hover { background: #eef5ff; color: #1473e6; }
+.product-detail-quantity button:hover:not(:disabled) { background: #eef5ff; color: #1473e6; }
+.product-detail-quantity button:disabled { color: #c3cdd8; cursor: not-allowed; }
 .product-detail-quantity span { border-inline: 1px solid #e5eaf0; }
 
 .product-primary-actions { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }

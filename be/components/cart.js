@@ -9,6 +9,16 @@ const { isContactOnlyVariant } = require('../services/productPricing');
 const express = require('express');
 const router = express.Router();
 
+// Số lượng hợp lệ là số nguyên dương; chuỗi số như "2" vẫn nhận, còn -1, 0, 1.5, "abc" thì trả null
+const parseCartQuantity = (value) => {
+    const quantity = typeof value === 'string' && value.trim() !== '' ? Number(value) : value;
+    return Number.isInteger(quantity) && quantity > 0 ? quantity : null;
+};
+
+const getStockLimit = (variant) => Math.max(0, Math.floor(Number(variant?.quantityForSale) || 0));
+
+const INVALID_QUANTITY_MESSAGE = 'Số lượng phải là số nguyên lớn hơn 0.';
+
 const findAccessibleProduct = async (user, productId) => {
     const { filter } = await buildProductVisibilityFilter(user);
     return Product.findOne(combineProductFilters({ _id: productId }, filter));
@@ -39,13 +49,10 @@ router.post('/addToCart', authenticateUser, async (req, res) => {
     const { productId } = req.body;
     const variantIndex = Number(req.body.variantIndex);
     
-    // Validate & sanitize quantity
-    let quantity = 1;
-    if (req.body.quantity !== undefined) {
-        const parsed = parseInt(req.body.quantity, 10);
-        if (!isNaN(parsed) && parsed > 0) {
-            quantity = parsed;
-        }
+    // Không gửi số lượng thì mặc định 1; gửi mà sai (âm, 0, thập phân, chữ) thì từ chối thay vì tự sửa
+    const quantity = req.body.quantity === undefined ? 1 : parseCartQuantity(req.body.quantity);
+    if (quantity === null) {
+        return res.status(400).json({ message: INVALID_QUANTITY_MESSAGE });
     }
 
     try {
@@ -71,8 +78,22 @@ router.post('/addToCart', authenticateUser, async (req, res) => {
             (item) => item.productId.toString() === productId && item.variantIndex === variantIndex
         );
 
+        // Tổng trong giỏ (đã có + thêm mới) không được vượt số lượng còn bán
+        const stockLimit = getStockLimit(product.variant[variantIndex]);
+        const currentQuantity = existingCartItem ? (existingCartItem.quantity || 0) : 0;
+        if (stockLimit <= 0) {
+            return res.status(409).json({ message: 'Sản phẩm này đã hết hàng.' });
+        }
+        if (currentQuantity + quantity > stockLimit) {
+            return res.status(409).json({
+                message: currentQuantity > 0
+                    ? `Chỉ còn ${stockLimit} sản phẩm, giỏ hàng của bạn đã có ${currentQuantity}.`
+                    : `Chỉ còn ${stockLimit} sản phẩm.`,
+            });
+        }
+
         if (existingCartItem) {
-            existingCartItem.quantity = (existingCartItem.quantity || 1) + quantity;
+            existingCartItem.quantity = currentQuantity + quantity;
         } else {
             user.cart.push({ productId, variantIndex, quantity });
         }
@@ -123,8 +144,12 @@ router.put('/updateStatus', authenticateUser, async (req, res) => {
 });
 
 router.put('/updateCartItem', authenticateUser, async (req, res) => {
-    const { productId, quantity } = req.body;
+    const { productId } = req.body;
     const variantIndex = Number(req.body.variantIndex);
+    const quantity = parseCartQuantity(req.body.quantity);
+    if (quantity === null) {
+        return res.status(400).json({ message: INVALID_QUANTITY_MESSAGE });
+    }
     try {
         const user = await User.findById(req.user.userId);
         if (!user) return res.status(404).json({ message: 'User not found' });
@@ -139,8 +164,14 @@ router.put('/updateCartItem', authenticateUser, async (req, res) => {
         const cartItem = user.cart.find(
             (item) => item.productId.toString() === productId && item.variantIndex === variantIndex
         );
+        const stockLimit = getStockLimit(variant);
+        if (quantity > stockLimit) {
+            return res.status(409).json({
+                message: stockLimit > 0 ? `Chỉ còn ${stockLimit} sản phẩm.` : 'Sản phẩm này đã hết hàng.',
+            });
+        }
         if (cartItem) {
-            cartItem.quantity = Math.max(1, Number(quantity));
+            cartItem.quantity = quantity;
         }
         await user.save();
         res.json({ cart: user.cart });

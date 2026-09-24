@@ -183,6 +183,14 @@ function ProductDisplay() {
     }, {});
   }, [filters, product]);
 
+  // Không cho chọn vượt số lượng còn bán của phiên bản đang chọn
+  const stockLimit = Math.max(0, Math.floor(Number(selectedVariant?.quantityForSale) || 0));
+  const orderQty = Math.min(qty, Math.max(1, stockLimit));
+
+  useEffect(() => {
+    setQty((current) => Math.min(current, Math.max(1, stockLimit)));
+  }, [stockLimit]);
+
   if (loading) {
     return <div className="product-detail-status">{text("loading_product_details")}</div>;
   }
@@ -227,14 +235,14 @@ function ProductDisplay() {
 
   const handleAddToCart = async () => {
     if (!isLoggedIn) return redirectToLogin();
-    if (selectedVariant) await addToCart(productId, selectedVariantIndex, qty);
+    if (selectedVariant && stockLimit > 0) await addToCart(productId, selectedVariantIndex, orderQty);
     return undefined;
   };
 
   const handleBuyNow = async () => {
     if (!isLoggedIn) return redirectToLogin();
-    if (selectedVariant) {
-      await addToCart(productId, selectedVariantIndex, qty);
+    if (selectedVariant && stockLimit > 0) {
+      await addToCart(productId, selectedVariantIndex, orderQty);
       navigate("/cart");
     }
     return undefined;
@@ -418,9 +426,9 @@ function ProductDisplay() {
             <div className="product-quantity-row">
               <span>{text("quantity")}:</span>
               <div className="product-detail-quantity">
-                <button type="button" onClick={() => setQty((current) => Math.max(1, current - 1))}>{"−"}</button>
-                <span>{qty}</span>
-                <button type="button" onClick={() => setQty((current) => current + 1)}>+</button>
+                <button type="button" onClick={() => setQty((current) => Math.max(1, current - 1))} disabled={orderQty <= 1} aria-label={text("decrease_quantity")}>{"−"}</button>
+                <span>{orderQty}</span>
+                <button type="button" onClick={() => setQty((current) => Math.min(Math.max(1, stockLimit), current + 1))} disabled={orderQty >= stockLimit} aria-label={text("increase_quantity")}>+</button>
               </div>
               <small>{isContactOnly ? text("contact_only_product") : text("remaining_products").replace("{count}", selectedVariant.quantityForSale)}</small>
             </div>
@@ -431,8 +439,8 @@ function ProductDisplay() {
               </Button>
             ) : (
               <div className="product-primary-actions">
-                <Button variant="contained" onClick={handleAddToCart} startIcon={<ShoppingCartIcon />}>{text("add_to_cart")}</Button>
-                <Button variant="outlined" onClick={handleBuyNow}><i className="fa-solid fa-bolt" /> {text("buy_now")}</Button>
+                <Button variant="contained" onClick={handleAddToCart} disabled={isOutOfStock} startIcon={<ShoppingCartIcon />}>{text("add_to_cart")}</Button>
+                <Button variant="outlined" onClick={handleBuyNow} disabled={isOutOfStock}><i className="fa-solid fa-bolt" /> {text("buy_now")}</Button>
               </div>
             )}
 

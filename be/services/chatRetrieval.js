@@ -1,5 +1,9 @@
 const { Product } = require('../models/product');
-const { escapeRegex, generateFuzzyCodeRegex } = require('../utils/productSearch');
+const {
+    buildDiacriticPattern: buildSharedDiacriticPattern,
+    escapeRegex,
+    generateFuzzyCodeRegex,
+} = require('../utils/productSearch');
 const { stripSearchEdgeWords } = require('../utils/productSearchTerms');
 const { removeVietnameseTones } = require('../utils/textNormalization');
 const {
@@ -33,27 +37,9 @@ const EXTRA_EDGE_STOPWORDS = new Set([
     'va', 'hay', 'nua', 'them', 'khong', 'co', 'toi', 'minh', 'them',
 ]);
 
-const DIACRITIC_GROUPS = Object.freeze({
-    a: 'aàáảãạăằắẳẵặâầấẩẫậ',
-    e: 'eèéẻẽẹêềếểễệ',
-    i: 'iìíỉĩị',
-    o: 'oòóỏõọôồốổỗộơờớởỡợ',
-    u: 'uùúủũụưừứửữự',
-    y: 'yỳýỷỹỵ',
-    d: 'dđ',
-});
-
-/** Regex bỏ qua dấu: cho phép gõ không dấu vẫn khớp dữ liệu có dấu trong DB. */
+/** Regex bỏ qua dấu: cho phép gõ không dấu vẫn khớp dữ liệu có dấu trong DB (dùng chung với tìm kiếm storefront). */
 function buildDiacriticPattern(phrase) {
-    return String(phrase || '')
-        .slice(0, MAX_PHRASE_LENGTH)
-        .split('')
-        .map((character) => {
-            if (character === ' ') return '[\\s\\-_.]+';
-            const group = DIACRITIC_GROUPS[character];
-            return group ? '[' + group + ']' : escapeRegex(character);
-        })
-        .join('');
+    return buildSharedDiacriticPattern(phrase, MAX_PHRASE_LENGTH);
 }
 
 function buildPhraseCondition(phrase) {

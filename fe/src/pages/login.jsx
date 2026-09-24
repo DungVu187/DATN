@@ -8,6 +8,7 @@ import {
   resetCustomerPassword,
 } from "../api/customerAccountApi";
 import { text } from "../constants/customerText.js";
+import { getSafeRedirectPath } from "../utils/saferedirect";
 
 function LogIn() {
   const [isSignUpActive, setIsSignUpActive] = useState(false);
@@ -109,7 +110,7 @@ function LogIn() {
       if (response.ok) {
         toast.success(text("login_success", "Đăng nhập thành công"));
         const queryParams = new URLSearchParams(window.location.search);
-        const redirectUrl = queryParams.get("redirect") || "/";
+        const redirectUrl = getSafeRedirectPath(queryParams.get("redirect"));
         setTimeout(() => {
           window.location.href = redirectUrl;
         }, 1000);

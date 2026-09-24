@@ -176,6 +176,12 @@ function Cart() {
       toast.error("Hãy chọn ít nhất một sản phẩm có thể thanh toán.");
       return;
     }
+    // Chặn sớm dòng vượt tồn kho để khách sửa ngay trong giỏ thay vì bị backend từ chối
+    const overStockRow = selectedRows.find(({ item, variant }) => item.quantity > Number(variant?.quantityForSale || 0));
+    if (overStockRow) {
+      toast.error(`"${overStockRow.product?.name || "Sản phẩm"}" chỉ còn ${Number(overStockRow.variant?.quantityForSale || 0)} sản phẩm, vui lòng giảm số lượng.`);
+      return;
+    }
     if (!selectedAddress) {
       toast.error("Vui lòng chọn địa chỉ nhận hàng.");
       setOpenAddressDialog(true);
@@ -272,6 +278,9 @@ function Cart() {
                             <h3>{product?.name || "Sản phẩm không còn khả dụng"}</h3>
                             {contactOnly && <span className="checkout-product-tag">Cần báo giá</span>}
                             {!available && <span className="checkout-product-tag is-warning">Tạm hết hàng</span>}
+                            {available && !contactOnly && item.quantity > Number(variant?.quantityForSale || 0) && (
+                              <span className="checkout-product-tag is-warning">Chỉ còn {Number(variant?.quantityForSale || 0)} sản phẩm</span>
+                            )}
                           </div>
                           <p>{[product?.code, variantAttributes(variant)].filter(Boolean).join(" · ") || "Đang cập nhật thông tin"}</p>
                           <strong>{contactOnly ? "Liên hệ để báo giá" : formatMoney(variant?.price)}</strong>

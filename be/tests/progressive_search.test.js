@@ -62,11 +62,44 @@ describe('stripSearchEdgeWords', () => {
 });
 
 describe('buildTokenQuery', () => {
-    it('sinh khối $or gồm name/nameUnsigned/code/brand', () => {
+    it('sinh khối $or gồm name/nameUnsigned/code/brand và tên bỏ dấu', () => {
         const q = buildTokenQuery('van');
         expect(q).toHaveProperty('$or');
         const fields = q.$or.map(clause => Object.keys(clause)[0]);
-        expect(fields).toEqual(['name', 'nameUnsigned', 'code', 'brand']);
+        expect(fields).toEqual(['name', 'nameUnsigned', 'code', 'brand', 'name']);
+    });
+
+    it('gõ không dấu vẫn khớp tên có dấu kể cả khi nameUnsigned trống', () => {
+        const nameClauses = (token) => buildTokenQuery(token).$or
+            .filter(c => c.name)
+            .map(c => (c.name instanceof RegExp ? c.name : new RegExp(c.name.$regex, c.name.$options)));
+        const matchesName = (token, name) => nameClauses(token).some(regex => regex.test(name));
+        expect(matchesName('bien', 'Biến tần Schneider')).toBe(true);
+        expect(matchesName('tan', 'Biến tần Schneider')).toBe(true);
+        expect(matchesName('BIEN', 'Biến tần Schneider')).toBe(true);
+        expect(matchesName('dong', 'Biến dòng')).toBe(true);
+        expect(matchesName('bien', 'Bộ lọc khí')).toBe(false);
+    });
+
+    it('từ khóa dạng mã có chữ số cũng tìm trong tên', () => {
+        const q = buildTokenQuery('s71200');
+        const nameRegexes = q.$or.filter(c => c.name instanceof RegExp).map(c => c.name);
+        expect(nameRegexes.some(regex => regex.test('PLC S7-1200 CPU 1214C'))).toBe(true);
+    });
+
+    it('gõ có dấu thì giữ đúng dấu, "tần" không khớp nhầm "tấn"', () => {
+        const nameRegexes = buildTokenQuery('tần').$or
+            .filter(c => c.name)
+            .map(c => new RegExp(c.name.$regex, c.name.$options));
+        expect(nameRegexes.some(regex => regex.test('Biến tần'))).toBe(true);
+        expect(nameRegexes.some(regex => regex.test('Cảm biến lực 5 tấn'))).toBe(false);
+    });
+
+    it('không dùng regex mã nới lỏng cho từ khóa quá ngắn như "c++"', () => {
+        const q = buildTokenQuery('c++');
+        const codeClause = q.$or.find(c => c.code);
+        expect(codeClause.code).not.toBeInstanceOf(RegExp);
+        expect(new RegExp(codeClause.code.$regex, 'i').test('CJX2-1810')).toBe(false);
     });
 
     it('dùng regex fuzzy cho mã có ký tự ngăn cách', () => {
