@@ -418,7 +418,7 @@ function ProductDisplay() {
             <div className="product-quantity-row">
               <span>{text("quantity")}:</span>
               <div className="product-detail-quantity">
-                <button type="button" onClick={() => setQty((current) => Math.max(1, current - 1))}>âˆ’</button>
+                <button type="button" onClick={() => setQty((current) => Math.max(1, current - 1))}>{"−"}</button>
                 <span>{qty}</span>
                 <button type="button" onClick={() => setQty((current) => current + 1)}>+</button>
               </div>

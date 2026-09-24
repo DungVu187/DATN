@@ -264,4 +264,83 @@ describe('Dashboard Backend API HTTP Contract', () => {
     // Previous period (2026-07-17 to 2026-07-31) had 0 revenue -> +100%
     expect(comparison.revenuePercent).toBe(100);
   });
+
+  it('records revenue on completion date, falling back to paid date, instead of creation date', async () => {
+    await createUser({ phone: '0935000007', role: 'admin' });
+    const agent = await loginAgent({ phone: '0935000007', role: 'admin' });
+
+    // Đơn tạo tháng 6 nhưng hoàn thành ngày 10/08 -> doanh thu thuộc 10/08
+    const completedLate = await Order.create({
+      orderCode: 'SO-COMPLETED-LATE',
+      userPhone: '0935000008',
+      total: 200000,
+      payment: true,
+      status: 'Completed',
+      state: 'Processing',
+      cartItems: [],
+    });
+    await Order.collection.updateOne(
+      { _id: completedLate._id },
+      {
+        $set: {
+          createdAt: new Date('2026-06-01T10:00:00.000Z'),
+          paidAt: new Date('2026-06-01T10:05:00.000Z'),
+          completedAt: new Date('2026-08-10T03:00:00.000Z'),
+        },
+      }
+    );
+
+    // Đơn tạo trong kỳ nhưng hoàn thành sau kỳ -> không tính vào kỳ này
+    const completedAfter = await Order.create({
+      orderCode: 'SO-COMPLETED-AFTER',
+      userPhone: '0935000008',
+      total: 70000,
+      payment: true,
+      status: 'Completed',
+      state: 'Processing',
+      cartItems: [],
+    });
+    await Order.collection.updateOne(
+      { _id: completedAfter._id },
+      {
+        $set: {
+          createdAt: new Date('2026-08-12T03:00:00.000Z'),
+          completedAt: new Date('2026-08-20T03:00:00.000Z'),
+        },
+      }
+    );
+
+    // Đơn tạo tháng 7, thanh toán 12/08, chưa hoàn thành -> theo ngày thanh toán
+    const paidLate = await Order.create({
+      orderCode: 'SO-PAID-LATE',
+      userPhone: '0935000008',
+      total: 50000,
+      payment: true,
+      status: 'Delivering',
+      state: 'Processing',
+      cartItems: [],
+    });
+    await Order.collection.updateOne(
+      { _id: paidLate._id },
+      {
+        $set: {
+          createdAt: new Date('2026-07-20T03:00:00.000Z'),
+          paidAt: new Date('2026-08-12T03:00:00.000Z'),
+        },
+      }
+    );
+
+    const response = await agent
+      .get('/dashboard')
+      .query({ startDate: '2026-08-01', endDate: '2026-08-15' });
+
+    expect(response.status).toBe(200);
+    const { summary, revenueByDate } = response.body.data;
+
+    expect(summary.revenue).toBe(250000);
+    expect(revenueByDate.find((d) => d.date === '2026-08-10').revenue).toBe(200000);
+    expect(revenueByDate.find((d) => d.date === '2026-08-12').revenue).toBe(50000);
+    // Số đơn trong kỳ vẫn đếm theo ngày tạo: chỉ SO-COMPLETED-AFTER
+    expect(summary.orderCount).toBe(1);
+  });
 });

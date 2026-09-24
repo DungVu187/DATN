@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { getDashboardData } from "../api/dashboardApi";
 import { getAuthFailure } from "../api/httpClient";
+import { getPaymentChip } from "../utils/orderpayment";
 import "./style/dashboard.css";
 
 const PRESET_OPTIONS = [
@@ -638,7 +639,7 @@ const Dashboard = () => {
           <div className="card-title-row">
             <div>
               <h2 className="card-main-title">Đơn hàng gần đây</h2>
-              <p className="card-subtitle">Các đơn mới nhất từ storefront</p>
+              <p className="card-subtitle">Các đơn mới nhất</p>
             </div>
             <Button
               size="small"
@@ -702,7 +703,7 @@ const Dashboard = () => {
                         <td style={{ fontWeight: 600 }}>{formatCurrency(order.total)}</td>
                         <td>
                           <span style={{ color: order.payment ? "#2E9B45" : "#64748B", fontWeight: 500 }}>
-                            {order.payment ? "Đã thanh toán" : "Chưa thanh toán"}
+                            {getPaymentChip(order).label}
                           </span>
                         </td>
                         <td>
@@ -773,9 +774,8 @@ const Dashboard = () => {
                     </div>
 
                     <span
-                      className={`chip-status-custom ${
-                        isOutOfStock ? "chip-stock-out" : "chip-stock-low"
-                      }`}
+                      className={`chip-status-custom ${isOutOfStock ? "chip-stock-out" : "chip-stock-low"
+                        }`}
                     >
                       {isOutOfStock ? "Hết hàng" : `Thiếu ${prod.deficit}`}
                     </span>

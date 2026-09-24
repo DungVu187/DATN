@@ -46,6 +46,7 @@ const {
 } = require('../controllers/orderItemOperations');
 const {
   cancelOrder,
+  confirmOrderRefund,
   deleteOrder,
   updateOrder,
 } = require('../controllers/orderLifecycle');
@@ -59,6 +60,9 @@ router.get("/", [authenticateAdmin, checkPermission('order.view')], listOrders);
 router.get("/customer-suggestions", [authenticateAdmin, checkPermission('order.view')], getCustomerSuggestions);
 
 router.put('/update-order/:_id', [authenticateAdmin, checkPermission('order.edit')], updateOrder);
+
+// Xác nhận đã chuyển khoản hoàn tiền cho đơn đã thanh toán rồi bị hủy
+router.put('/:id/refund', [authenticateAdmin, checkPermission('order.edit')], confirmOrderRefund);
 
 // API tạo đơn hàng
 router.post("/admin-create-order", [authenticateAdmin, checkPermission('order.create')], createAdminOrder);

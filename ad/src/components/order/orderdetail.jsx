@@ -47,9 +47,11 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { usePermissions } from "../../context/usepermissions";
 import { getOrderDetailAbilities } from "../../utils/orderpermissions";
+import { getPaymentChip, needsRefund } from "../../utils/orderpayment";
 import {
   addSalesOrderItem,
   cancelSalesOrder,
+  confirmSalesOrderRefund,
   createAdminSalesOrderDraft,
   deleteSalesOrderImage,
   deleteSalesOrderItem,
@@ -280,6 +282,7 @@ const SalesOrderDetail = () => {
   const navigate = useNavigate();
   const { can, profile } = usePermissions();
   const canCancel = can("order.delete");
+  const canConfirmRefund = can("order.edit");
   const excelInputRef = useRef(null);
   const manualImageInputRef = useRef(null);
   const [order, setOrder] = useState(null);
@@ -305,6 +308,9 @@ const SalesOrderDetail = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [bulkProcessing, setBulkProcessing] = useState(false);
+  const [refundDialogOpen, setRefundDialogOpen] = useState(false);
+  const [refundNote, setRefundNote] = useState("");
+  const [refunding, setRefunding] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -559,12 +565,28 @@ const SalesOrderDetail = () => {
 
   const handleCancelOrder = async () => {
     if (!order || locked) return;
-    if (!window.confirm("Bạn có chắc muốn hủy đơn hàng này?")) return;
+    const confirmMessage = order.payment
+      ? `Đơn đã thanh toán ${formatPrice(order.total)} VNĐ. Sau khi hủy, cần chuyển khoản trả lại khách rồi bấm "Xác nhận đã hoàn tiền". Tiếp tục hủy?`
+      : "Bạn có chắc muốn hủy đơn hàng này?";
+    if (!window.confirm(confirmMessage)) return;
 
     const result = await runSalesOrderRequest(cancelSalesOrder(id));
     if (result?.order) {
       await fetchOrder();
-      toast.success("Đã hủy đơn hàng");
+      toast.success(order.payment ? "Đã hủy đơn hàng, đơn đang chờ hoàn tiền" : "Đã hủy đơn hàng");
+    }
+  };
+
+  const handleConfirmRefund = async () => {
+    if (!refundNote.trim() || refunding) return;
+    setRefunding(true);
+    const result = await runSalesOrderRequest(confirmSalesOrderRefund(id, refundNote.trim()));
+    setRefunding(false);
+    if (result?.success) {
+      setRefundDialogOpen(false);
+      setRefundNote("");
+      await fetchOrder();
+      toast.success("Đã xác nhận hoàn tiền");
     }
   };
 
@@ -776,12 +798,39 @@ const SalesOrderDetail = () => {
       <Box className="sticky-header">
         <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={2} mb={2}>
           <Typography variant="h4">Chi tiết đơn bán #{order.orderCode}</Typography>
-          <Chip label={getStatusLabel(order)} color={getStatusColor(order)} />
+          <Box display="flex" gap={1}>
+            <Chip label={getStatusLabel(order)} color={getStatusColor(order)} />
+            <Chip label={getPaymentChip(order).label} color={getPaymentChip(order).color} variant="outlined" />
+          </Box>
         </Box>
 
         {locked && (
-          <Alert severity="info" sx={{ mb: 4 }}>
+          <Alert severity="info" sx={{ mb: needsRefund(order) || order.paymentStatus === "REFUNDED" ? 2 : 4 }}>
             {getLockedOrderMessage(order)}
+          </Alert>
+        )}
+
+        {needsRefund(order) && (
+          <Alert
+            severity="warning"
+            sx={{ mb: 4 }}
+            action={
+              canConfirmRefund && (
+                <Button color="inherit" size="small" onClick={() => setRefundDialogOpen(true)}>
+                  Xác nhận đã hoàn tiền
+                </Button>
+              )
+            }
+          >
+            Đơn đã thanh toán {formatPrice(order.total)} VNĐ nhưng đã bị hủy. Hãy chuyển khoản trả lại khách
+            {order.userPhone ? ` (SĐT ${order.userPhone})` : ""} rồi xác nhận hoàn tiền.
+          </Alert>
+        )}
+
+        {order.paymentStatus === "REFUNDED" && (
+          <Alert severity="success" sx={{ mb: 4 }}>
+            Đã hoàn tiền{order.refundedAt ? ` lúc ${new Date(order.refundedAt).toLocaleString("vi-VN")}` : ""}
+            {order.refundNote ? ` — ${order.refundNote}` : ""}
           </Alert>
         )}
 
@@ -1002,6 +1051,34 @@ const SalesOrderDetail = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAddDialog(false)}>Đóng</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={refundDialogOpen} onClose={() => !refunding && setRefundDialogOpen(false)} disableScrollLock maxWidth="sm" fullWidth>
+        <DialogTitle>Xác nhận đã hoàn tiền</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" mb={2}>
+            Chỉ xác nhận sau khi đã chuyển khoản {formatPrice(order.total)} VNĐ trả lại khách cho đơn #{order.orderCode}.
+          </Typography>
+          <TextField
+            label="Mã giao dịch / ghi chú hoàn tiền"
+            placeholder="Ví dụ: FT26267123456 - Vietcombank"
+            value={refundNote}
+            onChange={(event) => setRefundNote(event.target.value)}
+            inputProps={{ maxLength: 500 }}
+            multiline
+            minRows={2}
+            fullWidth
+            autoFocus
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setRefundDialogOpen(false)} disabled={refunding}>
+            Hủy
+          </Button>
+          <Button variant="contained" onClick={handleConfirmRefund} disabled={!refundNote.trim() || refunding}>
+            {refunding ? "Đang lưu..." : "Xác nhận"}
+          </Button>
         </DialogActions>
       </Dialog>
 

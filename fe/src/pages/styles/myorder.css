@@ -356,16 +356,30 @@
   color: #e24e4e;
 }
 
+.payment-refund-pending,
 .status-processing {
   border-color: #f6d39b;
   background: #fff9ef;
   color: #cb811e;
 }
 
+.payment-refunded,
 .status-delivering {
   border-color: #a9cef8;
   background: #f2f8ff;
   color: #2879ce;
+}
+
+.order-payment-notice {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border: 1px solid #f6d39b;
+  border-radius: 11px;
+  background: #fff9ef;
+  color: #9a5d0f;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.55;
 }
 
 .order-detail-button,

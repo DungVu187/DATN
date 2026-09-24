@@ -89,6 +89,13 @@ export const cancelSalesOrder = (orderId) =>
     json: { state: "Cancelled" },
   });
 
+export const confirmSalesOrderRefund = (orderId, note) =>
+  apiFetch(`/orders/${orderId}/refund`, {
+    method: "PUT",
+    headers: jsonHeaders,
+    json: { note },
+  });
+
 export const getSalesOrderProductsByCodes = (codes) =>
   apiFetch("/products/by-codes", {
     method: "POST",

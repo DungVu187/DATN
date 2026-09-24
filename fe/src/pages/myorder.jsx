@@ -156,7 +156,22 @@ const MyOrder = () => {
     return { label: text("state_processing", "Đang xử lý"), tone: "processing" };
   };
 
-  const canCancelOrder = (order) => Boolean(order && order.state !== "Cancelled" && order.status === "Processing");
+  // Đơn đã thanh toán phải qua nhân viên để hủy và chuyển khoản hoàn tiền
+  const canCancelOrder = (order) => Boolean(order && order.state !== "Cancelled" && order.status === "Processing" && !order.payment);
+
+  const getPayment = (order) => {
+    if (order?.paymentStatus === "REFUNDED") return { label: text("refunded", "Đã hoàn tiền"), tone: "refunded" };
+    if (order?.payment && order.state === "Cancelled") return { label: text("refund_pending", "Chờ hoàn tiền"), tone: "refund-pending" };
+    if (order?.payment) return { label: text("paid", "Đã thanh toán"), tone: "paid" };
+    return { label: text("unpaid", "Chưa thanh toán"), tone: "unpaid" };
+  };
+
+  const getPaymentNotice = (order) => {
+    if (!order?.payment || order.paymentStatus === "REFUNDED") return "";
+    if (order.state === "Cancelled") return text("refund_pending_notice");
+    if (order.status === "Processing") return text("paid_order_cancel_notice");
+    return "";
+  };
 
   const copyOrderCode = async (order) => {
     try {
@@ -291,7 +306,7 @@ const MyOrder = () => {
                         <td><span className="order-date-cell">{moment(order.createdAt).format("DD/MM/YYYY")}<small>{moment(order.createdAt).format("HH:mm")}</small></span></td>
                         <td>{renderProductSummary(order)}</td>
                         <td><strong className="order-total-cell">{formatMoney(order.total)}</strong></td>
-                        <td><span className={"order-pill payment-" + (order.payment ? "paid" : "unpaid")}>{order.payment ? text("paid", "Đã thanh toán") : text("unpaid", "Chưa thanh toán")}</span></td>
+                        <td><span className={"order-pill payment-" + getPayment(order).tone}>{getPayment(order).label}</span></td>
                         <td><span className={"order-pill status-" + status.tone}>{status.label}</span></td>
                         <td><button type="button" className="order-detail-button" onClick={() => openOrderDetails(order)}>{text("view_details", "Xem chi tiết")}<ArrowForwardIosRounded /></button></td>
                       </tr>
@@ -320,7 +335,7 @@ const MyOrder = () => {
                     {renderProductSummary(order)}
                     <div className="order-mobile-summary">
                       <div><span>{text("total_money", "Tổng tiền")}</span><strong>{formatMoney(order.total)}</strong></div>
-                      <span className={"order-pill payment-" + (order.payment ? "paid" : "unpaid")}>{order.payment ? text("paid", "Đã thanh toán") : text("unpaid", "Chưa thanh toán")}</span>
+                      <span className={"order-pill payment-" + getPayment(order).tone}>{getPayment(order).label}</span>
                     </div>
                     <button type="button" className="order-mobile-detail-button" onClick={() => openOrderDetails(order)}>{text("view_details", "Xem chi tiết")}<ArrowForwardIosRounded /></button>
                   </article>
@@ -349,8 +364,9 @@ const MyOrder = () => {
               <div className="order-dialog-summary">
                 <div><span>{text("order_date", "Ngày đặt")}</span><strong>{moment(selectedOrder.createdAt).format("DD/MM/YYYY HH:mm")}</strong></div>
                 <div><span>{text("total_money", "Tổng tiền")}</span><strong>{formatMoney(selectedOrder.total)}</strong></div>
-                <div><span>{text("payment", "Thanh toán")}</span><strong>{selectedOrder.payment ? text("paid", "Đã thanh toán") : text("unpaid", "Chưa thanh toán")}</strong></div>
+                <div><span>{text("payment", "Thanh toán")}</span><strong>{getPayment(selectedOrder).label}</strong></div>
               </div>
+              {getPaymentNotice(selectedOrder) && <p className="order-payment-notice">{getPaymentNotice(selectedOrder)}</p>}
               <h3>{text("product_list", "Danh sách sản phẩm")}</h3>
               <div className="order-dialog-products">
                 {selectedOrder.cartItems.map((item, index) => {

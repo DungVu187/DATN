@@ -1,6 +1,10 @@
 const { Order } = require('../models/order');
 const { StorageHistory } = require('../models/storagehistory');
-const { canAccessOrder } = require('../services/orderAccess');
+const { canAccessOrder, isPrivilegedOrderUser } = require('../services/orderAccess');
+const { isPaidUnrefunded, needsRefund } = require('../services/orderPolicy');
+
+const SUPPORT_HOTLINE = '09.0151.3825';
+const REFUND_NOTE_MAX_LENGTH = 500;
 const {
   prepareOrderReservationRelease,
   prepareOrderStatusTransition,
@@ -28,6 +32,14 @@ async function updateOrder(req, res) {
     const order = await Order.findById(_id);
     if (!order) {
       return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    // Đơn đã hủy không đổi thanh toán tay nữa; tiền đã nhận thì đi qua bước xác nhận hoàn tiền
+    if (field === 'payment' && order.state === 'Cancelled') {
+      return res.status(400).json({
+        success: false,
+        message: 'Đơn hàng đã hủy, không thể cập nhật thanh toán.',
+      });
     }
 
     let appliedAdjustments = [];
@@ -103,6 +115,11 @@ async function deleteOrder(req, res) {
       return res.status(400).json({ message: 'Không thể xóa đơn hàng đã hoàn thành.' });
     }
 
+    // Xóa đơn đã nhận tiền sẽ mất dấu khoản phải hoàn cho khách
+    if (isPaidUnrefunded(order)) {
+      return res.status(400).json({ message: 'Không thể xóa đơn hàng đã thanh toán nhưng chưa hoàn tiền.' });
+    }
+
     let appliedAdjustments = [];
     if (order.state !== 'Cancelled') {
       const adjustments = await prepareOrderReservationRelease(order);
@@ -158,6 +175,14 @@ async function cancelOrder(req, res) {
       return res.status(400).json({ message: 'Order is already cancelled.' });
     }
 
+    // Khách không tự hủy đơn đã thanh toán: cần nhân viên hủy và chuyển khoản hoàn tiền
+    if (order.payment === true && !isPrivilegedOrderUser(req.user)) {
+      return res.status(400).json({
+        message: 'Đơn hàng đã thanh toán. Vui lòng liên hệ hotline ' + SUPPORT_HOTLINE
+          + ' để được hủy đơn và hoàn tiền.',
+      });
+    }
+
     const adjustments = await prepareOrderReservationRelease(order);
     const appliedAdjustments = await applyStockAdjustments(adjustments);
 
@@ -182,8 +207,57 @@ async function cancelOrder(req, res) {
   }
 }
 
+// Nhân viên đã chuyển khoản trả khách -> ghi nhận hoàn tiền kèm mã giao dịch/ghi chú
+async function confirmOrderRefund(req, res) {
+  const { id } = req.params;
+  const io = req.app.get('io');
+  const note = typeof req.body?.note === 'string' ? req.body.note.trim() : '';
+
+  if (!note) {
+    return res.status(400).json({ success: false, message: 'Vui lòng nhập mã giao dịch hoặc ghi chú hoàn tiền.' });
+  }
+  if (note.length > REFUND_NOTE_MAX_LENGTH) {
+    return res.status(400).json({
+      success: false,
+      message: 'Ghi chú hoàn tiền tối đa ' + REFUND_NOTE_MAX_LENGTH + ' ký tự.',
+    });
+  }
+
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    if (!needsRefund(order)) {
+      return res.status(400).json({ success: false, message: 'Đơn hàng không ở trạng thái chờ hoàn tiền.' });
+    }
+
+    order.paymentStatus = 'REFUNDED';
+    order.refundedAt = new Date();
+    order.refundNote = note;
+    order.refundedBy = req.user?._id || null;
+    await order.save();
+
+    io.to('admins').emit('order_updated', {
+      orderId: order._id,
+      updatedField: 'paymentStatus',
+      newValue: 'REFUNDED',
+    });
+
+    res.json({ success: true, message: 'Đã xác nhận hoàn tiền.', order });
+  } catch (error) {
+    console.error(error);
+    res.status(getRouteErrorStatus(error)).json({
+      success: false,
+      message: getRouteErrorMessage(error, 'Server error'),
+    });
+  }
+}
+
 module.exports = {
   cancelOrder,
+  confirmOrderRefund,
   deleteOrder,
   updateOrder,
 };

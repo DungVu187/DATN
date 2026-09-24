@@ -59,8 +59,10 @@ async function createOrder({
   status = 'Processing',
   state = 'Processing',
   payment = false,
+  paymentStatus = payment ? 'PAID' : 'UNPAID',
 }) {
   return Order.create({
+    paymentStatus,
     orderCode,
     userPhone,
     userName: 'Lifecycle Customer',
@@ -248,6 +250,81 @@ describe('Order lifecycle HTTP characterization', () => {
     expect(removeCompleted.status).toBe(400);
     expect(removeCompleted.body).toEqual({ message: 'Không thể xóa đơn hàng đã hoàn thành.' });
     expect(await Order.findById(completedOrder._id)).not.toBeNull();
+  });
+
+  it('blocks customers from cancelling or deleting a paid order', async () => {
+    const { agent, phone } = await createAgent({ role: 'customer' });
+    const product = await createProduct({ quantityForSale: 5 });
+    const paidOrder = await createOrder({
+      userPhone: phone,
+      product,
+      orderCode: 'NOVA-REFUND-CUSTOMER',
+      payment: true,
+    });
+
+    const cancel = await agent.put('/orders/' + paidOrder._id).send({});
+    expect(cancel.status).toBe(400);
+    expect(cancel.body.message).toContain('hotline');
+
+    const remove = await agent.delete('/orders/' + paidOrder._id);
+    expect(remove.status).toBe(400);
+    expect(remove.body).toEqual({ message: 'Không thể xóa đơn hàng đã thanh toán nhưng chưa hoàn tiền.' });
+
+    const unchanged = await Order.findById(paidOrder._id);
+    expect(unchanged.state).toBe('Processing');
+    const stock = await Product.findById(product._id);
+    expect(stock.variant[0].quantityForSale).toBe(5);
+  });
+
+  it('lets staff cancel a paid order and confirm the manual refund once', async () => {
+    const { agent } = await createAgent({ role: 'admin' });
+    const { agent: viewer } = await createAgent({ role: 'staff', permissions: ['order.view'] });
+    const product = await createProduct();
+    const order = await createOrder({
+      userPhone: nextPhone(),
+      product,
+      orderCode: 'NOVA-REFUND-ADMIN',
+      payment: true,
+    });
+
+    const notCancelledYet = await agent.put('/orders/' + order._id + '/refund').send({ note: 'FT123' });
+    expect(notCancelledYet.status).toBe(400);
+
+    const cancel = await agent.put('/orders/' + order._id).send({});
+    expect(cancel.status).toBe(200);
+    expect(cancel.body.order).toMatchObject({ state: 'Cancelled', payment: true, paymentStatus: 'PAID' });
+
+    const togglePayment = await agent
+      .put('/orders/update-order/' + order._id)
+      .send({ field: 'payment', value: false });
+    expect(togglePayment.status).toBe(400);
+
+    const removeBeforeRefund = await agent.delete('/orders/' + order._id);
+    expect(removeBeforeRefund.status).toBe(400);
+
+    const missingNote = await agent.put('/orders/' + order._id + '/refund').send({ note: '   ' });
+    expect(missingNote.status).toBe(400);
+
+    const noPermission = await viewer.put('/orders/' + order._id + '/refund').send({ note: 'FT123' });
+    expect(noPermission.status).toBe(403);
+
+    const refund = await agent.put('/orders/' + order._id + '/refund').send({ note: '  FT123 Vietcombank  ' });
+    expect(refund.status).toBe(200);
+    expect(refund.body.order).toMatchObject({
+      paymentStatus: 'REFUNDED',
+      refundNote: 'FT123 Vietcombank',
+      refundedAt: expect.any(String),
+    });
+
+    const refundAgain = await agent.put('/orders/' + order._id + '/refund').send({ note: 'FT999' });
+    expect(refundAgain.status).toBe(400);
+    expect(refundAgain.body.message).toBe('Đơn hàng không ở trạng thái chờ hoàn tiền.');
+
+    const detail = await agent.get('/orders/admin-detail/' + order._id);
+    expect(detail.body.order).toMatchObject({ paymentStatus: 'REFUNDED', refundNote: 'FT123 Vietcombank' });
+
+    const removeAfterRefund = await agent.delete('/orders/' + order._id);
+    expect(removeAfterRefund.status).toBe(200);
   });
 
   it('restores active-order stock only once under concurrent delete', async () => {

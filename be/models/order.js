@@ -108,6 +108,21 @@ const orderSchema = new mongoose.Schema(
       type: Date,
       default: null
     },
+    // Hoàn tiền thủ công: SePay chỉ báo tiền vào, nhân viên chuyển khoản trả khách rồi xác nhận tại đây
+    refundedAt: {
+      type: Date,
+      default: null,
+    },
+    refundNote: {
+      type: String,
+      default: "",
+      maxlength: 500,
+    },
+    refundedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
     images: [{ type: String }],
     // Tài khoản quản trị tạo đơn (null với đơn khách tự đặt) — dùng cho quyền sửa đơn nháp của mình
     createdBy: {

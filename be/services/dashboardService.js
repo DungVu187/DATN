@@ -119,6 +119,18 @@ const getDashboardData = async ({ startDate: startQuery, endDate: endQuery } = {
     $or: [{ payment: true }, { status: 'Completed' }],
   };
 
+  // Doanh thu ghi nhận theo ngày hoàn thành; đơn đã thanh toán nhưng chưa hoàn thành
+  // tính theo ngày thanh toán; dữ liệu cũ thiếu cả hai mốc thì lùi về ngày tạo đơn
+  const revenueDateStages = (range) => [
+    { $match: revenueFilter },
+    {
+      $addFields: {
+        revenueDate: { $ifNull: ['$completedAt', { $ifNull: ['$paidAt', '$createdAt'] }] },
+      },
+    },
+    { $match: { revenueDate: { $gte: range.start, $lte: range.end } } },
+  ];
+
   const [
     currentRevenueAgg,
     prevRevenueAgg,
@@ -135,12 +147,7 @@ const getDashboardData = async ({ startDate: startQuery, endDate: endQuery } = {
   ] = await Promise.all([
     // Current period revenue
     Order.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: current.start, $lte: current.end },
-          ...revenueFilter,
-        },
-      },
+      ...revenueDateStages(current),
       {
         $group: {
           _id: null,
@@ -151,12 +158,7 @@ const getDashboardData = async ({ startDate: startQuery, endDate: endQuery } = {
 
     // Previous period revenue
     Order.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: previous.start, $lte: previous.end },
-          ...revenueFilter,
-        },
-      },
+      ...revenueDateStages(previous),
       {
         $group: {
           _id: null,
@@ -210,18 +212,13 @@ const getDashboardData = async ({ startDate: startQuery, endDate: endQuery } = {
 
     // Revenue and order count by date in current period
     Order.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: current.start, $lte: current.end },
-          ...revenueFilter,
-        },
-      },
+      ...revenueDateStages(current),
       {
         $group: {
           _id: {
             $dateToString: {
               format: '%Y-%m-%d',
-              date: '$createdAt',
+              date: '$revenueDate',
               timezone: DASHBOARD_TIMEZONE,
             },
           },
@@ -249,7 +246,7 @@ const getDashboardData = async ({ startDate: startQuery, endDate: endQuery } = {
     Order.find()
       .sort({ createdAt: -1 })
       .limit(5)
-      .select('_id orderCode userName userPhone total payment status state createdAt')
+      .select('_id orderCode userName userPhone total payment paymentStatus status state createdAt')
       .lean(),
 
     // 5 lowest stock products across all variants
